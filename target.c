@@ -77,7 +77,6 @@ void prepare_chunk_summary(
 	sequence = atomic64_inc_return(&super->cache_stat.alloc_sequence);
 	seg->sequence = sequence;
 
-	//dest = (struct segment_header_device *)pages[summary_offset]->data;
 	dest = (struct segment_header_device *)page_address(pages[summary_offset]->pl->page);
 	dest->sequence = cpu_to_le64(seg->sequence);
 	dest->uuid = super->cache_stat.uuid;
@@ -123,82 +122,15 @@ void prepare_chunk_summary(
 }
 
 
-
-#if 0
-void generate_full_summary(struct dmsrc_super *super, struct segment_header *seg, 
-		struct rambuffer *rambuf, int ssd_id, int full){
-	struct blk_plug plug;
-	int i;
-
-	prepare_chunk_summary(super, seg, rambuf->pages, ssd_id, seg->seg_type);
-
-	blk_start_plug(&plug);
-	for(i = 0;i < NUM_SUMMARY;i++){
-		struct wb_job *job;
-		//u32 summary_mb_idx = (ssd_id + 1) * CHUNK_SZ - NUM_SUMMARY + i;
-		u32 summary_mb_idx = get_summary_offset(super, ssd_id) + i;
-		job = writeback_make_job(super, seg, summary_mb_idx, NULL, rambuf, full);
-		writeback_issue_job(super, job);
-	}
-	blk_finish_plug(&plug);
-}
-#endif 
-
-
 int change_seg_status(struct dmsrc_super *super, struct segment_header *seg, int seg_length, int force_seal){
 	struct group_header *group;
-	unsigned long flags;
 	int group_sealed = 0;
-	//unsigned long f;
-
-#if  0
-	LOCK(super, f);
-	atomic_add(atomic_read(&seg->part_length), &seg->part_start);
-	atomic_set(&seg->part_length, 0);
-	UNLOCK(super, f);
-#endif 
 
 	if(force_seal || seg_length>=STRIPE_SZ){
 
 		if(test_bit(SEG_PARTIAL, &seg->flags)){
 			printk(" force seal ... seg .. = %d \n", (int)seg->seg_id);
 		}
-
-#if 0
-		if(calc_meta_count(super, seg)!=get_metadata_count(super, seg->seg_type)){
-			printk(" *sealed: seg = %d valid = %d, metacount = %d  \n", (int)seg->seg_id, atomic_read(&seg->valid_count),
-					calc_meta_count(super, seg));
-		}
-
-		LOCK(super, f);
-		if(atomic_read(&seg->valid_count)-get_metadata_count(super, seg->seg_type)!=
-				calc_valid_count(super, seg, 1)){
-			printk(" invalid valid count = %d %d, dummy = %d \n",  
-					atomic_read(&seg->valid_count)-get_metadata_count(super, seg->seg_type), 
-					calc_valid_count(super, seg, 1), 
-					atomic_read(&seg->dummy_count));
-		}
-		UNLOCK(super, f);
-#endif 
-
-		//if(seg->seg_type==RCBUF){
-		//	printk(" Sealed seg  valid count = %d %d, dummy = %d \n",  
-		//			atomic_read(&seg->valid_count)-get_metadata_count(super, seg->seg_type), 
-		//			calc_valid_count(super, seg, 1), 
-		//			atomic_read(&seg->dummy_count));
-		//}
-
-		lockseg(seg, flags);
-		if(seg->seg_type==GWBUF){
-			atomic_dec(&super->wstat.seg_count[GWBUF]);
-			atomic_inc(&super->wstat.seg_count[WCBUF]);
-			seg->seg_type = WCBUF;
-		}else if(seg->seg_type==GRBUF){
-			atomic_dec(&super->wstat.seg_count[GRBUF]);
-			atomic_inc(&super->wstat.seg_count[RCBUF]);
-			seg->seg_type = RCBUF;
-		}
-		unlockseg(seg, flags);
 
 		if(test_bit(SEG_USED, &seg->flags)||test_bit(SEG_PARTIAL, &seg->flags)){
 			set_bit(SEG_SEALED, &seg->flags);
@@ -390,17 +322,11 @@ void build_metadata(struct dmsrc_super *super,
 {
 	int group_sealed;
 	int flush_command = 0;
-
-#if SUMMARY_LOCATION == USE_FIRST_SUMMARY 
-	if(test_bit(SEG_PARTIAL, &seg->flags))
-		alloc_partial_summary(super, seg, rambuf, cache_type);
-#endif
 	
 	group_sealed = change_seg_status(super, seg, seg_length, force_seal);
 	if(build_summary){
 		printk(" build summary ... \n");
 		BUG_ON(1);
-		//build_summary_job(super, seg, rambuf, 0);
 	}
 
 	if(super->param.flush_command==FLUSH_NONE){
@@ -414,17 +340,9 @@ void build_metadata(struct dmsrc_super *super,
 			flush_command = 0;
 	}
 
-	//if(!group_sealed && seg->seg_type == RCBUF)
-	//	flush_command = 0;
-
 	if(flush_data){
 		int count;
 		int i;
-
-		if(test_bit(SEG_PARTIAL, &seg->flags))
-			printk(" Partial flush data ...seg = %d length = %d(bio length = %d) \n", (int)seg->seg_id, 
-					(int)atomic_read(&seg->length), 
-					(int)atomic_read(&rambuf->bios_total_count));
 
 		for(i = 0;i < NUM_SSD;i++){
 			if(USE_ERASURE_PARITY(&super->param) && is_write_stripe(seg->seg_type)){
@@ -1680,9 +1598,7 @@ static void writeback_endio_extent(unsigned long error, void *context)
 		}
 
 		if(job->rambuf && atomic_read(&job->rambuf_release)){
-	//		printk(" writeback seg = %d ram refcount = %d \n", (int)seg->seg_id, atomic_read(&job->rambuf->ref_count));
 			if(atomic_dec_and_test(&job->rambuf->ref_count)){
-				//printk(" >>>writeback end seg id %d ram refcount = %d \n", (int)seg->seg_id, atomic_read(&job->rambuf->ref_count));
 				release_rambuffer(super, job->rambuf, seg->seg_type);
 			}
 			if(atomic_read(&job->rambuf->ref_count)<0){
@@ -1696,8 +1612,6 @@ static void writeback_endio_extent(unsigned long error, void *context)
 
 
 	mempool_free(job, super->pending_mgr.wb_job_pool);
-
-	//pending_worker_schedule(super);
 }
 
 
@@ -1786,10 +1700,8 @@ void writeback_issue_job_extent(struct dmsrc_super *super, struct wb_job *job, i
 	
 	if(flush_command){
 		io_req.bi_rw = WRITE_FLUSH;
-	//io_req.bi_rw = WRITE_FUA;
 	}else{
 		io_req.bi_rw = WRITE_SYNC;
-		//io_req.bi_rw = WRITE;
 	}
 
 	io_req.notify.fn = writeback_endio_extent;
@@ -1817,13 +1729,9 @@ void make_flush_invoke_job(struct dmsrc_super *super, struct segment_header *seg
 	job = mempool_alloc(flush_mgr->invoke_pool, GFP_NOIO);
 
 	bio_list_init(&job->barrier_ios);
-	if(is_normal_stripe(cache_type)){
+	if(is_normal_stripe(cache_type)){ /*- -*/
 		unsigned long f;
 		spin_lock_irqsave(&super->pending_mgr.barrier_lock, f);
-		//if (!bio_list_empty(&super->pending_mgr.barrier_ios)) {
-		//	printk(" Merge barrier bios ... \n");
-		//}
-
 		bio_list_merge(&job->barrier_ios, &super->pending_mgr.barrier_ios);
 		bio_list_init(&super->pending_mgr.barrier_ios);
 		atomic_set(&super->pending_mgr.barrier_count, 0);
@@ -1842,16 +1750,11 @@ void make_flush_invoke_job(struct dmsrc_super *super, struct segment_header *seg
 	for(devno = 0;devno < NUM_SSD;devno++){
 		atomic_set(&job->bios_start[devno], atomic_read(&bios_start[devno]));
 		atomic_set(&job->bios_count[devno], atomic_read(&bios_count[devno]));
-		//if(atomic_read(&bios_count[devno])==0){
-		//	printk("WARN: dev = %d bios count = %d \n", devno, atomic_read(&bios_count[devno]));
-		//}
 	}
 
 	spin_lock_irqsave(&flush_mgr->lock, flags);
 	list_for_each_entry_reverse(prev_job, &flush_mgr->queue, list){
 		if(prev_job->global_seg_sequence <  global_seg_sequence){
-		//	printk(" >>>> seg found.. and then seg = %d, sequence = %d %d\n", (int)seg->seg_id, 
-		//			(int)prev_job->global_seg_sequence, (int)global_seg_sequence);
 			found = true;
 			break;
 		}

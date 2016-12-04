@@ -52,23 +52,9 @@ int flush_plug_proc(struct dmsrc_super *super,
 	{
 		u32 idx = (u32)seg->seg_id * STRIPE_SZ + devno * CHUNK_SZ + i;
 		struct bio *bio = rambuf->bios[idx % STRIPE_SZ];
-		struct metablock *mb = mb_at(super, idx);
-
 		if(bio){
 			atomic_inc(&super->cache_stat.total_bios2);
 			atomic_inc(&seg->bios_count);
-		}else{
-			if(!test_bit(MB_SKIP, &mb->mb_flags)){
-	//			job = writeback_make_job(super, seg, idx, 
-	//					NULL, rambuf, 1);
-			}else{
-				printk(" mb skip not support ...\n");
-				BUG_ON(1);
-				if(atomic_dec_and_test(&rambuf->ref_count)){
-					printk(" >>> partial writeback end seg id %d \n", (int)seg->seg_id);
-					release_rambuffer(super, rambuf, seg->seg_type);
-				}
-			}
 		}
 	}
 
@@ -366,44 +352,6 @@ void issue_deferred_bio(struct dmsrc_super *super, struct bio_list *barrier_ios)
 }
 
 
-#if 0 
-void gen_partial_summary_io(struct dmsrc_super *super, struct segment_header *seg, 
-		struct rambuffer *rambuf,
-		struct summary_io_job *context){
-
-	struct dm_io_request io_req;
-	struct dm_io_region region;
-	u32 mem_offset = 0;
-	u32 tmp32;
-	u32 idx;
-	//int r;
-
-	idx = cursor_summary_offset(super, seg->seg_id, seg->seg_type);
-
-	atomic_inc(&(context->count));
-
-	div_u64_rem(idx, STRIPE_SZ, &tmp32);
-	mem_offset = tmp32;
-
-	region.bdev = get_bdev(super, idx);
-	region.sector = get_sector(super, seg->seg_id, idx);
-	region.count = SRC_SECTORS_PER_PAGE;
-
-	io_req.client = super->io_client;
-	io_req.bi_rw = WRITE;
-	io_req.notify.fn = flush_segmd_endio;
-	io_req.notify.context = context;
-	io_req.mem.type = DM_IO_KMEM;
-	io_req.mem.ptr.addr = rambuf->pages[mem_offset]->data;
-
-	dmsrc_io(&io_req, 1, &region, NULL);
-
-}
-#endif
-
-
-
-
 void wait_bufcopy_ios(struct segment_header *seg){
 	u32 count = 0;
 	while(atomic_read(&seg->num_bufcopy)){
@@ -454,9 +402,7 @@ int flush_meta_proc(void *data)
 		spin_unlock_irqrestore(&flush_mgr->lock, flags);
 
 
-		//printk(" wait filling ... \n");
 		wait_filling_ios(super, job->seg);
-		//printk(" buf copy... \n");
 		wait_bufcopy_ios(job->seg);
 
 		build_metadata(super, 
