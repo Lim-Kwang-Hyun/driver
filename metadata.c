@@ -1213,27 +1213,6 @@ int __must_check scan_superblock(struct dmsrc_super *super)
 	super->param.num_entry_per_page = sup->num_entry_per_page;
 	super->param.flush_command = sup->flush_command;
 
-	if(super->param.data_allocation==DATA_ALLOC_FLEX_VERT || 
-	   super->param.data_allocation==DATA_ALLOC_FLEX_HORI){
-
-		if(super->param.parity_allocation==PARITY_ALLOC_ROTAT){
-			WBERR("superblock heaer: invalid parity allocation");
-			WBERR("superblock heaer: Flexible Striping performs only with PARITY_ALLOC_FIXED");
-			return -1;
-		}
-	}
-
-#if  0 
-	int pages_per_chunk;
-	pages_per_chunk = SECTOR_SIZE * super->param.chunk_size / PAGE_SIZE;
-
-	if(PAGE_SIZE<pages_per_chunk*sizeof(struct metablock_device)+SEGMENT_HEADER_SIZE){
-		//printk(" Summary page size = %dB\n", (int)(pages_per_chunk*sizeof(struct metablock_device)));
-		printk(" Summary page size is greater then 4KB = %d\n", (int)(pages_per_chunk*sizeof(struct metablock_device)+SEGMENT_HEADER_SIZE));
-		return -1;
-	}
-#endif
-
 	return r;
 }
 
@@ -1241,112 +1220,6 @@ u8 calc_checksum(u8 *ptr, int size){
 	return crc32_le(17, ptr, size);
 }
 
-#if 0 
-/*
- * Make a metadata in segment data to flush.
- * @dest The metadata part of the segment to flush
- */
-void prepare_segment_header_device(struct segment_header_device *dest,
-				   struct dmsrc_super *super,
-				   struct segment_header *src, int cache_type, struct rambuf_page **pages)
-{
-	u32 i;
-
-	dest->sequence= cpu_to_le64(src->sequence);
-
-
-	for (i = 0; i < STRIPE_SZ; i++) {
-		struct metablock *mb = get_mb(super, src->seg_id, i);
-		struct metablock_device *mbdev = &dest->mbarr[i];
-
-		mbdev->sector = cpu_to_le64(mb->sector);
-	//	mbdev->checksum = calc_checksum( pages[i]->data, PAGE_SIZE);
-	//	mb->checksum = crc32_le(17, pages[i]->data, PAGE_SIZE);
-	}
-}
-#endif
-
-/*
- * Read the on-disk metadata of the segment
- * and update the in-core cache metadata structure
- * like Hash Table.
- */
-#if 0 
-static void update_by_segment_header_device(struct dmsrc_super *super,
-					    struct segment_header_device *src)
-{
-	u32 i;
-	u64 id = le64_to_cpu(src->global_id);
-	struct segment_header *seg = get_segment_header_by_id(super, id);
-	//u32 seg_lap = calc_segment_lap(super, id);
-//	u32 seg_lap = 0;
-
-	for (i = 0 ; i < STRIPE_SZ; i++) {
-		struct lookup_key key;
-		struct ht_head *head;
-		struct metablock *found;
-		struct metablock *mb = get_mb(super, seg->seg_id, i);
-		struct metablock_device *mbdev = &src->mbarr[i];
-
-		/*
-		 * lap is kind of checksum.
-		 * If the checksum are the same between
-		 * original (seg_lap) and the dumped on
-		 * the metadata the metadata is considered valid.
-		 *
-		 * This algorithm doesn't care the case
-		 * metadata are partially written but it is OK.
-		 *
-		 * The cases are splitted by the volatility of
-		 * the buffer.
-		 *
-		 * If the buffer is volatile, ACK to the barrier
-		 * will only be done after completion of flushing
-		 * to the cache device. Therefore, these metadata
-		 * lost are ignored doesn't violate the semantics.
-		 *
-		 * If the buffer is non-volatile, ACK to the barrier
-		 * is already done. However, only after FUA write to
-		 * the cache device the buffer is ready to be reused.
-		 * Therefore, metadata is not lost and is still on
-		 * the buffer.
-		 */
-//		if (le32_to_cpu(mbdev->lap) != seg_lap)
-//			break;
-
-		/*
-		 * How could this be happened? But no harm.
-		 * We only recover dirty caches.
-		 */
-		if (!mbdev->dirty_bits)
-			continue;
-
-		mb->sector = le64_to_cpu(mbdev->sector);
-		//mb->dirty_bits = mbdev->dirty_bits;
-
-		inc_num_dirty_caches(super);
-
-		key = (struct lookup_key) {
-			.sector = mb->sector,
-		};
-
-		head = ht_get_head(super, &key);
-
-		found = ht_lookup(super, head, &key);
-		if (found) {
-		//	struct segment_header *seg = get_segment_header_by_mb_idx(super, found->idx);
-			//bool overwrite_fullsize = (mb->dirty_bits == 255);
-			//invalidate_previous_cache(super, seg, found, overwrite_fullsize);
-		}
-
-		ht_register(super, head, &key, mb);
-
-		set_bit(MB_VALID, &mb->mb_flags);
-		atomic_inc(&seg->valid_count);
-		atomic_inc(&super->num_used_caches);
-	}
-}
-#endif
 
 void copy_summary(struct dmsrc_super *super, void *buf, u32 seg_id, u32 ssd_id){
 	struct segment_header *new_seg;
@@ -1370,7 +1243,6 @@ void copy_summary(struct dmsrc_super *super, void *buf, u32 seg_id, u32 ssd_id){
 
 	if(USE_ERASURE_CODE(&super->param) && ssd_id==get_parity_ssd(super, seg_id)){
 		printk(" parity SSD id = %d segid %d \n", ssd_id, seg_id); 
-//		BUG_ON(1);
 		return;
 	}
 
@@ -1399,10 +1271,6 @@ void copy_summary(struct dmsrc_super *super, void *buf, u32 seg_id, u32 ssd_id){
 		if(seg_id==0)
 			printk(" meta page = %d, offset = %d, sector = %d\n", meta_page, meta_offset, (int)new_mb->sector);
 
-//		if(new_mb->sector>=super->dev_info.origin_sectors){
-//			printk(" sector = %d %d \n", new_mb->sector, super->dev_info.origin_sectors);
-//			BUG_ON(1);
-//		}
 
 		if(mbdev->dirty_bits)
 			set_bit(MB_DIRTY, &new_mb->mb_flags);

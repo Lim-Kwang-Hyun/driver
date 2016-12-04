@@ -4279,54 +4279,7 @@ static int consume_essential_argv(struct dmsrc_super *super, unsigned int argc, 
 		printk(" %s = %s \n", #name, str);\
 	 }
 
-#if 0 
-static int consume_optional_argv(struct dmsrc_super *super, struct dm_arg_set *as)
-{
-	static struct dm_arg _args[] = {
-		{0, 14, "invalid optional argc"},
-		{4, 12, "invalid chunk_size_order"},
-		{512, UINT_MAX, "invalid rambuf_pool_amount"},
-		{0, 1, "invalid parity_allocation"},
-		{0, 1, "invalid striping_policy"},
-		{0, 3, "invalid data_allocation"},
-		{ERASURE_CODE_NONE, ERASURE_CODE_RAID6, "invalid type of erasure code"},
-		{0, 1, "invalid per_disk_logging"},
-	};
 
-	struct dm_target *ti = super->ti;
-	int r = 0;
-	unsigned argc = 0, tmp;
-	if (as->argc) {
-		r = dm_read_arg_group(_args, as, &argc, &ti->error);
-		if (r)
-			return r;
-	}
-
-	while (argc) {
-		const char *key = dm_shift_arg(as);
-		argc--;
-
-		r = -EINVAL;
-
-		consume_kv(chunk_size_order, 1);
-		consume_kv(rambuf_pool_amount, 2);
-		consume_kv(parity_allocation, 3);
-		consume_kv(striping_policy, 4);
-		consume_kv(data_allocation, 5);
-		consume_kv(erasure_code, 6);
-		//consume_kv(per_disk_logging, 7);
-
-		if (!r) {
-			argc--;
-		} else {
-			ti->error = "invalid optional key";
-			break;
-		}
-	}
-
-	return r;
-}
-#endif
 
 int do_add_spare(struct dmsrc_super *super, struct dm_arg_set *as, unsigned argc){
 	struct dm_target *ti = super->ti;
@@ -4397,7 +4350,6 @@ static int do_consume_tunable_argv(struct dm_target *ti,
 
 		r = -EINVAL;
 
-		//consume_kv(update_record_interval, 5);
 		consume_kv(sync_interval, 6);
 		consume_kv(sequential_enable, 7);
 		consume_kv(sequential_cutoff, 8);
@@ -4453,29 +4405,7 @@ static int do_consume_tunable_argv(struct dm_target *ti,
 	return r;
 }
 
-#if 0 
-static int consume_tunable_argv(struct dm_target *ti, struct dm_arg_set *as)
-{
-	static struct dm_arg _args[] = {
-		{0, 13, "invalid tunable argc"},
-	};
 
-	int r = 0;
-	unsigned argc = 0;
-	if (as->argc) {
-		r = dm_read_arg_group(_args, as, &argc, &ti->error);
-		if (r)
-			return r;
-		/*
-		 * tunables are emitted only if
-		 * they were origianlly passed.
-		 */
-	//	super->should_emit_tunables = true;
-	}
-
-	return do_consume_tunable_argv(ti, as, argc);
-}
-#endif
 
 static void
 xor_8regs_4_2(unsigned long bytes, unsigned long *p1, unsigned long *p2,
@@ -4698,11 +4628,6 @@ static void set_default_param(struct dmsrc_super *super, struct dmsrc_param *par
 
 void raid_conf_init(struct dmsrc_super *super, struct r5conf *conf){
 
-#if 0
-	int i;
-	int d_disk, p_disk;
-#endif
-
 	memset(conf, 0x00, sizeof(struct r5conf));
 
 	conf->algorithm = ALGORITHM_LEFT_SYMMETRIC;
@@ -4722,20 +4647,7 @@ void raid_conf_init(struct dmsrc_super *super, struct r5conf *conf){
 		conf->level = 6;
 		conf->raid_disks =  NUM_SSD;
 	}
-#if 0 
-#if 0  // RAID5
-	for(i = 0;i < 200;i++){
-		raid5_calc_sector(conf, i * 8 * (STRIPE_SZ-CHUNK_SZ), 0,&d_disk, &p_disk, NULL);
-		printk(" %d ddisk = %d, pdisk = %d \n", i, d_disk, p_disk);
-	}
-#else
-	for(i = 0;i < 200;i++){
-		raid5_calc_sector(conf, i * 8 * STRIPE_SZ, 0,&d_disk, &p_disk, NULL);
-		printk(" %d ddisk = %d, pdisk = %d \n", i, d_disk, p_disk);
 
-	}
-#endif
-#endif
 }
 
 void reset_arrival_time(struct dmsrc_super *super){
@@ -5163,41 +5075,18 @@ int plugger_init(struct dmsrc_super *super){
 	}
 	atomic_set(&plugger->total_length, 0);
 
-#if 0
-	plugger->mem_pool = mempool_create_kmalloc_pool(STRIPE_SZ*16,
-							    sizeof(struct plug_job));
-	if(!plugger->mem_pool){
-		goto bad_init;
-	}
-#endif
-
-	//INIT_WORK(&plugger->work, plug_proc);
-
-	//update_plug_deadline(super);
-
 	plugger->initialized = 1;
 
 	return r;
-
-//bad_init:
-//	return r;
 }
 
 void plugger_deinit(struct dmsrc_super *super){
 	struct plugging_manager *plugger = &super->plugger;
-	//int i;
 
 	if(!plugger->initialized)
 		return;
 
-	//for(i = 0;i < NUM_SSD;i++)
-	//	flush_plug_proc(super, NULL, 0, 1, i);
-
 	del_timer(&plugger->timer);
-	//flush_work(&plugger->work);
-	//cancel_work_sync(&plugger->work);
-
-	//mempool_destroy(plugger->mem_pool);
 }
 
 #if (USE_SEG_WRITER == 1)
@@ -5651,23 +5540,14 @@ int calc_need_num_ssds(struct dmsrc_super *super){
 	remain_bw = cur_bw_mb % super->dev_info.per_cache_bw;
 	if(remain_bw > cur_bw_mb / super->dev_info.per_cache_bw)
 		need_ssds++;
-	//if(cur_bw_mb % super->dev_info.per_cache_bw)
-	//	need_ssds++;
 
 	if(need_ssds> NUM_SSD)
 		need_ssds = NUM_SSD;
-#if 0
-	if(need_ssds<3)
-		need_ssds = 3;
-#else 
+
 	if(need_ssds<2)
 		need_ssds = 2;
-#endif 
 
-	//printk(" cur get iops = %d %dKB, need_ssds= %d \n", (int)wp_get_iops(super, NULL), (int)wp_get_iops(super, NULL)*4, need_ssds);
 	printk(" bw_mb = %d, NUM SSDs %d \n", cur_bw_mb, need_ssds);
-//need_ssds = NUM_SSD-1;
-	//need_ssds = 2;
 
 	return need_ssds;
 }
@@ -5823,36 +5703,6 @@ void hot_filter_deinit(struct dmsrc_super *super){
 
 
 
-#if 0 
-static sector_t max_io_len_target_boundary(sector_t sector, struct dm_target *ti)
-{
-	sector_t target_offset = dm_target_offset(ti, sector);
-
-	return ti->len - target_offset;
-}
-static sector_t max_io_len(sector_t sector, struct dm_target *ti)
-{
-	sector_t len = max_io_len_target_boundary(sector, ti);
-	sector_t offset, max_len;
-
-	/*
-	 * Does the target need to split even further?
-	 */
-	if (ti->max_io_len) {
-		offset = dm_target_offset(ti, sector);
-		if (unlikely(ti->max_io_len & (ti->max_io_len - 1)))
-			max_len = sector_div(offset, ti->max_io_len);
-		else
-			max_len = offset & (ti->max_io_len - 1);
-		max_len = ti->max_io_len - max_len;
-
-		if (len > max_len)
-			len = max_len;
-	}
-
-	return len;
-}
-#endif
 
 void print_param(struct dmsrc_super *super){
 
@@ -5937,7 +5787,7 @@ int __must_check resume_managers(struct dmsrc_super *super)
 	if(r)
 		return r;
 
-	r = degraded_mgr_init(super);
+	r = degraded_mgr_init(super); //-
 	if(r)
 		return r;
 
@@ -5951,11 +5801,11 @@ int __must_check resume_managers(struct dmsrc_super *super)
 	if(r)
 		return r;
 
-	r = recovery_mgr_init(super);
+	r = recovery_mgr_init(super); //-
 	if(r)
 		return r;
 
-	r = plugger_init(super);
+	r = plugger_init(super); //-
 	if(r)
 		return r;
 
@@ -5963,7 +5813,7 @@ int __must_check resume_managers(struct dmsrc_super *super)
 	if(r)
 		return r;
 
-	r = read_miss_mgr_init(super);
+	r = read_miss_mgr_init(super); //-
 	if(r)
 		return r;
 
@@ -5972,7 +5822,7 @@ int __must_check resume_managers(struct dmsrc_super *super)
 		return r;
 
 #if (USE_SEG_WRITER == 1)
-	r = seg_write_mgr_init(super);
+	r = seg_write_mgr_init(super); //-
 	if(r)
 		return r;
 #endif 
@@ -5981,17 +5831,17 @@ int __must_check resume_managers(struct dmsrc_super *super)
 	if(r)
 		return r;
 
-	r = wp_init(super);
+	r = wp_init(super); //-
 	if(r)
 		return r;
 
-	if(super->param.enable_read_cache){
+	if(super->param.enable_read_cache){ //-
 		printk(" clean dram buffer size = %dMB \n", super->param.rambuf_pool_amount/256);
 		lru_init(&super->clean_dram_cache_manager, "LRU", super->param.rambuf_pool_amount, 1, 0);
 	}
 
 #ifdef USE_GHOST_BUFFER
-	if(super->param.hot_identification){
+	if(super->param.hot_identification){ //-
 		//lru_init(&super->lru_manager, "LRU", NUM_BLOCKS, 1, 0);
 		r = hot_filter_init(super);
 		if(r)
@@ -6000,7 +5850,7 @@ int __must_check resume_managers(struct dmsrc_super *super)
 #endif
 
 	seg_allocator_init(super);
-	seq_detector_init(super);
+	seq_detector_init(super); //-
 	r = multi_allocator_init(super);
 
 	return r;
@@ -6144,12 +5994,6 @@ static int dmsrc_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 	printk(" DM-SRC has been successfuly started. \n");
 	return r;
 
-#if 0
-	xor_test(super);
-	pq_test(super);
-#endif
-
-
 bad_init:
 
 	dmsrc_dtr(ti);
@@ -6172,57 +6016,14 @@ void dmsrc_dtr(struct dm_target *ti)
 	printk(" DM-SRC has been removed.\n");
 }
 
-#if 0 
-int wait_schedule(void *unused)
-{
-	schedule();
-	return 0;
-}
-#endif
-
-#if 0 
-/*
- * .postsuspend is called before .dtr
- * same code not needed in .dtr
- */
-static void dmsrc_postsuspend(struct dm_target *ti)
-{
-	int r;
-	int i;
-
-	struct dmsrc_super *super = ti->private;
-	struct dmsrc_super *super = super->super[0];
-
-
-	//while(atomic_read(&super->corrupt_segments) && atomic_read(&super->mig_inflights)){
-		//printk(" migrate wait .. inflight = %d free = %d \n", atomic_read(&super->mig_inflights), get_alloc_count(super) );
-	//	schedule_timeout_interruptible(msecs_to_jiffies(10));
-	//}
-
-	//flush_current_buffer(super, superUF);
-
-	for(i=0;i<NUM_SSD;i++)
-		IO(blkdev_issue_flush(super->cache_dev[i]->bdev, GFP_NOIO, NULL));
-}
-#endif 
 
 static void dmsrc_resume(struct dm_target *ti) {}
 
 static int dmsrc_message(struct dm_target *ti, unsigned argc, char **argv)
 {
-	//struct dmsrc_super *super = ti->private;
-	//struct dmsrc_super *super = super->super;
-
 	struct dm_arg_set as;
 	as.argc = argc;
 	as.argv = argv;
-
-#if 0
-	if (!strcasecmp(argv[0], "clear_stat")) {
-		clear_stat(super);
-		return 0;
-	}
-#endif 
 
 	return do_consume_tunable_argv(ti, &as, 2);
 }
@@ -6258,77 +6059,6 @@ static int dmsrc_iterate_devices(struct dm_target *ti,
 	return -1;
 }
 
-#if 0 
-static void dmsrc_io_hints(struct dm_target *ti,
-				struct queue_limits *limits)
-{
-#if 0 
-	blk_queue_io_min(limits, 4096);
-	blk_limits_io_min(limits, 4096);
-#else
-	//blk_queue_io_min(limits, 32768);
-	//blk_limits_io_min(limits, 32768);
-#endif 
-	//blk_limits_io_opt(limits, 32768);
-}
-#endif 
-
-
-#if 0
-static void dmsrc_status(struct dm_target *ti, status_type_t type,
-			      unsigned flags, char *result, unsigned maxlen)
-{
-#if 0 
-	ssize_t sz = 0;
-	char buf[BDEVNAME_SIZE];
-	struct dmsrc_super *super = ti->private;
-	struct dmsrc_super *super = super->super[0];
-	size_t i;
-
-	switch (type) {
-	case STATUSTYPE_INFO:
-		DMEMIT("%u %u %llu %llu %llu %llu %llu",
-		       (unsigned int)
-		       super->cursor[superUF],
-		       (unsigned int)
-		       nr_caches,
-		       (long long unsigned int)
-		       super->nr_segments,
-		       (long long unsigned int)
-		       super->current_seg[superUF]->sequence,
-		       (long long unsigned int)
-		       atomic64_read(&super->last_flushed_segment_id),
-		       (long long unsigned int)
-		       atomic64_read(&super->last_migrated_segment_id),
-		       (long long unsigned int)
-		       atomic64_read(&super->nr_dirty_caches));
-
-		for (i = 0; i < STATLEN; i++) {
-			atomic64_t *v = &super->stat[i];
-			DMEMIT(" %llu", (unsigned long long) atomic64_read(v));
-		}
-		DMEMIT(" %llu", (unsigned long long) atomic64_read(&super->count_non_full_flushed));
-		emit_tunables(super, result + sz, maxlen - sz);
-		break;
-
-	case STATUSTYPE_TABLE:
-		DMEMIT("0");
-		format_dev_t(buf, super->origin_dev->bdev->bd_dev),
-		DMEMIT(" %s", buf);
-		//format_dev_t(buf, super->cache_dev->bdev->bd_dev),
-		//DMEMIT(" %s", buf);
-		DMEMIT(" 4 chunk_size_order %u rambuf_pool_amount %u",
-		       super->param->chunk_size_order,
-		       super->param->rambuf_pool_amount);
-		//if (super->should_emit_tunables)
-		//	emit_tunables(super, result + sz, maxlen - sz);
-		break;
-	}
-#endif 
-}
-#endif 
-
-#if 1 
 static struct target_type dmsrc_target = {
 	.name = "dmsrc",
 	.version = {0, 1, 0},
@@ -6342,25 +6072,6 @@ static struct target_type dmsrc_target = {
 	.message = dmsrc_message,
 	.iterate_devices = dmsrc_iterate_devices,
 };
-#else
-static struct target_type dmsrc_target = {
-	.name = "dmsrc",
-	.version = {0, 1, 0},
-	.module = THIS_MODULE,
-	.map = dmsrc_map,
-	.end_io = dmsrc_end_io,
-	.ctr = dmsrc_ctr,
-	.dtr = dmsrc_dtr,
-	//.postsuspend = dmsrc_postsuspend,
-	.resume = dmsrc_resume,
-	.merge = dmsrc_merge,
-	.message = dmsrc_message,
-	//.status = dmsrc_status,
-	//.io_hints = dmsrc_io_hints,
-	.iterate_devices = dmsrc_iterate_devices,
-};
-
-#endif 
 
 static int __init dmsrc_module_init(void)
 {
@@ -6386,285 +6097,3 @@ module_exit(dmsrc_module_exit);
 MODULE_AUTHOR("Yongseok Oh <ysoh@uos.ac.kr>");
 MODULE_DESCRIPTION(DM_NAME " dmsrc target");
 MODULE_LICENSE("GPL");
-
-
-
-#if 0 
-void cursor_inc(struct dmsrc_super *super,int seg_id, int cache_type){
-	u32 next;
-
-	// vertical allocation 
-	if(super->param->data_allocation==DATA_ALLOC_VERT){
-		div_u64_rem(super->cursor[cache_type] + 1, NR_CACHES_INSEG, &next);
-	}else{ // horizontal allocation 
-
-		u32 col, row;
-		u32 start_ssd;
-		u32 parity_ssd;
-
-		start_ssd = get_start_ssd(super, seg_id);
-
-		col = super->col[cache_type];
-		row = super->row[cache_type]; 
-		col = (col + 1) % NR_SSD;
-
-		if(is_write_stripe(cache_type) && 
-			USE_ERASURE_CODE(super->param)){
-
-			parity_ssd = get_parity_ssd(super, seg_id);
-
-			if(col==parity_ssd ||
-				(super->param->erasure_code==ERASURE_CODE_RAID6 && 
-				 col == (parity_ssd+1)%NR_SSD)){
-				while(col!=start_ssd){
-					col = (col + 1) % NR_SSD;
-				}
-			}
-		}
-
-		if(col==start_ssd)
-			row++;
-
-		next = col * CHUNK_SZ + row;
-		next %= STRIPE_SZ;
-
-		super->col[cache_type] = col;
-		super->row[cache_type] = row;
-	}
-
-	//printk(" next = %d \n", (int)next);
-
-	super->cursor[cache_type] = next;
-}
-#endif
-
-
-#if 0 
-inline int cursor_start(struct dmsrc_super *super, u64 seg_id, int cache_type){
-	if(super->param->parity_allocation==PARITY_ALLOC_FIXED){
-		return 0;
-	}else{
-		int start = seg_id % NR_SSD;
-		return start * CHUNK_SZ;
-	}
-}
-#endif 
-#if 0 
-void flush_pending_bios(struct dmsrc_super *super){
-#if 1
-	struct bio_list local_list;
-	struct bio *bio;
-	unsigned long f;
-	int retry_resons[RES_COUNT];
-	int local_count = 0;
-	int i;
-
-	for(i=0;i<RES_COUNT;i++){
-		retry_resons[i] = 0;
-	}
-
-	bio_list_init(&local_list);
-
-	while (1) {
-		int reason;
-
-		spin_lock_irqsave(&super->pending_lock, f);
-		bio = bio_list_pop(&super->pending_bios);
-		if(bio)
-			atomic64_dec(&super->pending_io_count);
-		spin_unlock_irqrestore(&super->pending_lock, f);
-
-		if(!bio)
-			break;
-
-		reason = map_pending_bio(super, bio);
-		if(reason<0){
-			bio_list_add(&local_list, bio);
-			local_count++;
-			//pending_bio_add(super, bio);
-			retry_resons[reason*-1]++;
-		}
-	}
-
-	if(local_count){
-		//printk(" local count = %d %d\n", local_count, 
-				//(int)atomic64_read(&super->pending_io_count) );
-		spin_lock_irqsave(&super->pending_lock, f);
-		bio_list_merge(&super->pending_bios, &local_list);
-		///atomic64_add((long long)local_count, &super->pending_io_count);
-		for(i=0;i<local_count;i++)
-			atomic64_inc(&super->pending_io_count);
-		spin_unlock_irqrestore(&super->pending_lock, f);
-	}
-
-#else
-	struct bio *bio;
-	struct bio_list local_list;
-	//struct blk_plug plug;
-	int retry_count = 0;
-#if (IOLOCK == IOLOCK_SPIN) 
-	unsigned long f;
-#endif 
-	int retry_resons[RES_COUNT];
-	int i;
-
-	for(i=0;i<RES_COUNT;i++){
-		retry_resons[i] = 0;
-	}
-
-
-retry:;
-
-	bio_list_init(&local_list);
-	spin_lock_irqsave(&super->pending_lock, f);
-	bio_list_merge(&local_list, &super->pending_bios);
-	bio_list_init(&super->pending_bios);
-	atomic64_set(&super->pending_io_count, 0);
-	spin_unlock_irqrestore(&super->pending_lock, f);
-
-	while ((bio = bio_list_pop(&local_list))) {
-		int reason;
-		reason = map_pending_bio(super, bio);
-		if(reason<0)
-			retry_resons[reason*-1]++;
-	}
-
-#endif 
-
-	bio_list_init(&local_list);
-	spin_lock_irqsave(&super->barrier_lock, f);
-	bio_list_merge(&local_list, &super->barrier_ios);
-	bio_list_init(&super->barrier_ios);
-	spin_unlock_irqrestore(&super->barrier_lock, f);
-
-	issue_deferred_bio(super, &local_list);
-
-#if 0 
-	if(++retry_count>=10){
-		printk(" retry_count = %d \n", retry_count);
-		for(i=0;i<RES_COUNT;i++){
-			printk(" Reson %d = %d \n", i, retry_resons[i]);
-			retry_resons[i] = 0;
-		}
-		schedule_timeout_interruptible(usecs_to_jiffies(10000));
-		retry_count = 0;
-	}
-
-
-	if (!pending_bio_empty(super)) {
-		schedule_timeout_interruptible(usecs_to_jiffies(10));
-		retry_count++;
-		goto retry;
-	}
-#endif 
-
-}
-#endif 
-
-#if 0 
-static void _dmsrc_dtr(struct dmsrc_super *super){
-	int i;
-
-	if(!super)
-		return;
-
-	if(atomic_read(&super->migrate_mgr.background_gc_on)){
-		atomic_set(&super->migrate_mgr.background_gc_on, 0);
-	}
-
-	for(i = 0;i < NUM_SSD;i++){
-		flush_plug_proc(super, 0, 1, i);
-	}	
-
-	while( atomic_read(&super->recovery_mgr.broken_block_count)){
-		printk(" Wating recovery proc... broken block = %d\n", 
-				(int)atomic_read(&super->recovery_mgr.broken_block_count));
-		schedule_timeout_interruptible(msecs_to_jiffies(1000));
-	}
-
-	while(atomic_read(&super->flush_mgr.count)){
-		schedule_timeout_interruptible(msecs_to_jiffies(1000));
-		printk(" wait for flush queue\n");
-	}
-
-#if 0
-	LOCK(super, f);
-	seg = super->current_seg[superUF];
-	length = atomic_read(&seg->part_length);
-	UNLOCK(super, f);
-
-	if(length){
-		flush_current_buffer(super, superUF);
-	}
-
-	LOCK(super, f);
-	seg = super->current_seg[RBUF];
-	length = atomic_read(&seg->length);
-	UNLOCK(super, f);
-
-	if(length){
-		flush_current_buffer(super, RBUF);
-	}
-#endif
-
-#if 0 
-	start_recovery(super);
-
-
-	//while(atomic_read(&super->force_recovery)){
-	//	wait_event_interruptible_timeout(super->recovery_wait_queue,
-	//		!atomic_read(&super->force_recovery), msecs_to_jiffies(1000));
-	//}
-
-	while(atomic_read(&super->force_recovery)){
-//		schedule_timeout_interruptible(usecs_to_jiffies(10000));
-		msleep(1000);
-		printk(" Recovery sleep \n");
-	}
-#endif 
-
-	//super->urge_migrate = false;
-	super->migrate_mgr.allow_migrate = false;
-	while(atomic_read(&super->migrate_mgr.mig_inflights)){
-		schedule_timeout_interruptible(usecs_to_jiffies(100));
-	}
-	migrate_mgr_deinit(super);
-
-	pending_mgr_exit(super);
-
-	free_cache(super);
-
-#ifdef USE_GHOST_BUFFER
-	CACHE_CLOSE(super->lru_manager);
-#endif 
-
-	kfree(super->lru_manager);
-	//kfree(super);
-
-}
-#endif
-#if 0 
-static void prepare_meta_rambuffer(struct rambuf_page **pages,
-				   struct dmsrc_super *super,
-				   struct segment_header *seg, int cache_type, int full)
-{
-	struct metablock *new_mb;
-	u32 summary_offset;
-
-	summary_offset = cursor_summary_offset(super, seg->seg_id, seg->seg_type);
-	
-	new_mb = get_mb(super, seg->seg_id, summary_offset);
-	clear_bit(MB_DIRTY, &new_mb->mb_flags);
-	clear_bit(MB_VALID, &new_mb->mb_flags);
-	set_bit(MB_SUMMARY, &new_mb->mb_flags);
-
-	if(full){
-		atomic_inc(&seg->length);
-		atomic_inc(&seg->part_length);
-		BUG_ON(atomic_read(&seg->length)>STRIPE_SZ);
-	}
-
-	prepare_segment_header_device((struct segment_header_device *)pages[mem_offset]->data,
-			super, seg, cache_type, pages);
-}
-#endif 

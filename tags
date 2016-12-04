@@ -36,8 +36,8 @@ CACHE_SEARCH	lru.h	86;"	d
 CHUNK_SZ	target.h	54;"	d
 CHUNK_SZ_SECTOR	target.h	55;"	d
 CRC_SEED	target.h	45;"	d
-CREATE_DAEMON	metadata.c	2542;"	d	file:
-CREATE_DAEMON	target.c	5810;"	d	file:
+CREATE_DAEMON	metadata.c	2410;"	d	file:
+CREATE_DAEMON	target.c	5732;"	d	file:
 DATA_ALLOC_FLEX_HORI	header.h	160;"	d
 DATA_ALLOC_FLEX_VERT	header.h	159;"	d
 DATA_ALLOC_HORI	header.h	158;"	d
@@ -95,7 +95,7 @@ NR_STRIPE_HASH_LOCKS	raid.h	29;"	d
 NUM_BLOCKS	target.h	50;"	d
 NUM_BLOCKS_PER_SSD	target.h	52;"	d
 NUM_DATA_SSD	target.h	48;"	d
-NUM_DISKS	target.c	4541;"	d	file:
+NUM_DISKS	target.c	4472;"	d	file:
 NUM_ENTRY_PER_PAGE	header.h	246;"	d
 NUM_GC_THREAD	header.h	183;"	d
 NUM_SSD	target.h	47;"	d
@@ -152,7 +152,7 @@ SEPAR_STRIPING	header.h	163;"	d
 SEQ_CUTOFF	target.h	78;"	d
 SEQ_CUTOFF_MAX	target.h	80;"	d
 SEQ_CUTOFF_MIN	target.h	79;"	d
-SRC_LEN	target.c	4591;"	d	file:
+SRC_LEN	target.c	4522;"	d	file:
 SRC_MAGIC	header.h	55;"	d
 SRC_PAGE_SIZE	header.h	227;"	d
 SRC_SECTORS_PER_PAGE	header.h	228;"	d
@@ -307,7 +307,7 @@ calc_num_chunks	metadata.c	/^u32 calc_num_chunks(struct dm_dev *dev, struct dmsr
 calc_segment_header_start	metadata.c	/^static sector_t calc_segment_header_start(struct dmsrc_super *super,$/;"	f	file:
 calc_valid_count	daemon.c	/^int calc_valid_count(struct dmsrc_super *super, struct segment_header *seg, int use_gc){$/;"	f
 can_get_free_segment	target.c	/^inline int can_get_free_segment(struct dmsrc_super *super, int cache_type, int gc){$/;"	f
-ceil	target.c	5768;"	d	file:
+ceil	target.c	5690;"	d	file:
 change_seg_status	target.c	/^int change_seg_status(struct dmsrc_super *super, struct segment_header *seg, int seg_length, int force_seal){$/;"	f
 check_dirty_count	metadata.c	/^int check_dirty_count(struct dmsrc_super *super, struct segment_header *cur_seg){$/;"	f
 check_rambuf_pool	metadata.c	/^int check_rambuf_pool(struct dmsrc_super *super){$/;"	f
@@ -363,8 +363,8 @@ complete_count	target.h	/^	atomic_t complete_count;$/;"	m	struct:scan_metadata_m
 complete_queue	target.h	/^	struct list_head complete_queue;$/;"	m	struct:scan_metadata_manager	typeref:struct:scan_metadata_manager::list_head
 construct_metadata_in_ram	metadata.c	/^int construct_metadata_in_ram(struct dmsrc_super *super){$/;"	f
 consume_essential_argv	target.c	/^static int consume_essential_argv(struct dmsrc_super *super, unsigned int argc, char **argv)$/;"	f	file:
-consume_kv	target.c	4261;"	d	file:
-consume_kv_str	target.c	4272;"	d	file:
+consume_kv	target.c	4262;"	d	file:
+consume_kv_str	target.c	4273;"	d	file:
 copy_job	target.h	/^struct copy_job{$/;"	s
 copy_job_count	target.h	/^	atomic_t copy_job_count;$/;"	m	struct:migration_manager
 copy_job_group	target.h	/^struct copy_job_group{$/;"	s
@@ -474,7 +474,7 @@ error	target.h	/^	int error;$/;"	m	struct:copy_job_group
 error	target.h	/^	int error;$/;"	m	struct:degraded_job
 error	target.h	/^	int error;$/;"	m	struct:recovery_job
 error	target.h	/^	int error;$/;"	m	struct:wb_job
-ewma_add	target.c	2760;"	d	file:
+ewma_add	target.c	2761;"	d	file:
 failure_ssd	target.h	/^	int failure_ssd;$/;"	m	struct:recovery_manager
 finalize_clean_seg	daemon.c	/^void finalize_clean_seg(struct dmsrc_super *super, struct segment_header *seg, int cleanup){$/;"	f
 flags	target.h	/^	unsigned long flags;$/;"	m	struct:segment_header
