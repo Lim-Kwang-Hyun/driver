@@ -784,9 +784,7 @@ RETRY:
 			}
 
 			invalidate_previous_cache(super, src_seg, src_mb);
-
-			wp_update(super, WRITE, REQ_CATEGORY_GC);
-
+			
 			if(!test_bit(MB_DIRTY, &src_mb->mb_flags)){
 				printk(" WARN: No clean data copy ... \n");
 			}
@@ -1002,7 +1000,7 @@ void _flush_kcopy_job(struct dmsrc_super *super, struct copy_job_group *cp_job_g
 	io_req.client = super->io_client;
 
 	if(cp_job_group->rw==READ){
-		wp_update(super, READ, REQ_CATEGORY_GC);
+		
 		io_req.bi_rw = READ;
 		dmsrc_io(&io_req, 1, &cp_job->src_region, NULL);
 	}else{

@@ -32,11 +32,8 @@ __attribute__((section("__versions"))) = {
 	{ 0xa21de278, __VMLINUX_SYMBOL_STR(dm_get_device) },
 	{ 0x5769fbcc, __VMLINUX_SYMBOL_STR(dm_io) },
 	{ 0x43a53735, __VMLINUX_SYMBOL_STR(__alloc_workqueue_key) },
-	{ 0xe7f3608a, __VMLINUX_SYMBOL_STR(hrtimer_forward) },
 	{ 0xc8b57c27, __VMLINUX_SYMBOL_STR(autoremove_wake_function) },
-	{ 0x79aa04a2, __VMLINUX_SYMBOL_STR(get_random_bytes) },
 	{ 0x46608fa0, __VMLINUX_SYMBOL_STR(getnstimeofday) },
-	{ 0x94313d7, __VMLINUX_SYMBOL_STR(hrtimer_cancel) },
 	{ 0x6d0f1f89, __VMLINUX_SYMBOL_STR(dm_table_get_mode) },
 	{ 0xb54533f7, __VMLINUX_SYMBOL_STR(usecs_to_jiffies) },
 	{ 0x88bfa7e, __VMLINUX_SYMBOL_STR(cancel_work_sync) },
@@ -110,4 +107,4 @@ __attribute__((section(".modinfo"))) =
 "depends=dm-mod,raid6_pq,xor";
 
 
-MODULE_INFO(srcversion, "C4C3AF83047499F67F21EA9");
+MODULE_INFO(srcversion, "B6A6965D1AFFEC9BABE34F8");

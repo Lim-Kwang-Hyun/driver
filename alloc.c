@@ -73,86 +73,6 @@ int get_num_empty_chunks(struct dmsrc_super *super, int cache_type){
 	return count;
 }
 
-void group_reserve_empty_chunk(struct dmsrc_super *super, u32 group_id, int cache_type){
-	struct multi_allocator *ma = &super->ma[cache_type];
-	int i;
-	int reserved_chunks;
-	struct group_header *group = &super->group_header_array[group_id];
-
-	for(i = 0;i < NUM_SSD;i++){
-		ma->group_empty_chunk_map[cache_type][i] = 0;
-	}
-
-	// reserve parity blocks 
-	if(is_write_stripe(cache_type) && USE_ERASURE_CODE(&super->param)){
-		ma->group_empty_chunk_map[cache_type][get_parity_ssd(super, group_id)] = 1;
-		//printk(" group = %d parity ssd = %d ", group_id, get_parity_ssd(super, group_id));
-	}
-
-	if(super->param.hot_identification){
-		// reserve empty blocks 
-		if(//cache_type == WHBUF && 
-			(super->param.data_allocation==DATA_ALLOC_FLEX_VERT || 
-			 super->param.data_allocation==DATA_ALLOC_FLEX_HORI)){
-			reserved_chunks = NUM_SSD - calc_need_num_ssds(super);
-			if(reserved_chunks==NUM_DATA_SSD){
-			//	printk(" group reserve no bandwidth ....\n");
-				reserved_chunks = NUM_DATA_SSD-1;
-			}
-
-		}else{
-			reserved_chunks = 0;
-		}
-	}else{
-		if(//(cache_type == WHBUF||cache_type==WCBUF||cache_type==GWBUF) && 
-			(super->param.data_allocation==DATA_ALLOC_FLEX_VERT || 
-			 super->param.data_allocation==DATA_ALLOC_FLEX_HORI))
-		{
-			reserved_chunks = NUM_SSD - calc_need_num_ssds(super);
-			if(reserved_chunks==NUM_DATA_SSD){
-			//	printk(" group reserve no bandwidth ....\n");
-				reserved_chunks = NUM_DATA_SSD-1;
-			}
-		}else{
-			reserved_chunks = 0;
-		}
-	}
-
-	//printk(" need ssd = %d \n", NUM_SSD - reserved_chunks + 1);
-	//if(reserved_chunks==NUM_DATA_SSD){
-	//	reserved_chunks = NUM_DATA_SSD-1;
-	//}
-	//reserved_chunks = 1;
-	//{struct migration_manager *migrate_mgr = &super->migrate_mgr;
-	//if(atomic_read(&migrate_mgr->copy_job_count)){
-	//	printk(" Copy job = %d MB/s\n", atomic_read(&migrate_mgr->copy_job_count)/256);
-	//}}
-
-	if(super->param.data_allocation==DATA_ALLOC_FLEX_VERT || 
-			 super->param.data_allocation==DATA_ALLOC_FLEX_HORI){
-		atomic_set(&group->num_used_ssd,  NUM_SSD - reserved_chunks);
-		atomic_set(&group->skewed_segment, 1);
-	}else{
-		BUG_ON(1);
-		atomic_set(&group->num_used_ssd,  NUM_SSD);
-		atomic_set(&group->skewed_segment, 1);
-	}
-
-	for(i = 0;i < reserved_chunks;i++){
-		u32 ssdno;
-		get_random_bytes((void *)&ssdno, sizeof(u32));
-		ssdno = ssdno % NUM_SSD;
-
-		if(ssdno == get_parity_ssd(super, group_id) ||
-			ma->group_empty_chunk_map[cache_type][ssdno] ){
-			i--;
-			continue;
-		}
-		ma->group_empty_chunk_map[cache_type][ssdno] = 1;
-		//printk(" reserved empty ssd = %d ", ssdno);
-	}
-	//printk("\n");
-}
 
 void reserve_empty_chunk(struct dmsrc_super *super, u64 seg_id, int cache_type){
 	struct multi_allocator *ma = &super->ma[cache_type];
@@ -163,9 +83,6 @@ void reserve_empty_chunk(struct dmsrc_super *super, u64 seg_id, int cache_type){
 		ma->seg_empty_chunk_map[cache_type][i] = 0;
 	}
 
-//	if(cache_type == RHBUF && cache_type != RCBUF && cache_type != GRBUF)
-//		return;
-
 	// reserve parity blocks 
 	if(is_write_stripe(cache_type) && USE_ERASURE_CODE(&super->param)){
 		ma->seg_empty_chunk_map[cache_type][get_parity_ssd(super, seg_id)] = 1;
@@ -173,15 +90,7 @@ void reserve_empty_chunk(struct dmsrc_super *super, u64 seg_id, int cache_type){
 	}
 
 	if(super->param.hot_identification){
-		// reserve empty blocks 
-		if(cache_type == WHBUF && 
-			(super->param.data_allocation==DATA_ALLOC_FLEX_VERT || 
-			 super->param.data_allocation==DATA_ALLOC_FLEX_HORI)){
-			BUG_ON(1);
-			reserved_chunks = NUM_SSD - calc_need_num_ssds(super);
-		}else{
-			reserved_chunks = 0;
-		}
+		reserved_chunks = 0;
 	}else{
 		if((cache_type == WHBUF||cache_type==WCBUF||cache_type==GWBUF) && 
 			(super->param.data_allocation==DATA_ALLOC_FLEX_VERT || 

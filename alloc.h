@@ -88,7 +88,6 @@ int get_num_empty_chunks(struct dmsrc_super *super, int cache_type);
 inline u32 ma_get_count_per_dev(struct dmsrc_super *super, int cache_type, int devno);
 void multi_allocator_deinit(struct dmsrc_super *super);
 inline u32 ma_get_row_count(struct dmsrc_super *super, int cache_type, int row);
-void group_reserve_empty_chunk(struct dmsrc_super *super, u32 group_id, int cache_type);
 inline u32 ma_get_free(struct dmsrc_super *super, int cache_type);
 
 #endif

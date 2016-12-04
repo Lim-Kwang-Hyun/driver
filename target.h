@@ -1060,7 +1060,6 @@ void seg_length_inc(struct dmsrc_super *super, struct segment_header *seg, struc
 void dmsrc_dtr(struct dm_target *ti);
 void do_background_gc(struct dmsrc_super *super);
 void wp_update(struct dmsrc_super *super, int is_write, int category);
-u32 wp_get_iops(struct dmsrc_super *super, u32 *bw_mb, int category, int type);
 int calc_need_num_ssds(struct dmsrc_super *super);
 void _build_summary_job(struct dmsrc_super *super, struct segment_header *seg, 
 		struct rambuffer *rambuf, int full);

@@ -556,19 +556,10 @@ struct segment_header *_alloc_new_seg(struct dmsrc_super *super, int cache_type)
 		atomic_set(&group->sealed_seg_count, 0);
 		atomic_set(&group->valid_count, 0);
 
-		if((super->param.data_allocation==DATA_ALLOC_FLEX_VERT || 
-			 super->param.data_allocation==DATA_ALLOC_FLEX_HORI)){
-			group_reserve_empty_chunk(super, group->group_id, cache_type);
-		}
-
-		if(super->param.data_allocation==DATA_ALLOC_FLEX_VERT || 
-				 super->param.data_allocation==DATA_ALLOC_FLEX_HORI){
-		//	atomic_set(&group->num_used_ssd,  NUM_SSD - reserved_chunks);
-		//	atomic_set(&group->skewed_segment, 1);
-		}else{
-			atomic_set(&group->num_used_ssd,  NUM_SSD);
-			atomic_set(&group->skewed_segment, 1);
-		}
+		
+		
+		atomic_set(&group->num_used_ssd,  NUM_SSD);
+		atomic_set(&group->skewed_segment, 1);
 	}
 	group->current_seg_id++;
 	//atomic_dec(group->free_seg_count);
@@ -3368,8 +3359,6 @@ static int dmsrc_map(struct dm_target *ti, struct bio *bio)
 
 	if(!bio_fullsize)
 		printk(" bio count = %d sectors \n", (int)bio_count);
-	
-	wp_update(super, bio_data_dir(bio), REQ_CATEGORY_NORMAL);
 
 	map_context->seq_io = false;
 #if defined(CONFIG_BCACHE) || defined(CONFIG_BCACHE_MODULE)
@@ -4552,180 +4541,6 @@ void update_sync_deadline(struct dmsrc_super *super)
 	hrtimer_start( &sync_mgr->hr_timer, sync_mgr->period, HRTIMER_MODE_REL );
 }
 
-void wp_print_iops(struct dmsrc_super *super){
-	struct workload_predictor *wp = &super->wp;
-	int i;
-
-	for(i = 0;i < wp->num_window;i++){
-		struct io_stat_t *iostat = &wp->iostat[i];
-		//if(i==atomic_read(&wp->cur_window))
-			printk(" [*%d:%d:%dMB/s]\n", i, (int)atomic64_read(&iostat->iops[REQ_CATEGORY_TOTAL][REQ_TYPE_TOTAL]),
-					(int)atomic64_read(&iostat->iops[REQ_CATEGORY_TOTAL][REQ_TYPE_TOTAL])/256);
-		//else
-		//	printk(" [%d:%d:%dMB/s]", i, (int)atomic64_read(&iostat->iops[REQ_CATEGORY_TOTAL][REQ_TYPE_TOTAL]), 
-		//			(int)atomic64_read(&iostat->iops[REQ_CATEGORY_TOTAL][REQ_TYPE_TOTAL])/256);
-	}
-	printk("\n");
-		
-}
-
-u32 wp_get_iops(struct dmsrc_super *super, u32 *bw_mb, int category, int type){
-	struct workload_predictor *wp = &super->wp;
-	u32 start_window;
-	u32 cur_window;
-	u32 cur_iops;
-	struct io_stat_t *iostat; 
-	unsigned long flags;
-	int i;
-
-	cur_iops = 0;
-
-	spin_lock_irqsave(&wp->lock, flags);
-
-	cur_window = atomic_read(&wp->cur_window);
-	start_window = atomic_read(&wp->start_window);
-
-	for(i = 0;i < wp->num_window;i++){
-		if(start_window==cur_window)
-			break;
-		iostat = &wp->iostat[start_window];
-		cur_iops += (u32)atomic64_read(&iostat->iops[category][type]);
-		start_window = (start_window + 1) % wp->num_window;
-	}
-
-	spin_unlock_irqrestore(&wp->lock, flags);
-	cur_iops /= (wp->num_window/wp->window_per_sec);
-
-	if(bw_mb)
-		*bw_mb = cur_iops/256;
-
-	return cur_iops;
-}
-
-enum hrtimer_restart wp_display( struct hrtimer *timer )
-{
-	struct workload_predictor *wp = container_of(timer, struct workload_predictor, hr_timer_meter);
-
-	if(wp->super->param.data_allocation==DATA_ALLOC_FLEX_HORI){
-		printk(" CurBW: Total=%d, Write=%d, GCWrite=%d GCRead=%d MB/s\n", 
-		wp_get_iops(wp->super, NULL, REQ_CATEGORY_TOTAL, REQ_TYPE_WRITE)/256,
-		wp_get_iops(wp->super, NULL, REQ_CATEGORY_NORMAL, REQ_TYPE_WRITE)/256,
-		wp_get_iops(wp->super, NULL, REQ_CATEGORY_GC, REQ_TYPE_WRITE)/256,
-		wp_get_iops(wp->super, NULL, REQ_CATEGORY_GC, REQ_TYPE_READ)/256);
-	}
-	
-	hrtimer_forward_now(timer, wp->display_period);
-
-	return HRTIMER_RESTART;
-}
-
-enum hrtimer_restart wp_callback( struct hrtimer *timer )
-{
-	struct workload_predictor *wp = container_of(timer, struct workload_predictor, hr_timer_track);
-	struct io_stat_t *iostat; 
-	int i, j;
-	unsigned long flags;
-
-	//wp_print_iops(wp->super);
-
-	spin_lock_irqsave(&wp->lock, flags);
-	atomic_set(&wp->cur_window, ((atomic_read(&wp->cur_window) + 1) % wp->num_window));
-	if(atomic_read(&wp->cur_window)==atomic_read(&wp->start_window)){
-		atomic_set(&wp->start_window, ((atomic_read(&wp->start_window) + 1) % wp->num_window));
-	}
-
-	iostat = &wp->iostat[atomic_read(&wp->cur_window)];
-	for(i = 0;i < REQ_CATEGORY_NUM;i++){
-		for(j = 0;j <  REQ_TYPE_NUM;j++){
-			atomic64_set(&iostat->iops[i][j], 0);
-		}
-	}
-	spin_unlock_irqrestore(&wp->lock, flags);
-	
-	hrtimer_forward_now(timer, wp->track_period);
-
-	return HRTIMER_RESTART;
-}
-
-void wp_update(struct dmsrc_super *super, int is_write, int category){
-	struct workload_predictor *wp = &super->wp;
-	struct io_stat_t *iostat = &wp->iostat[atomic_read(&wp->cur_window)];
-
-	atomic64_inc(&iostat->iops[category][is_write]);
-	atomic64_inc(&iostat->iops[category][REQ_TYPE_TOTAL]);
-
-	atomic64_inc(&iostat->iops[REQ_CATEGORY_TOTAL][is_write]);
-	atomic64_inc(&iostat->iops[REQ_CATEGORY_TOTAL][REQ_TYPE_TOTAL]);
-}
-
-int wp_init(struct dmsrc_super *super)
-{
-	struct workload_predictor *wp = &super->wp;
-	int i, j;
-	u32 track_ms;
-
-	wp->super = super;
-	track_ms = 100;
-	wp->window_per_sec = (MSEC_PER_SEC/track_ms);
-	wp->num_window = wp->window_per_sec*2;
-	if(wp->num_window>MAX_WINDOW_NUM)
-		wp->num_window = MAX_WINDOW_NUM;
-
-	wp->track_period = ktime_set(0, track_ms*NSEC_PER_MSEC);
-	printk(" Workload Perdictor: tracking period = %dms\n", track_ms);
-
-	spin_lock_init(&wp->lock);
-
-	hrtimer_init( &wp->hr_timer_track, CLOCK_MONOTONIC, HRTIMER_MODE_REL );
-	wp->hr_timer_track.function = &wp_callback;
-	hrtimer_start( &wp->hr_timer_track, wp->track_period, HRTIMER_MODE_REL );
-
-	hrtimer_init( &wp->hr_timer_meter, CLOCK_MONOTONIC, HRTIMER_MODE_REL );
-	wp->hr_timer_meter.function = &wp_display;
-	wp->display_period = ktime_set(1, 0);
-	hrtimer_start( &wp->hr_timer_meter, wp->display_period, HRTIMER_MODE_REL );
-
-	for(i = 0;i < wp->num_window;i++){
-		struct io_stat_t *iostat = &wp->iostat[i];
-		for(j = 0;j <  REQ_TYPE_NUM;j++){
-			atomic64_set(&iostat->iops[i][j], 0);
-		}
-	}
-
-	atomic_set(&wp->cur_window,0);
-	atomic_set(&wp->start_window,0);
-
-
-	wp->initialized = 1;
-
-	return 0;
-}
-
-void wp_cleanup(struct dmsrc_super *super)
-{
-	struct workload_predictor *wp = &super->wp;
-	int ret;
-
-	if(wp->initialized==0)
-		return;
-
-retry:
-	ret = hrtimer_cancel( &wp->hr_timer_track );
-	if (ret) {
-		goto retry;
-	}
-
-	ret = hrtimer_cancel( &wp->hr_timer_meter );
-	if (ret) {
-		goto retry;
-	}
-
-	wp->initialized = 0;
-
-	return;
-}
-
-
 
 void put_devices(struct dmsrc_super *super){
 	struct dm_target *ti = super->ti;
@@ -4788,28 +4603,6 @@ bad:
 	return r;
 }
 
-int calc_need_num_ssds(struct dmsrc_super *super){
-	u32 cur_bw_mb;
-	u32 remain_bw;
-	u32 need_ssds;
-
-	wp_get_iops(super, &cur_bw_mb, REQ_CATEGORY_TOTAL, REQ_TYPE_WRITE);
-
-	need_ssds = cur_bw_mb / super->dev_info.per_cache_bw + 1; 
-	remain_bw = cur_bw_mb % super->dev_info.per_cache_bw;
-	if(remain_bw > cur_bw_mb / super->dev_info.per_cache_bw)
-		need_ssds++;
-
-	if(need_ssds> NUM_SSD)
-		need_ssds = NUM_SSD;
-
-	if(need_ssds<2)
-		need_ssds = 2;
-
-	printk(" bw_mb = %d, NUM SSDs %d \n", cur_bw_mb, need_ssds);
-
-	return need_ssds;
-}
 
 int devinfo_init(struct dmsrc_super *super, int num_ssd){
 	int i;
@@ -5074,9 +4867,6 @@ int __must_check resume_managers(struct dmsrc_super *super)
 	if(r)
 		return r;
 
-	r = wp_init(super); //-
-	if(r)
-		return r;
 
 	if(super->param.enable_read_cache){ //-
 		printk(" clean dram buffer size = %dMB \n", super->param.rambuf_pool_amount/256);
@@ -5106,9 +4896,7 @@ void stop_managers(struct dmsrc_super *super){
 		wake_up_process(super->checker_daemon);
 		kthread_stop(super->checker_daemon);
 	}
-
-	wp_cleanup(super);
-
+	
 	printk(" Stopping sync damone \n");
 	sync_mgr_deinit(super);
 
