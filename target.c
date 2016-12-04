@@ -1099,10 +1099,6 @@ void invalidate_previous_cache(struct dmsrc_super *super,
 	clear_bit(MB_VALID, &old_mb->mb_flags);
 	//clear_bit(MB_DIRTY, &old_mb->mb_flags);
 
-	if(test_bit(MB_BROKEN, &old_mb->mb_flags)){
-		clear_bit(MB_BROKEN, &old_mb->mb_flags);
-		atomic_dec(&super->recovery_mgr.broken_block_count);
-	}
 
 	if(test_bit(MB_HIT, &old_mb->mb_flags)){
 		clear_bit(MB_HIT, &old_mb->mb_flags);
@@ -1112,22 +1108,6 @@ void invalidate_previous_cache(struct dmsrc_super *super,
 			atomic_dec(&seg->hot_clean_count);
 	}
 
-#if 0
-	if(test_bit(SEG_SEALED, &seg->flags)){
-		if(get_data_valid_count(super, seg)<0){
-		printk(" ** Invalid valid count seg = %d valid = %d \n", (int)seg->seg_id, 
-				atomic_read(&seg->valid_count));
-		}
-
-		if(atomic_read(&seg->valid_count)-get_metadata_count(super, seg->seg_type)!=
-				calc_valid_count(super, seg, 1)){
-			printk(" invalid valid count = %d %d, dummy = %d \n",  
-					atomic_read(&seg->valid_count)-get_metadata_count(super, seg->seg_type), 
-					calc_valid_count(super, seg, 1), 
-					atomic_read(&seg->dummy_count));
-		}
-	}
-#endif 
 }
 
 
@@ -3445,16 +3425,14 @@ void pending_worker(struct work_struct *work){
 
 		if(bio_data_dir(bio))
 			is_write = 1;
-#if 1
+		
 		reason = map_pending_bio(super, bio);
 		if(reason<0){
 			bio_list_add(&local_list, bio);
 			local_count++;
 			retry_reasons[reason*-1]++;
 		}
-#else // test for null device performance 
-		bio_endio(bio, 0);
-#endif 
+
 
 		clean_write_count += try_clean_seg_write(super);
 	}
@@ -3475,15 +3453,7 @@ void pending_worker(struct work_struct *work){
 		spin_unlock_irqrestore(&pending_mgr->lock, f);
 	}
 
-#if 0
-	bio_list_init(&local_list);
-	spin_lock_irqsave(&pending_mgr->barrier_lock, f);
-	bio_list_merge(&local_list, &pending_mgr->barrier_ios);
-	bio_list_init(&pending_mgr->barrier_ios);
-	spin_unlock_irqrestore(&pending_mgr->barrier_lock, f);
 
-	issue_deferred_bio(super, &local_list);
-#endif 
 
 	if(clean_write_count || (!local_count && is_write) || 
 			(retry_reasons[RES_SEAL] && get_partial_seg_length(super, WCBUF))){
@@ -3499,30 +3469,7 @@ void pending_worker(struct work_struct *work){
 //	flush_pending_bios(super);
 
 }
-#if 0 
-void map_debugging(){
-#if 0 // Debugging
-	 if(bio->bi_rw & REQ_FUA) 
-		 printk(" req fua \n");
 
-//	print_inode(super, bio);
-
-	while(bio->bi_size>SRC_PAGE_SIZE){
-		schedule_timeout_interruptible(msecs_to_jiffies(1000));
-		printk(" size = %d \n", bio->bi_size);
-	}
-	//if(SRC_SECTORS_PER_PAGE!=bio_count && (strcmp(current->comm, "blkid")&&strcmp(current->comm, "udisks-part-id"))){
-	//if(SRC_SECTORS_PER_PAGE!=bio_count){
-	//	printk(" rw = %d\n", (int)bio_data_dir(bio));
-	//	printk(" bio count = %d, process = %s \n",(int)bio_count, current->comm);
-	//}
-
-	if(bio->bi_sector%SRC_SECTORS_PER_PAGE && bio_data_dir(bio)){
-		printk(" unaligned sector number = %u %u\n", (u32)bio->bi_sector, (u32)bio->bi_sector % SRC_SECTORS_PER_PAGE);
-	}
-#endif 
-}
-#endif 
 
 static int dmsrc_map(struct dm_target *ti, struct bio *bio)
 {
@@ -3561,10 +3508,6 @@ static int dmsrc_map(struct dm_target *ti, struct bio *bio)
 #endif
 	}
 
-#if 0 // test for dm interface 
-	bio_endio(bio, 0);
-	return DM_MAPIO_SUBMITTED;
-#endif 
 
 	bio->bi_rw &= ~REQ_SYNC;
 	bio_count = bio->bi_size >> SECTOR_SHIFT;
@@ -3684,15 +3627,6 @@ static int dmsrc_map(struct dm_target *ti, struct bio *bio)
 	return DM_MAPIO_SUBMITTED;
 }
 
-#if 0 
-static void callback_func(int read_err, unsigned long write_err, void *__context)
-{
-	atomic_t *count = (atomic_t *)__context;
-	atomic_dec(count);
-
-//	printk(" copy complete ... \n");
-}
-#endif 
 
 void do_background_gc(struct dmsrc_super *super){
 	struct migration_manager *migrate_mgr = &super->migrate_mgr;
@@ -3885,112 +3819,6 @@ void do_grow(struct dmsrc_super *super){
 }
 
 
-void do_recovery(struct dmsrc_super *super){
-	struct segment_header *seg;
-	struct metablock *mb;
-	unsigned long flags;
-	int failure_ssd = 0;
-	int segno;
-	int offset;
-	int broken_count = 0;
-	u8 dirty_bits;
-	u8 valid_bits;
-	u8 meta_bits;
-	unsigned long f;
-
-	LOCK(super, f);
-	super->recovery_mgr.failure_ssd = failure_ssd;
-	atomic_set(&super->recovery_mgr.broken_block_count, 0);
-
-	for(segno = 0;segno < super->cache_stat.num_segments;segno++){
-		seg = get_segment_header_by_id(super, (u64)segno);
-
-		if(!test_bit(SEG_SEALED, &seg->flags))
-			continue;
-
-		// mixed segment
-		for(offset=0;offset<CHUNK_SZ;offset++){
-			u32 idx = failure_ssd * CHUNK_SZ + offset;
-			mb = get_mb(super, seg->seg_id, idx);
-
-			lockseg(seg, flags);
-			valid_bits = test_bit(MB_VALID, &mb->mb_flags);
-			dirty_bits = test_bit(MB_DIRTY, &mb->mb_flags);
-			meta_bits = test_bit(MB_PARITY, &mb->mb_flags);
-			meta_bits = test_bit(MB_SUMMARY, &mb->mb_flags);
-			unlockseg(seg, flags);
-
-			if(seg->seg_type==WCBUF){
-				set_bit(SEG_RECOVERY, &seg->flags);
-				BUG_ON(!test_bit(SEG_SEALED, &seg->flags));
-				BUG_ON(test_bit(MB_BROKEN, &mb->mb_flags));
-				set_bit(MB_BROKEN, &mb->mb_flags);
-				broken_count++;
-				atomic_inc(&super->recovery_mgr.broken_block_count);
-			}else{
-				if(offset>=CHUNK_SZ-NUM_SUMMARY)
-					continue;
-
-				if(test_bit(MB_SUMMARY, &mb->mb_flags))
-					continue;
-
-				invalidate_previous_cache(super, seg, mb);
-			}
-		}
-#if 0
-		for(j = 0;j < STRIPE_SZ;j++){
-			mb = get_mb(super, seg->seg_id, j);
-
-			//devno = get_devno(super, seg, mb);
-			devno = j / CHUNK_SZ;
-
-			if(devno!=failure_ssd)
-				continue;
-
-			lockseg(seg, flags);
-			valid_bits = test_bit(MB_VALID, &mb->mb_flags);
-			dirty_bits = test_bit(MB_DIRTY, &mb->mb_flags);
-			meta_bits = test_bit(MB_PARITY, &mb->mb_flags);
-			meta_bits = test_bit(MB_SUMMARY, &mb->mb_flags);
-			unlockseg(seg, flags);
-
-			//if(meta_bits){
-			//	printk(" meta bits seg id = %d type = %d \n", (int)seg->seg_id,(int)seg->seg_type);
-			//}
-			
-			if(valid_bits || meta_bits){
-				if(dirty_bits || meta_bits){
-					//lockseg(seg, flags);
-					//seg->need_recovery = 1;
-					set_bit(SEG_RECOVERY, &seg->flags);
-					BUG_ON(!test_bit(SEG_SEALED, &seg->flags));
-
-					//unlockseg(seg, flags);
-					BUG_ON(test_bit(MB_BROKEN, &mb->mb_flags));
-					set_bit(MB_BROKEN, &mb->mb_flags);
-					broken_count++;
-					atomic_inc(&super->recovery_mgr.broken_block_count);
-				}else{
-					// invalidate broken clean data
-					invalidate_previous_cache(super, seg, mb);
-				}
-			}
-		}
-#endif 
-	}
-
-	UNLOCK(super, f);
-
-#if 1 
-	if(broken_count){
-		atomic_set(&super->degraded_mode, 1);
-		wake_up_process(super->recovery_mgr.daemon);
-	}
-#endif
-
-	printk(" broken pages = %d \n", broken_count);
-}
-
 static int dmsrc_end_io(struct dm_target *ti, struct bio *bio, int error)
 {
 	struct dmsrc_super *super = ti->private;
@@ -4163,12 +3991,7 @@ static int do_consume_tunable_argv(struct dm_target *ti,
 			if(r)
 				return r;
 		 }
-
-		if (!strcasecmp(key, "recovery")) { 
-			r = 0;
-			printk(" do recovery \n");
-			do_recovery(super);
-		 }
+		
 
 		if (!strcasecmp(key, "grow")) { 
 			r = 0;
@@ -4556,64 +4379,6 @@ void seg_allocator_init(struct dmsrc_super *super){
 }
 
 
-int recovery_mgr_init(struct dmsrc_super *super){
-	int r = 0;
-	struct recovery_manager *recovery_mgr = &super->recovery_mgr;
-
-	recovery_mgr->super = super;
-
-	spin_lock_init(&recovery_mgr->lock);
-	INIT_LIST_HEAD(&recovery_mgr->queue);
-	recovery_mgr->wq = alloc_workqueue("recovery_wq",
-				     WQ_NON_REENTRANT | WQ_MEM_RECLAIM, 1);
-	if (!recovery_mgr->wq) {
-		WBERR("failed to alloc recovery wq");
-		r = -1;
-		goto error_finish;
-	}
-	INIT_WORK(&recovery_mgr->work, do_recovery_worker);
-
-	recovery_mgr->start_jiffies = jiffies;
-	recovery_mgr->end_jiffies = jiffies;
-
-	recovery_mgr->job_pool = mempool_create_kmalloc_pool(STRIPE_SZ,
-							    sizeof(struct recovery_job));
-	if (!recovery_mgr->job_pool) {
-		r = -ENOMEM;
-		WBERR("couldn't alloc flush job pool");
-		goto error_finish;
-	}
-
-	r = create_daemon(super, &recovery_mgr->daemon, recovery_proc, "recovery_daemon");
-	if(r) 
-		goto error_finish;
-
-	recovery_mgr->initialized = 1;
-
-error_finish:
-
-	return r;
-}
-
-void recovery_mgr_deinit(struct dmsrc_super *super){
-	struct recovery_manager *recovery_mgr = &super->recovery_mgr;
-
-	if(!recovery_mgr->initialized)
-		return;
-
-	while( atomic_read(&super->recovery_mgr.broken_block_count)){
-	//	printk(" Wating recovery proc... broken block = %d\n", 
-	//			(int)atomic_read(&super->recovery_mgr.broken_block_count));
-		schedule_timeout_interruptible(msecs_to_jiffies(1000));
-	}
-
-	flush_work(&recovery_mgr->work);
-	cancel_work_sync(&recovery_mgr->work);
-	destroy_workqueue(recovery_mgr->wq);
-	kthread_stop(recovery_mgr->daemon);
-	mempool_destroy(recovery_mgr->job_pool);
-}
-
 int flush_mgr_init(struct dmsrc_super *super){
 	struct flush_manager *flush_mgr = &super->flush_mgr;
 	int r = 0;
@@ -4635,14 +4400,6 @@ int flush_mgr_init(struct dmsrc_super *super){
 		WBERR("couldn't alloc flush job pool");
 		goto bad_init;
 	}
-
-	//flush_mgr->io_pool = mempool_create_kmalloc_pool(STRIPE_SZ,
-	//						    sizeof(struct summary_io_job));
-	//if (!flush_mgr->io_pool) {
-	//	r = -ENOMEM;
-	//	WBERR("couldn't alloc contex job pool");
-	//	goto bad_init;
-	//}
 
 	flush_mgr->initialized = 1;
 
@@ -4728,14 +4485,6 @@ int migrate_mgr_init(struct dmsrc_super *super){
 		goto bad_group_job_pool;
 	}
 
-	//migrate_mgr->mig_job_pool = mempool_create_kmalloc_pool(100,
-	//						    sizeof(struct mig_job));
-	//if (!migrate_mgr->mig_job_pool) {
-	//	r = -ENOMEM;
-	//	WBERR("couldn't alloc mig job pool");
-	//	goto bad_mig_job_pool;
-	//}
-
 	atomic_set(&migrate_mgr->copy_job_count, 0);
 	atomic_set(&migrate_mgr->group_job_count, 0);
 	atomic_set(&migrate_mgr->group_job_seq, 0);
@@ -4749,8 +4498,6 @@ int migrate_mgr_init(struct dmsrc_super *super){
 
 	return 0;
 
-//bad_mig_job_pool:
-//	mempool_destroy(migrate_mgr->group_job_pool);
 bad_group_job_pool:
 	mempool_destroy(migrate_mgr->copy_job_pool);
 bad_copy_job_pool:
@@ -5533,10 +5280,6 @@ int __must_check resume_managers(struct dmsrc_super *super)
 	if(r)
 		return r;
 
-	r = recovery_mgr_init(super); //-
-	if(r)
-		return r;
-
 	r = plugger_init(super); //-
 	if(r)
 		return r;
@@ -5606,8 +5349,6 @@ void stop_managers(struct dmsrc_super *super){
 
 	printk(" Stopping flush mgr \n");
 	flush_mgr_deinit(super);
-
-	recovery_mgr_deinit(super);
 
 	plugger_deinit(super);
 	printk(" Stopping read miss damone \n");

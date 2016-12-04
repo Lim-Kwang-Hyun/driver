@@ -1826,42 +1826,7 @@ int __must_check scan_metadata(struct dmsrc_super *super)
 	if(r)
 		return r;
 
-#if 0 
-	{
-		u32 seg_id;
-		struct segment_header *cur_seg;
-		for (seg_id = 0; seg_id < super->cache_stat.num_segments; seg_id++) {
-			cur_seg = get_segment_header_by_id(super, seg_id);
-
-			if(seg_id < 200){
-				if(test_bit(SEG_SEALED, &cur_seg->flags)){
-					printk(" scan sealed segment = %u (type%d), length = %d, valid = %d, dirty = %d, %d %d \n", 
-						seg_id, 
-						(u32)cur_seg->seg_type,
-						atomic_read(&cur_seg->length),
-						atomic_read(&cur_seg->valid_count),
-						atomic_read(&cur_seg->dirty_count),
-						(int)atomic_read(&cur_seg->num_filling),
-						(int)atomic_read(&cur_seg->num_read_inflight));
-				}else{
-					printk(" scan clean segment = %u (type%d), length = %d, valid = %d, dirty = %d, %d %d \n", 
-						seg_id, 
-						(u32)cur_seg->seg_type,
-						atomic_read(&cur_seg->length),
-						atomic_read(&cur_seg->valid_count),
-						atomic_read(&cur_seg->dirty_count),
-						(int)atomic_read(&cur_seg->num_filling),
-						(int)atomic_read(&cur_seg->num_read_inflight));
-
-				}
-			}
-		}
-	}
-#endif
-
-#if 1
 	mb_array_sanity_check(super);
-#endif
 
 	printk(" current util = %d \n", get_curr_util(super));
 
@@ -2421,32 +2386,3 @@ int create_daemon(struct dmsrc_super *super,
 	} while (0)
 
 
-
-#if 0
-void free_cache(struct dmsrc_super *super)
-{
-	int i;
-
-	read_miss_mgr_deinit(super);
-
-	recovery_mgr_deinit(super);
-
-	sync_mgr_deinit(super);
-
-	flush_mgr_deinit(super);
-
-	free_ht(super);
-	free_segment_header_array(super);
-
-	free_rambuf_pool(super);
-
-	for(i = 0;i < MAX_CACHE_DEVS;i++){
-		if(super->metablock_array[i]){
-			large_array_free(super->metablock_array[i]);
-		}
-	}
-
-	plugger_deinit(super);
-	degraded_mgr_deinit(super);
-}
-#endif
