@@ -2487,203 +2487,6 @@ int process_write_request(struct dmsrc_super *super,
 	return DM_MAPIO_SUBMITTED;
 }
 
-void do_degraded_worker(struct work_struct *work){
-	struct degraded_manager *degraded_mgr = container_of(work, struct degraded_manager, work);
-	struct dmsrc_super *super = degraded_mgr->super;
-	struct list_head degraded_local_head;
-	struct degraded_job *job, *job_tmp;
-	unsigned long flags;
-	struct bio *bio;
-	void *ptr;
-	void *srcs[MAX_CACHE_DEVS];
-	void *dst;
-	int i;
-
-
-	INIT_LIST_HEAD(&degraded_local_head);
-
-//	printk(" do degrade worker .... \n");
-
-	spin_lock_irqsave(&degraded_mgr->lock, flags);
-	list_for_each_entry_safe(job, job_tmp, &degraded_mgr->queue, degraded_list) {
-		list_move_tail(&job->degraded_list, &degraded_local_head);
-	}
-	spin_unlock_irqrestore(&degraded_mgr->lock, flags);
-
-
-	list_for_each_entry_safe(job, job_tmp, &degraded_local_head, degraded_list) {
-
-		list_del(&job->degraded_list);
-		bio = job->org_bio;
-		BUG_ON(bio_sectors(bio)!=SRC_SECTORS_PER_PAGE);
-		for(i = 0;i < NUM_DATA_SSD;i++){
-
-			srcs[i] = job->buf + SRC_PAGE_SIZE * i;
-#if 0 
-			u32 checksum;
-			struct metablock *read_mb;
-			u32 offset;
-			int j;
-
-			j = job->mb->idx % CHUNK_SZ;
-			offset = i*CHUNK_SZ+j;
-			read_mb = get_mb(super, job->seg->seg_id, offset);
-			if(i<2){
-				checksum = crc32_le(17, srcs[i], PAGE_SIZE);
-				if(checksum!=read_mb->checksum){
-					printk(" checksum mismatch 0\n");
-				}
-			}
-#endif 
-		}
-
-		dst = job->buf + NUM_DATA_SSD * SRC_PAGE_SIZE;
-		memset(dst, 0xFF, SRC_PAGE_SIZE);
-		//xor_blocks(NR_DATA_SSD, PAGE_SIZE, dst, srcs);
-		run_xor(srcs, dst, NUM_DATA_SSD, SRC_PAGE_SIZE);
-
-		ptr = bio_data(bio);
-		if(memcmp(ptr, dst, SRC_PAGE_SIZE)){
-			u32 checksum = crc32_le(CRC_SEED, ptr, SRC_PAGE_SIZE);
-
-			printk(" parity inconsistency \n");
-
-			if(checksum!=job->mb->checksum){
-				printk(" checksum mismatch 1\n");
-			}
-			checksum = crc32_le(CRC_SEED, dst, SRC_PAGE_SIZE);
-			if(checksum!=job->mb->checksum){
-				printk(" checksum mismatch 2 %u %u\n", checksum, job->mb->checksum);
-			}
-		}
-
-		BUG_ON(bio->bi_size!=SRC_PAGE_SIZE);
-		memcpy(ptr, dst, SRC_PAGE_SIZE);
-		
-		mempool_free(job->buf, degraded_mgr->buf_pool);
-		mempool_free(job, degraded_mgr->job_pool);
-
-		bio_endio(bio, 0);
-	}
-}
-
-
-static void degraded_io_complete(unsigned long error, void *__context)
-{
-	struct degraded_job *job = __context;
-	struct dmsrc_super *super = job->super;
-	struct degraded_manager *degraded_mgr = &super->degraded_mgr;
-	unsigned long flags;
-
-	if (error)
-		job->error = 1;
-
-	atomic_dec(&job->num_remaining_ios);
-
-	if(atomic_read(&job->num_remaining_ios)){
-		return;
-	}
-
-	spin_lock_irqsave(&degraded_mgr->lock, flags);
-	list_add_tail(&job->degraded_list, &degraded_mgr->queue);
-	spin_unlock_irqrestore(&degraded_mgr->lock, flags);
-
-	queue_work(degraded_mgr->wq, &degraded_mgr->work);
-
-	//printk(" degrade io complete \n");
-}
-
-void make_degraded_read(struct dmsrc_super *super, struct bio *bio, 
-				struct segment_header *seg, struct metablock *mb){
-	struct dm_io_region io;
-	struct dm_io_request io_req;
-	struct metablock *read_mb;
-	struct degraded_job *job;
-	u32 offset;
-	u32 mem_offset = 0;
-	int i;
-	void *buf;
-	struct degraded_manager *degraded_mgr = &super->degraded_mgr;
-
-	//printk(" make degraded read idx = %d \n", (int)mb->idx);
-
-	job = mempool_alloc(degraded_mgr->job_pool, GFP_NOIO);
-	buf = mempool_alloc(degraded_mgr->buf_pool, GFP_NOIO);
-	BUG_ON(!job);
-	BUG_ON(!buf);
-
-	job->super = super;
-	job->mb = mb;
-	job->seg = seg;
-	job->org_bio = bio;
-	atomic_set(&job->num_remaining_ios, NUM_SSD);
-	job->buf = buf;
-	job->error = 0;
-
-	for(i = 0;i < NUM_SSD;i++){
-		// for verify 
-		if(i==super->recovery_mgr.failure_ssd)
-			continue;
-	
-		offset = i*CHUNK_SZ+(mb->idx % CHUNK_SZ);
-	//	printk(" offset = %d \n", offset);
-		read_mb = get_mb(super, seg->seg_id, offset);
-
-		io_req.mem.type = DM_IO_KMEM;
-		io_req.mem.ptr.addr = buf + mem_offset;
-		mem_offset += SRC_PAGE_SIZE;
-
-		io_req.bi_rw = READ;
-		io_req.notify.fn = degraded_io_complete;
-		io_req.notify.context = job;
-		io_req.client = super->io_client;
-
-		io.bdev = get_bdev(super, offset);
-		io.sector = get_sector(super, seg->seg_id, offset);
-		io.count = SRC_SECTORS_PER_PAGE;
-	//	printk(" Read: seg = %d, devno = %d, sector = %d \n", (int)seg->seg_id, (int)get_devno(super, calc_mb_start_sector(super, seg, read_mb->idx)), (int)io.sector); 
-
-		dmsrc_io(&io_req, 1, &io, NULL);
-	}
-
-	io_req.mem.type = DM_IO_BVEC;
-	io_req.mem.ptr.bvec = bio->bi_io_vec + bio->bi_idx;
-	io_req.bi_rw = READ;
-	io_req.notify.fn = degraded_io_complete;
-	io_req.notify.context = job;
-	io_req.client = super->io_client;
-
-	io.bdev = get_bdev(super, mb->idx);
-	io.sector = get_sector(super, seg->seg_id, mb->idx);
-	io.count = SRC_SECTORS_PER_PAGE;
-	dmsrc_io(&io_req, 1, &io, NULL);
-}
-
-#if 0 
-void print_inode(struct dmsrc_super *super, struct bio *bio){
-	struct bio_vec *bvec = bio->bi_io_vec + bio->bi_idx;
-	struct page *page = bvec->bv_page;
-	struct dm_dev *origin_dev = super->dev_info.origin_dev;
-	//struct block_device *bdev = dev->bdev;
-
-
-#if 0 
-	if(page && page_has_buffers(page)){
-		struct address_space *mapping = page->mapping;
-		struct inode *host = mapping->host;
-		struct inode *inode = bdev->bd_inode;
-
-		printk(" offset = %d \n", (int) page->index);
-		if(host)
-			printk(" inode ino = %lu, %lu %lu\n", host->i_ino, inode->i_ino, inode->i_size);
-	//	find_get_page
-
-	}
-#endif
-
-	printk(" pid = %d %s\n", current->pid, current->comm);
-}
-#endif 
 
 static int process_read_miss_request(struct dmsrc_super *super, struct bio *bio, unsigned long f){
 	struct dm_dev *origin_dev = super->dev_info.origin_dev;
@@ -2729,7 +2532,6 @@ static int process_read_hit_request(struct dmsrc_super *super, struct bio *bio,
 		printk(" read hit: partial read: sector %d offset = %d, size = %d \n", (int)bio->bi_sector, tmp32,
 				bio->bi_size);
 		printk(" read hit: partial read: mb->idx %d \n", mb->idx);
-	//	BUG_ON(1);
 	}
 
 	bio_remap(bio,
@@ -2737,21 +2539,7 @@ static int process_read_hit_request(struct dmsrc_super *super, struct bio *bio,
 			  get_sector(super, seg->seg_id, mb->idx)
 			  + tmp32);
 
-	if(atomic_read(&super->degraded_mode) && test_bit(MB_BROKEN, &mb->mb_flags)){
-		BUG_ON(!test_bit(MB_DIRTY, &mb->mb_flags));
-		BUG_ON(bio->bi_size!=SRC_PAGE_SIZE);
-		//printk(" require reconstruct request \n");
-
-		if(test_bit(SEG_SEALED, &seg->flags)){
-			make_degraded_read(super, bio, seg, mb);
-		}else{
-			printk(" seg is not sealed ... \n");
-			generic_make_request(bio);
-		}
-	}else{
-		generic_make_request(bio);
-	}
-
+	generic_make_request(bio);
 
 	return DM_MAPIO_SUBMITTED;
 }
@@ -4767,58 +4555,6 @@ void seg_allocator_init(struct dmsrc_super *super){
 	seg_allocator->seg_sealed_count = 0;
 }
 
-int degraded_mgr_init(struct dmsrc_super *super){
-	struct degraded_manager *degraded_mgr = &super->degraded_mgr;
-	int r = 0;
-
-	degraded_mgr->buf_pool = mempool_create_kmalloc_pool(16, 
-			NUM_SSD * (1 << PAGE_SHIFT));
-	if (!degraded_mgr->buf_pool) {
-		r = -ENOMEM;
-		WBERR("couldn't alloc 8 sector pool");
-		goto bad_init;;
-	}
-
-	degraded_mgr->job_pool = mempool_create_kmalloc_pool(STRIPE_SZ,
-							    sizeof(struct degraded_job));
-	if (!degraded_mgr->job_pool) {
-		r = -ENOMEM;
-		WBERR("couldn't alloc flush job pool");
-		goto bad_init;;
-	}
-
-	spin_lock_init(&degraded_mgr->lock);
-	INIT_LIST_HEAD(&degraded_mgr->queue);
-	degraded_mgr->wq = alloc_workqueue("degraded_wq",
-				     WQ_NON_REENTRANT | WQ_MEM_RECLAIM, 1);
-	if (!degraded_mgr->wq) {
-		WBERR("failed to alloc recovery wq");
-		r = -1;
-		goto bad_init;;
-	}
-
-	INIT_WORK(&degraded_mgr->work, do_degraded_worker);
-	
-	degraded_mgr->initialized = 1;
-
-	return r;
-
-bad_init:
-
-	return r;
-}
-
-void degraded_mgr_deinit(struct dmsrc_super *super){
-	struct degraded_manager *degraded_mgr = &super->degraded_mgr;
-
-	if(!degraded_mgr->initialized)
-		return;
-
-	flush_work(&degraded_mgr->work);
-	cancel_work_sync(&degraded_mgr->work);
-	mempool_destroy(degraded_mgr->buf_pool);
-	mempool_destroy(degraded_mgr->job_pool);
-}
 
 int recovery_mgr_init(struct dmsrc_super *super){
 	int r = 0;
@@ -5787,10 +5523,6 @@ int __must_check resume_managers(struct dmsrc_super *super)
 	if(r)
 		return r;
 
-	r = degraded_mgr_init(super); //-
-	if(r)
-		return r;
-
 	/* Migration Worker */
 	r = migrate_mgr_init(super);
 	if(r)
@@ -5875,8 +5607,6 @@ void stop_managers(struct dmsrc_super *super){
 	printk(" Stopping flush mgr \n");
 	flush_mgr_deinit(super);
 
-
-	degraded_mgr_deinit(super);
 	recovery_mgr_deinit(super);
 
 	plugger_deinit(super);

@@ -36,46 +36,6 @@ void update_plug_deadline(struct dmsrc_super *super)
 	  jiffies + usecs_to_jiffies(ACCESS_ONCE(super->plugger.deadline_us)));
 }
 
-#if 0
-void check_plug_proc(struct dmsrc_super *super, 
-		struct segment_header *seg, 
-		struct rambuffer *rambuf, 
-		int force, 
-		int devno){
-
-	//struct blk_plug plug;
-	int count = 0;
-	int i;
-	int full = 0;
-
-	if(atomic_read(&rambuf->bios_count[devno])) {
-		if(force){
-			count = 1;
-			full = 1;
-		}else{
-			if(atomic_read(&rambuf->bios_count[devno]) >= CHUNK_SZ){
-				count = 1;
-				full = 1;
-			}
-		}
-	}
-
-	if(1){
-		int count = 0;
-		unsigned long f;
-
-		spin_lock_irqsave(&rambuf->lock, f);
-		for(i = (int)atomic_read(&rambuf->bios_start[devno]);
-			i < (int)atomic_read(&rambuf->bios_count[devno]);
-			i++)
-		{
-			count++;
-		}
-		spin_unlock_irqrestore(&rambuf->lock, f);
-		printk(" dev = %d, count = %d \n", devno, count);
-	}
-}
-#endif
 
 int flush_plug_proc(struct dmsrc_super *super, 
 		struct segment_header *seg, 
@@ -149,24 +109,6 @@ int flush_plug_proc(struct dmsrc_super *super,
 	return count;
 }
 
-#if 0
-void plug_proc(struct work_struct *work)
-{
-	struct plugging_manager *plugger = container_of(work, struct plugging_manager, work);
-	//struct dmsrc_super *super = plugger->super;
-
-#if 0
-	printk(" plug proc ... %d\n", atomic_read(&plugger->total_length));
-
-	for(i = 0;i < NUM_SSD;i++){
-		printk(" plug proc ssd = %d \n", i);
-		flush_plug_proc(super, seg, rambuf, 0, 1, i);
-	}	
-#endif
-
-	printk(" end plug proc ... %d \n", atomic_read(&plugger->total_length));
-}
-#endif
 
 void plug_deadline_proc(unsigned long data)
 {
@@ -3046,73 +2988,6 @@ retry:;
 }
 
 
-#if 0 
-static void update_superblock_record(struct dmsrc_super *super)
-{
-	int r;
-	struct superblock_record_device o;
-	void *buf;
-	struct dm_io_request io_req;
-	struct dm_io_region region;
-
-	o.last_migrated_segment_id =
-		cpu_to_le64(atomic64_read(&super->last_migrated_segment_id));
-
-	buf = mempool_alloc(super->buf_1_pool, GFP_NOIO | __GFP_ZERO);
-	memcpy(buf, &o, sizeof(o));
-
-	io_req = (struct dm_io_request) {
-		.client = super_io_client,
-		.bi_rw = WRITE_FUA,
-		.notify.fn = NULL,
-		.mem.type = DM_IO_KMEM,
-		.mem.ptr.addr = buf,
-	};
-	region = (struct dm_io_region) {
-		.bdev = super->cache_dev[0]->bdev,
-		.sector = (1 << 11) - 1,
-		.count = 1,
-	};
-
-#ifdef USE_RAID_FTL
-	//memset(buf, 0x00, 8);
-#endif 
-	IO(dmsrc_io(&io_req, 1, &region, NULL, 0));
-	mempool_free(buf, super->buf_1_pool);
-}
-#endif 
-
-#if 0 
-int recorder_proc(void *data)
-{
-	struct dmsrc_super *super = data;
-
-	unsigned long intvl;
-
-	while (!kthread_should_stop()) {
-		//stop_on_dead();
-
-		/* sec -> ms */
-		intvl = ACCESS_ONCE(super->param.update_record_interval) * 1000;
-
-		if (!intvl) {
-			schedule_timeout_interruptible(msecs_to_jiffies(1000));
-			continue;
-		}
-
-		//update_superblock_record(super);
-
-		schedule_timeout_interruptible(msecs_to_jiffies(intvl));
-
-		if(atomic64_read(&super->pending_io_count))
-			queue_work(super->pending_wq, &super->pending_work);
-
-		//printk(" update super .. \n");
-		//queue_work(super->read_caching_wq, &wb->read_caching_work);
-	}
-	return 0;
-}
-#endif
 
 int checker_proc(void *data)
 {
@@ -3328,26 +3203,3 @@ void sync_proc(struct work_struct *work)
 	//spin_unlock_irqrestore(&sync_mgr->lock, flags);
 }
 
-#if 0 
-void readdone_noirq(int *dst_count, struct dm_io_region *dst,
-						void *context, struct page_list *pages) 
-{
-	struct copy_job *cp_job = (struct copy_job *) context;
-	struct mig_job *mg_job = cp_job->mg_job;
-	struct dmsrc_super *super = mg_job->wb;
-	struct segment_header *seg;
-	struct rambuffer *rambuf;
-	unsigned int mb_idx;
-
-	struct page *page = pages->page;
-	void *src = kmap_atomic(page);
-
-	seg = get_seg_by_mb(super, cp_job->dst_mb);
-	mb_idx = cp_job->dst_mb->idx;
-	rambuf = cp_job->dst_rambuf;
-
-	update_data_in_mb(super, mb_idx, seg, rambuf, NULL, seg->seg_type, src);
-
-	kunmap_atomic(src);
-}
-#endif 

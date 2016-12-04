@@ -113,4 +113,4 @@ __attribute__((section(".modinfo"))) =
 "depends=dm-mod,raid6_pq,xor";
 
 
-MODULE_INFO(srcversion, "515B1E66FFC7B1BB17CA45C");
+MODULE_INFO(srcversion, "1B8DE8C19687085BCBDABC2");

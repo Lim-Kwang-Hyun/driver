@@ -36,28 +36,6 @@
 #include "metadata.h"
 #include "daemon.h"
 
-#if 0 
-int dev_start(struct dmsrc_super *super, u64 seg_id){
-
-	sector_t sector = seg_id * STRIPE_SZ_SECTOR;
-	int req_dev;
-
-	if(NO_USE_ERASURE_CODE(&super->param)){
-		return 0;
-	}else if(USE_ERASURE_PARITY(&super->param)){
-		raid5_calc_sector(&super->raid_conf, sector, 0, &req_dev, NULL, NULL);
-	}else if(USE_ERASURE_RAID6(&super->param)){
-		raid5_calc_sector(&super->raid_conf, sector, 0, &req_dev, NULL, NULL);
-	}
-	return req_dev;
-}
-
-
-int cursor_start(struct dmsrc_super *super, u64 seg_id){
-	int start = dev_start(super, seg_id);
-	return start * CHUNK_SZ;
-}
-#endif
 
 int multi_allocator_init(struct dmsrc_super *super){
 	int i, j;
