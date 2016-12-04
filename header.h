@@ -231,7 +231,7 @@ struct metablock_device {
 //#define USE_RAID_FTL
 //#define USE_DIRECT_PARITY
 //#define USE_CHECKSUM
-#define USE_GHOST_BUFFER
+/*-#define USE_GHOST_BUFFER-*/
 #define USE_PENDING_WORKER
 
 #define USE_LAST_SUMMARY	0

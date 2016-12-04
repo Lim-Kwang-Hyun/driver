@@ -46,7 +46,6 @@ __attribute__((section("__versions"))) = {
 	{ 0x9e4faeef, __VMLINUX_SYMBOL_STR(dm_io_client_destroy) },
 	{ 0xf432dd3d, __VMLINUX_SYMBOL_STR(__init_waitqueue_head) },
 	{ 0xfdfcb8cb, __VMLINUX_SYMBOL_STR(raid6_call) },
-	{ 0xfb578fc5, __VMLINUX_SYMBOL_STR(memset) },
 	{ 0xe988104b, __VMLINUX_SYMBOL_STR(dm_set_target_max_io_len) },
 	{ 0x8f64aa4, __VMLINUX_SYMBOL_STR(_raw_spin_unlock_irqrestore) },
 	{ 0xcff55457, __VMLINUX_SYMBOL_STR(current_task) },
@@ -107,4 +106,4 @@ __attribute__((section(".modinfo"))) =
 "depends=dm-mod,raid6_pq,xor";
 
 
-MODULE_INFO(srcversion, "B6A6965D1AFFEC9BABE34F8");
+MODULE_INFO(srcversion, "2DC8D2F66D3933047594ED8");

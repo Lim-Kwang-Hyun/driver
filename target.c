@@ -2585,69 +2585,6 @@ do_bypass:
 	return 0;
 }
 
-#if 0 
-int try_get_free_segment(struct dmsrc_super *super, bool found, int rw){
-	int cache_type;
-
-	if(super->param->striping_policy==MIXED_STRIPING)
-		rw = 1;
-
-	if(rw){ // write cache
-		cache_type = superUF;
-	}else{ // read cache 
-		cache_type =RBUF;
-	}
-
-	if(should_need_refresh_seg(super, rw)){
-		if(can_get_free_segment(super, cache_type)){
-			BUG_ON(atomic_read(&super->rambuf_inactive_count)==0);
-			alloc_new_segment(super, cache_type, false);
-		}else{
-			return -1;
-		}
-	}
-
-	return 0;
-}
-#endif 
-
-
-#if 0
-int update_ghost_buffer(struct dmsrc_super *super, sector_t sector, int is_write, int *is_hot){
-	struct cache_manager *lru_manager = super->lru_manager;
-	struct lru_node *ln = NULL;
-
-	ln = CACHE_SEARCH(lru_manager, sector);
-	if(!ln){
-		ln = CACHE_REPLACE(lru_manager, 0);
-		ln = CACHE_ALLOC(lru_manager, ln, sector);
-		CACHE_INSERT(lru_manager, ln);
-		*is_hot = 0;
-	}else{
-		*is_hot = 1;
-		ln = CACHE_REMOVE(lru_manager, ln);
-		CACHE_INSERT(lru_manager, ln);
-		if(is_write)
-			ln->cn_write_hit++;
-		else
-			ln->cn_read_hit++;
-	}
-	if(is_write)
-		ln->cn_write_ref++;
-	else
-		ln->cn_read_ref++;
-
-	if(is_write){
-		if(*is_hot)
-			return 1;
-	}else{
-		if(ln->cn_write_ref==0&&ln->cn_read_ref>1)
-			return 1;
-	}
-
-	return 0;
-}
-#endif 
 
 void update_stat(struct dmsrc_super *super, struct metablock *mb, int is_write){
 	super->wstat.count++;
@@ -3386,17 +3323,7 @@ static int dmsrc_map(struct dm_target *ti, struct bio *bio)
 	}
 
 	map_context->hot_io = 0;
-#if 1
-	if(super->param.hot_identification){
-		if(!map_context->seq_io){
-			unsigned int pageno = calc_cache_alignment(super, bio->bi_sector);
-			hot_filter_update(super, bio->bi_sector);
-			map_context->hot_io = hot_filter_check(super, pageno);
-		}
-	}else{
-		map_context->hot_io = 1;
-	}
-#endif
+
 
 	if(!bio_data_dir(bio)){
 		struct metablock *mb = NULL;
@@ -4636,109 +4563,6 @@ int devinfo_init(struct dmsrc_super *super, int num_ssd){
 	return r;
 }
 
-int hot_filter_check(struct dmsrc_super *super, unsigned int pageno){
-	struct hot_data_filter *hot_filter = &super->hot_filter;
-	unsigned long flags;
-	unsigned long *cur_bitmap_ptr;
-	unsigned int offset[8];
-	unsigned int hot_count = 0;
-	unsigned int i;
-
-	//printk(" check: pageno = %u \n",pageno);
-	offset[0] = crc32(17, (unsigned char *)&pageno, sizeof(unsigned int)) % hot_filter->num_bits_per_table; 
-	offset[1] = jhash_1word(pageno, 0xbeef) % hot_filter->num_bits_per_table;
-	offset[2] = hash_32(pageno, 32) % hot_filter->num_bits_per_table;
-
-	spin_lock_irqsave(&hot_filter->lock, flags);
-	for(i = 0;i < hot_filter->bitmap_table_num;i++){
-		cur_bitmap_ptr = hot_filter->bitmap[i];
-		if(test_bit(offset[0], cur_bitmap_ptr) && 
-			test_bit(offset[1], cur_bitmap_ptr) &&
-			test_bit(offset[2], cur_bitmap_ptr))
-		{
-			hot_count++;
-		}
-	}
-	spin_unlock_irqrestore(&hot_filter->lock, flags);
-
-	if(hot_count>=hot_filter->hot_threshold)
-		return 1;
-
-	return 0;
-
-}
-
-void hot_filter_update(struct dmsrc_super *super, unsigned int pageno){
-	struct hot_data_filter *hot_filter = &super->hot_filter;
-	unsigned long flags;
-	unsigned long *cur_bitmap;
-	unsigned int offset[8];
-
-	//printk(" update: pageno = %u \n",pageno);
-	offset[0] = crc32(17, (unsigned char *)&pageno, sizeof(unsigned int)) % hot_filter->num_bits_per_table; 
-	offset[1] = jhash_1word(pageno, 0xbeef) % hot_filter->num_bits_per_table;
-	offset[2] = hash_32(pageno, 32) % hot_filter->num_bits_per_table;
-
-	spin_lock_irqsave(&hot_filter->lock, flags);
-	cur_bitmap = hot_filter->bitmap[hot_filter->cur_table];
-	set_bit(offset[0], cur_bitmap);
-	set_bit(offset[1], cur_bitmap);
-	set_bit(offset[2], cur_bitmap);
-
-	hot_filter->io_count++;
-	if(hot_filter->io_count == hot_filter->decay_period){
-		hot_filter->io_count = 0;
-		hot_filter->cur_table = (hot_filter->cur_table + 1) % hot_filter->bitmap_table_num;
-		if(hot_filter->cur_table == hot_filter->last_table){
-			hot_filter->last_table = (hot_filter->last_table + 1) % hot_filter->bitmap_table_num;
-		}
-		memset(hot_filter->bitmap[hot_filter->cur_table], 0x00, hot_filter->num_bytes_per_table);
-	}
-	spin_unlock_irqrestore(&hot_filter->lock, flags);
-
-}
-
-#define ceil(n, d) (((n) < 0) ? (-((-(n))/(d))) : (n)/(d) + ((n)%(d) != 0))
-
-int hot_filter_init(struct dmsrc_super *super){
-	struct hot_data_filter *hot_filter = &super->hot_filter;
-	unsigned int i;
-
-	spin_lock_init(&hot_filter->lock);
-
-	hot_filter->cur_table = 0;
-	hot_filter->last_table = 0;
-	hot_filter->hash_num = 3;
-	hot_filter->hot_threshold = 2;
-	hot_filter->decay_period = NUM_BLOCKS/2;
-	//hot_filter->decay_period = 1024*256; //1GB
-	hot_filter->bitmap_table_num = MAX_BITMAP_TABLE;
-	hot_filter->num_bits_per_table = NUM_BLOCKS * hot_filter->hash_num;
-	hot_filter->num_bytes_per_table  = ceil(hot_filter->num_bits_per_table, 8);
-	printk(" num bits per table = %d \n", hot_filter->num_bits_per_table);
-
-	for(i = 0;i <hot_filter->bitmap_table_num;i++){
-		printk(" Hot Filter[%d]: bytes per table = %dKB \n", i, hot_filter->num_bytes_per_table/1024);
-		hot_filter->bitmap[i] = vmalloc(hot_filter->num_bytes_per_table);
-		if(!hot_filter->bitmap[i]){
-			printk(" vmalloc error \n");
-			return -1;
-		}
-		memset(hot_filter->bitmap[i], 0x00, hot_filter->num_bytes_per_table);
-	}
-
-	return 0;
-}
-
-void hot_filter_deinit(struct dmsrc_super *super){
-	struct hot_data_filter *hot_filter = &super->hot_filter;
-	unsigned int i;
-
-	for(i = 0;i <hot_filter->bitmap_table_num;i++){
-		if(hot_filter->bitmap[i])
-			vfree(hot_filter->bitmap[i]); 
-	}
-}
 
 #define CREATE_DAEMON(name) \
 	do { \
@@ -4873,14 +4697,6 @@ int __must_check resume_managers(struct dmsrc_super *super)
 		lru_init(&super->clean_dram_cache_manager, "LRU", super->param.rambuf_pool_amount, 1, 0);
 	}
 
-#ifdef USE_GHOST_BUFFER
-	if(super->param.hot_identification){ //-
-		//lru_init(&super->lru_manager, "LRU", NUM_BLOCKS, 1, 0);
-		r = hot_filter_init(super);
-		if(r)
-			return r;
-	}
-#endif
 
 	seg_allocator_init(super);
 	seq_detector_init(super); //-
@@ -4923,13 +4739,6 @@ void stop_managers(struct dmsrc_super *super){
 			lru_deinit(super->clean_dram_cache_manager);
 	}
 
-#ifdef USE_GHOST_BUFFER
-	if(super->param.hot_identification){
-		//if(super->lru_manager)
-		//	lru_deinit(super->lru_manager);
-		hot_filter_deinit(super);
-	}
-#endif 
 	printk(" Stopping all manages \n");
 }
 
