@@ -37,7 +37,7 @@ CHUNK_SZ	target.h	54;"	d
 CHUNK_SZ_SECTOR	target.h	55;"	d
 CRC_SEED	target.h	45;"	d
 CREATE_DAEMON	metadata.c	2375;"	d	file:
-CREATE_DAEMON	target.c	4743;"	d	file:
+CREATE_DAEMON	target.c	4207;"	d	file:
 DATA_ALLOC_FLEX_HORI	header.h	160;"	d
 DATA_ALLOC_FLEX_VERT	header.h	159;"	d
 DATA_ALLOC_HORI	header.h	158;"	d
@@ -95,7 +95,7 @@ NR_STRIPE_HASH_LOCKS	raid.h	29;"	d
 NUM_BLOCKS	target.h	50;"	d
 NUM_BLOCKS_PER_SSD	target.h	52;"	d
 NUM_DATA_SSD	target.h	48;"	d
-NUM_DISKS	target.c	3925;"	d	file:
+NUM_DISKS	target.c	3504;"	d	file:
 NUM_ENTRY_PER_PAGE	header.h	246;"	d
 NUM_GC_THREAD	header.h	183;"	d
 NUM_SSD	target.h	47;"	d
@@ -152,7 +152,7 @@ SEPAR_STRIPING	header.h	163;"	d
 SEQ_CUTOFF	target.h	78;"	d
 SEQ_CUTOFF_MAX	target.h	80;"	d
 SEQ_CUTOFF_MIN	target.h	79;"	d
-SRC_LEN	target.c	3975;"	d	file:
+SRC_LEN	target.c	3554;"	d	file:
 SRC_MAGIC	header.h	55;"	d
 SRC_PAGE_SIZE	header.h	227;"	d
 SRC_SECTORS_PER_PAGE	header.h	228;"	d
@@ -172,7 +172,6 @@ USE_ERASURE_CODE	target.h	68;"	d
 USE_ERASURE_PARITY	target.h	69;"	d
 USE_ERASURE_RAID6	target.h	70;"	d
 USE_FIRST_SUMMARY	header.h	238;"	d
-USE_GHOST_BUFFER	header.h	234;"	d
 USE_LAST_SUMMARY	header.h	237;"	d
 USE_PENDING_WORKER	header.h	235;"	d
 USE_SEG_WRITER	header.h	249;"	d
@@ -208,7 +207,6 @@ active_page_count	target.h	/^	atomic_t active_page_count;$/;"	m	struct:segbuf_ma
 active_page_list	target.h	/^	struct list_head active_page_list;$/;"	m	struct:segbuf_manager	typeref:struct:segbuf_manager::list_head
 active_stripes	raid.h	/^	atomic_t		active_stripes;$/;"	m	struct:r5conf
 active_total_count	target.h	/^	atomic_t active_total_count;$/;"	m	struct:segbuf_manager
-add_sequential	target.c	/^static void add_sequential(struct task_struct *t)$/;"	f	file:
 algorithm	raid.h	/^	int			level, algorithm;$/;"	m	struct:r5conf
 aligned_io_dummy	header.h	/^	__u32 aligned_io_dummy;$/;"	m	struct:superblock_device
 aligned_io_dummy	target.h	/^	u32 aligned_io_dummy;$/;"	m	struct:dmsrc_param
@@ -305,7 +303,6 @@ calc_num_chunks	metadata.c	/^u32 calc_num_chunks(struct dm_dev *dev, struct dmsr
 calc_segment_header_start	metadata.c	/^static sector_t calc_segment_header_start(struct dmsrc_super *super,$/;"	f	file:
 calc_valid_count	daemon.c	/^int calc_valid_count(struct dmsrc_super *super, struct segment_header *seg, int use_gc){$/;"	f
 can_get_free_segment	target.c	/^inline int can_get_free_segment(struct dmsrc_super *super, int cache_type, int gc){$/;"	f
-ceil	target.c	4701;"	d	file:
 change_seg_status	target.c	/^int change_seg_status(struct dmsrc_super *super, struct segment_header *seg, int seg_length, int force_seal){$/;"	f
 check_dirty_count	metadata.c	/^int check_dirty_count(struct dmsrc_super *super, struct segment_header *cur_seg){$/;"	f
 check_rambuf_pool	metadata.c	/^int check_rambuf_pool(struct dmsrc_super *super){$/;"	f
@@ -359,8 +356,8 @@ complete_count	target.h	/^	atomic_t complete_count;$/;"	m	struct:scan_metadata_m
 complete_queue	target.h	/^	struct list_head complete_queue;$/;"	m	struct:scan_metadata_manager	typeref:struct:scan_metadata_manager::list_head
 construct_metadata_in_ram	metadata.c	/^int construct_metadata_in_ram(struct dmsrc_super *super){$/;"	f
 consume_essential_argv	target.c	/^static int consume_essential_argv(struct dmsrc_super *super, unsigned int argc, char **argv)$/;"	f	file:
-consume_kv	target.c	3720;"	d	file:
-consume_kv_str	target.c	3731;"	d	file:
+consume_kv	target.c	3299;"	d	file:
+consume_kv_str	target.c	3310;"	d	file:
 copy_job	target.h	/^struct copy_job{$/;"	s
 copy_job_count	target.h	/^	atomic_t copy_job_count;$/;"	m	struct:migration_manager
 copy_job_group	target.h	/^struct copy_job_group{$/;"	s
@@ -408,7 +405,6 @@ degraded_mode	target.h	/^	atomic_t degraded_mode;$/;"	m	struct:dmsrc_super
 delayed_list	raid.h	/^	struct list_head	delayed_list; \/* stripes that have plugged requests *\/$/;"	m	struct:r5conf	typeref:struct:r5conf::list_head
 destage_count	target.h	/^	atomic_t destage_count;$/;"	m	struct:super_stat
 destage_io_count	target.h	/^	atomic64_t destage_io_count;$/;"	m	struct:super_stat
-detect_sequential_io	target.c	/^bool detect_sequential_io(struct dmsrc_super *super, struct bio *bio){$/;"	f
 dev_info	target.h	/^	struct device_info dev_info;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::device_info
 device_info	target.h	/^struct device_info{$/;"	s
 device_lock	raid.h	/^	spinlock_t		device_lock;$/;"	m	struct:r5conf
@@ -463,7 +459,6 @@ error	target.h	/^	int error;$/;"	m	struct:copy_job_group
 error	target.h	/^	int error;$/;"	m	struct:degraded_job
 error	target.h	/^	int error;$/;"	m	struct:recovery_job
 error	target.h	/^	int error;$/;"	m	struct:wb_job
-ewma_add	target.c	2373;"	d	file:
 failure_ssd	target.h	/^	int failure_ssd;$/;"	m	struct:recovery_manager
 finalize_clean_seg	daemon.c	/^void finalize_clean_seg(struct dmsrc_super *super, struct segment_header *seg, int cleanup){$/;"	f
 flags	target.h	/^	unsigned long flags;$/;"	m	struct:segment_header
@@ -574,10 +569,6 @@ hot_clean_count	target.h	/^	atomic_t hot_clean_count;$/;"	m	struct:segment_heade
 hot_count	target.h	/^	atomic_t hot_count;$/;"	m	struct:segment_header
 hot_data_filter	target.h	/^struct hot_data_filter{$/;"	s
 hot_filter	target.h	/^	struct hot_data_filter hot_filter;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::hot_data_filter
-hot_filter_check	target.c	/^int hot_filter_check(struct dmsrc_super *super, unsigned int pageno){$/;"	f
-hot_filter_deinit	target.c	/^void hot_filter_deinit(struct dmsrc_super *super){$/;"	f
-hot_filter_init	target.c	/^int hot_filter_init(struct dmsrc_super *super){$/;"	f
-hot_filter_update	target.c	/^void hot_filter_update(struct dmsrc_super *super, unsigned int pageno){$/;"	f
 hot_identification	header.h	/^	__u32 hot_identification;$/;"	m	struct:superblock_device
 hot_identification	target.h	/^	u32 hot_identification;$/;"	m	struct:dmsrc_param
 hot_io	target.h	/^	int hot_io;$/;"	m	struct:bio_ctx
@@ -646,7 +637,6 @@ io_lock	target.h	/^	spinlock_t io_lock;$/;"	m	struct:dmsrc_super
 io_lru	target.h	/^	struct list_head	io_lru;$/;"	m	struct:seq_io_detector	typeref:struct:seq_io_detector::list_head
 io_req	target.h	/^	struct dm_io_request io_req;$/;"	m	struct:copy_job	typeref:struct:copy_job::dm_io_request
 io_stat_t	target.h	/^struct io_stat_t{$/;"	s
-iohash	target.c	/^static struct hlist_head *iohash(struct seq_io_detector *dc, uint64_t k)$/;"	f	file:
 iolock	target.h	886;"	d
 iops	target.h	/^	atomic64_t iops[REQ_CATEGORY_NUM][REQ_TYPE_NUM];$/;"	m	struct:io_stat_t
 iostat	target.h	/^	struct io_stat_t iostat[MAX_WINDOW_NUM];$/;"	m	struct:workload_predictor	typeref:struct:workload_predictor::io_stat_t
@@ -1001,7 +991,6 @@ select_victim_segs	daemon.c	/^int select_victim_segs(struct dmsrc_super *super, 
 seq	target.h	/^	int seq;$/;"	m	struct:copy_job_group
 seq_bypass_count	target.h	/^	atomic_t seq_bypass_count;$/;"	m	struct:super_stat
 seq_detector	target.h	/^	struct seq_io_detector seq_detector;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::seq_io_detector
-seq_detector_init	target.c	/^static void seq_detector_init(struct dmsrc_super *super){$/;"	f	file:
 seq_flush	raid.h	/^	int			seq_flush, seq_write;$/;"	m	struct:r5conf
 seq_io	target.h	/^	int seq_io;$/;"	m	struct:bio_ctx
 seq_io_detector	target.h	/^struct seq_io_detector{$/;"	s
@@ -1013,7 +1002,6 @@ sequential	target.h	/^	unsigned		sequential;$/;"	m	struct:io
 sequential_cutoff	target.h	/^	unsigned		sequential_cutoff;$/;"	m	struct:dmsrc_param
 sequential_enable	target.h	/^	unsigned 		sequential_enable;$/;"	m	struct:dmsrc_param
 set_default_param	target.c	/^static void set_default_param(struct dmsrc_super *super, struct dmsrc_param *param){$/;"	f	file:
-should_bypass_bio	target.c	/^int should_bypass_bio(struct dmsrc_super *super, $/;"	f
 should_need_refresh_seg	target.c	/^inline bool should_need_refresh_seg(struct dmsrc_super *super, int cache_type){$/;"	f
 skewed_segment	target.h	/^	atomic_t skewed_segment;$/;"	m	struct:group_header
 slab_cache	raid.h	/^	struct kmem_cache		*slab_cache; \/* for allocating stripes *\/$/;"	m	struct:r5conf	typeref:struct:r5conf::kmem_cache

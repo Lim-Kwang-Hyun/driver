@@ -1814,44 +1814,6 @@ static void writeback_endio_extent(unsigned long error, void *context)
 	//pending_worker_schedule(super);
 }
 
-#if 0
-static void writeback_endio(unsigned long error, void *context)
-{
-	struct wb_job *job = context;
-	struct dmsrc_super *super = job->super;
-	struct segment_header *seg = job->seg;
-	struct metablock *mb = job->mb;
-	struct bio *bio = job->bio;
-
-	if(error){
-		printk(" Writeback: end io error \n");
-	}
-
-	if(job->bio){
-		atomic_dec(&super->cache_stat.inflight_bios);
-		bio_endio(bio, 0);
-		job->bio = NULL;
-	}
-
-	if(job->rambuf && atomic_read(&job->rambuf_release)){
-		//printk(" writeback seg = %d ram refcount = %d \n", (int)seg->seg_id, atomic_read(&job->rambuf->ref_count));
-		if(atomic_dec_and_test(&job->rambuf->ref_count)){
-		//	printk(" >>>writeback end seg id %d ram refcount = %d \n", (int)seg->seg_id, atomic_read(&job->rambuf->ref_count));
-			release_rambuffer(super, job->rambuf, seg->seg_type);
-		}
-		if(atomic_read(&job->rambuf->ref_count)<0){
-			printk(" Invalid!! parity end io ram refcount = %d, id = %d \n", 
-					atomic_read(&job->rambuf->ref_count), 
-					job->rambuf->rambuf_id);
-		}
-	}
-
-	set_bit(MB_SEAL, &mb->mb_flags);
-	mempool_free(job, super->pending_mgr.wb_job_pool);
-
-	//pending_worker_schedule(super);
-}
-#endif 
 
 inline struct dm_dev *get_dmdev(struct dmsrc_super *super, u32 idx){
 	int dev_no;
@@ -2177,7 +2139,7 @@ int process_write_request(struct dmsrc_super *super,
 	return DM_MAPIO_SUBMITTED;
 }
 
-
+/*-
 static int process_read_miss_request(struct dmsrc_super *super, struct bio *bio, unsigned long f){
 	struct dm_dev *origin_dev = super->dev_info.origin_dev;
 
@@ -2189,6 +2151,7 @@ static int process_read_miss_request(struct dmsrc_super *super, struct bio *bio,
 	return DM_MAPIO_SUBMITTED;
 
 }
+-*/
 
 static int process_read_hit_request(struct dmsrc_super *super, struct bio *bio,
 		struct segment_header *seg,
@@ -2283,7 +2246,7 @@ int try_wait_free_seg(struct dmsrc_super *super, int cache_type){
 	return 0;
 }
 
-
+/*-
 int should_bypass_bio(struct dmsrc_super *super, 
 		struct segment_header *seg, 
 		struct metablock *mb, 
@@ -2363,6 +2326,7 @@ do_bypass:
 
 	return 0;
 }
+-*/
 
 
 void update_stat(struct dmsrc_super *super, struct metablock *mb, int is_write){
@@ -2396,42 +2360,22 @@ static int preprocess_pending_bio(struct dmsrc_super *super,
 			goto pending_process;
 		}
 
-		if(unlikely(test_bit(SEG_PARTIAL, &seg->flags) ||
-					test_bit(SEG_RECOVERY, &seg->flags) )) 
-		{
-			res = RES_PARTIAL;
+		if(unlikely(!is_write && !test_bit(MB_SEAL, &mb->mb_flags))){
+			res = RES_SEAL;
 			goto pending_process;
+		
 		}
 
-		if(unlikely(!test_bit(MB_SEAL, &mb->mb_flags))){
-			if(!is_write){
-				res = RES_SEAL;
-				goto pending_process;
-			}//else{
-			//	printk(" mb write hit .... \n");
-			//}
-		}
-
-		if(unlikely(atomic_read(&super->resize_mode))){
-			goto pending_process;
-		}
 	}
-
+	/*-
 	if(unlikely(should_bypass_bio(super, seg, mb, bio, is_write) && 
 		!(bio->bi_rw & REQ_DISCARD))){
 		res = RES_BYPASS;
 		goto bypass_process;
 	}
+	-*/
 
-	//if(is_write || (!is_write && !mb)){
 	if(is_write){
-		if(super->current_group && atomic_read(&super->current_group->free_seg_count)==0){
-			if(should_need_refresh_seg(super, WCBUF) && 
-				!should_need_refresh_seg(super, RCBUF)){
-				printk(" * dirty seg write: need fill RCBUF with dummy ... \n");
-			}
-		}
-
 		if(try_wait_free_seg(super, WCBUF)){
 			res = RES_NOFREE1;
 			goto pending_process;
@@ -2442,35 +2386,14 @@ static int preprocess_pending_bio(struct dmsrc_super *super,
 
 pending_process:
 	return res;
-
+/*-
 bypass_process:
 	return res;
+-*/
 
 }
 
-#if 0
-int lookup_dram_cache(struct dmsrc_super *super, sector_t sector){
-	struct cache_manager *lru_manager = super->clean_dram_cache_manager;
-	struct lru_node *ln = NULL;
-
-	ln = CACHE_SEARCH(lru_manager, sector);
-	if(!ln){
-		ln = CACHE_REPLACE(lru_manager, 0);
-		ln = CACHE_ALLOC(lru_manager, ln, sector);
-		CACHE_INSERT(lru_manager, ln);
-		atomic_set(&ln->sealed, 0);
-	}else{
-		ln = CACHE_REMOVE(lru_manager, ln);
-		CACHE_INSERT(lru_manager, ln);
-		ln->cn_read_hit++;
-	}
-
-	ln->cn_read_ref++;
-
-	return 0;
-}
-#endif
-
+/*-
 static int process_read_request(struct dmsrc_super *super, struct segment_header *seg, 
 		struct metablock *mb, struct bio *bio, sector_t key, unsigned long f){
 	struct cache_manager *clean_cache = super->clean_dram_cache_manager;
@@ -2544,6 +2467,7 @@ static int process_read_request(struct dmsrc_super *super, struct segment_header
 	}
 
 }
+-*/
 
 static int map_pending_bio(struct dmsrc_super *super, struct bio *bio)
 {
@@ -2551,11 +2475,11 @@ static int map_pending_bio(struct dmsrc_super *super, struct bio *bio)
 	struct segment_header *seg = NULL;
 	struct metablock *mb = NULL;
 	struct bio_ctx *map_context = NULL;
-
+	/*
 	struct cache_manager *clean_cache = super->clean_dram_cache_manager;
 	struct lru_node *ln = NULL;
 	unsigned long lru_flags; 
-
+	*/
 	sector_t key;
 	int res = 0;
 	int is_write;
@@ -2591,10 +2515,14 @@ static int map_pending_bio(struct dmsrc_super *super, struct bio *bio)
 //			admit = 0;
 
 	res = preprocess_pending_bio(super, seg, bio, mb, is_write);
-	if(res && res < RES_BYPASS)
+	if(res == RES_MIG || res == RES_SEAL || res == RES_NOFREE1) 
 		goto pending_process;
+	/*-
 	else if(res == RES_BYPASS)
 		goto bypass_process;
+	-*/
+
+	/*-
 
 	if(super->param.enable_read_cache){
 		spin_lock_irqsave(&clean_cache->lock, lru_flags);
@@ -2637,20 +2565,11 @@ static int map_pending_bio(struct dmsrc_super *super, struct bio *bio)
 		}
 		spin_unlock_irqrestore(&clean_cache->lock, lru_flags);
 	}
+	-*/
 
-	if (!is_write) { // read cache 
-	//	if(admit){
-			return process_read_request(super, seg, mb, bio, key, f);
-	//	}else{ // no cache on read miss
-	//		if(mb){
-	//			return process_read_hit_request(super, bio, seg, mb, f);
-	//		}else{
-	//			UNLOCK(super, f);
-	//			bio_remap(bio, super->dev_info.origin_dev, bio->bi_sector);
-	//			generic_make_request(bio);
-	//			return DM_MAPIO_SUBMITTED;
-	//		}
-	//	}
+	if (unlikely(!is_write)) { // read cache 
+		/*-return process_read_request(super, seg, mb, bio, key, f);-*/
+		return process_read_hit_request(super, bio, seg, mb, f);
 	}
 
 	map_context->inflight = 1;
@@ -2663,30 +2582,19 @@ static int map_pending_bio(struct dmsrc_super *super, struct bio *bio)
 		invalidate_previous_cache(super, seg, mb);
 	}
 
-	//if(!mb && !admit){ // no hit && no admission
-	//	BUG_ON(1);
-	//	UNLOCK(super, f);
-	//	bio_remap(bio, super->dev_info.origin_dev, bio->bi_sector);
-	//	generic_make_request(bio);
-	//	return DM_MAPIO_SUBMITTED;
-	//}else{
-	//	BUG_ON(atomic_read(&super->degraded_mode));
-#if 1
-		return process_write_request(super, bio, bio_page(bio), key, 1, f, WCBUF, map_context->crc32);
-#else
-		bio_endio(bio, 0);
-#endif 
-	//}
+	return process_write_request(super, bio, bio_page(bio), key, 1, f, WCBUF, map_context->crc32);
+
 
 pending_process:
 	UNLOCK(super, f);
 	return -res;
-
+/*-
 bypass_process:
 	UNLOCK(super, f);
 	bio_remap(bio, super->dev_info.origin_dev, bio->bi_sector);
 	generic_make_request(bio);
 	return DM_MAPIO_SUBMITTED;
+-*/
 }
 
 void pending_bio_add(struct dmsrc_super *super, struct bio *bio){
@@ -2994,10 +2902,10 @@ void pending_worker(struct work_struct *work){
 		}
 
 
-		clean_write_count += try_clean_seg_write(super);
+		//clean_write_count += try_clean_seg_write(super);
 	}
 
-	clean_write_count += try_clean_seg_write(super);
+	//clean_write_count += try_clean_seg_write(super);
 
 	if(local_count){
 		//debug 
@@ -3025,9 +2933,6 @@ void pending_worker(struct work_struct *work){
 		//printk(" partial seg length = %d \n", get_partial_seg_length(super, WCBUF));
 
 	}
-	//printk(" pending worker sleep ... queue = %d \n", (int)atomic64_read(&super->pending_mgr.io_count));
-//	flush_pending_bios(super);
-
 }
 
 
@@ -3039,16 +2944,14 @@ static int dmsrc_map(struct dm_target *ti, struct bio *bio)
 	bool bio_fullsize;
 	struct dmsrc_super *super = ti->private;
 	struct pending_manager *pending_mgr = &super->pending_mgr;
-#ifndef USE_PENDING_WORKER
-	int ret = 0;
-#endif
+
 
 	map_context = dm_per_bio_data(bio, ti->per_bio_data_size);
 	map_context->ptr = NULL;
 	map_context->inflight = 0;
 
 	if (bio->bi_rw & REQ_DISCARD) {
-		struct dm_dev *origin_dev = super->dev_info.origin_dev;
+		struct dm_dev *origin_dev = super->dev_info.origin_dev; /*- -*/
 		bio_remap(bio, origin_dev, bio->bi_sector);
 		printk(" WARN: discard command ... \n");
 		return DM_MAPIO_REMAPPED;
@@ -3056,16 +2959,9 @@ static int dmsrc_map(struct dm_target *ti, struct bio *bio)
 
 	/* It doesn't support REQ_FLUSH */
 	if (bio->bi_rw & REQ_FLUSH) {
-#if 0
-		BUG_ON(bio->bi_size);
-		bio_endio(bio, 0);
-		return DM_MAPIO_SUBMITTED;
-#else
 		queue_barrier_io(super, bio);
 		update_sync_deadline(super);
 		return DM_MAPIO_SUBMITTED;
-		//return DM_MAPIO_REMAPPED;
-#endif
 	}
 
 
@@ -3077,13 +2973,6 @@ static int dmsrc_map(struct dm_target *ti, struct bio *bio)
 		printk(" bio count = %d sectors \n", (int)bio_count);
 
 	map_context->seq_io = false;
-
-
-
-
-	if(map_context->seq_io){
-		atomic_inc(&super->wstat.bypass_write_count);
-	}
 
 	if(bio_data_dir(bio)){
 		void *ptr = kmap_atomic(bio_page(bio));
@@ -3105,6 +2994,11 @@ static int dmsrc_map(struct dm_target *ti, struct bio *bio)
 		LOCK(super, f);
 		mb = ht_lookup(super, key);
 		if (!mb) { // no ssd hit 
+			UNLOCK(super, f);
+			bio_remap(bio, super->dev_info.origin_dev, bio->bi_sector);
+			generic_make_request(bio);
+			return DM_MAPIO_SUBMITTED;
+			/*-
 			if(super->param.enable_read_cache){
 				struct cache_manager *clean_cache = super->clean_dram_cache_manager;
 				unsigned long lru_flags; 
@@ -3129,6 +3023,7 @@ static int dmsrc_map(struct dm_target *ti, struct bio *bio)
 				}
 				spin_unlock_irqrestore(&clean_cache->lock, lru_flags);
 			}
+			-*/
 			// goto pending manager 
 		}else{
 			seg = get_segment_header_by_mb_idx(super, mb->idx);
@@ -3144,23 +3039,8 @@ static int dmsrc_map(struct dm_target *ti, struct bio *bio)
 	}
 
 
-#ifdef USE_PENDING_WORKER
-	//hrtimer_try_to_cancel(&super->sync_mgr.hr_timer);
 	pending_bio_add(super, bio);
 	queue_work(pending_mgr->wq, &pending_mgr->work);
-	//printk(" queue: pending queue ... \n");
-#else
-	if(!atomic64_read(&pending_mgr->io_count)){
-		ret = map_pending_bio(super, bio);
-		if(ret<0){
-			pending_bio_add(super, bio);
-			queue_work(pending_mgr->wq, &pending_mgr->work);
-		}
-	}else{
-		pending_bio_add(super, bio);
-		queue_work(pending_mgr->wq, &pending_mgr->work);
-	}
-#endif 
 
 	return DM_MAPIO_SUBMITTED;
 }
@@ -4438,6 +4318,7 @@ int __must_check resume_managers(struct dmsrc_super *super)
 	r = read_miss_mgr_init(super); //-
 	if(r)
 		return r;
+	
 	
 
 	r = pending_mgr_init(super);
