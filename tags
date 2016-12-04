@@ -1,0 +1,1163 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+ALGORITHM_LEFT_ASYMMETRIC	alloc.h	32;"	d
+ALGORITHM_LEFT_ASYMMETRIC_6	alloc.h	65;"	d
+ALGORITHM_LEFT_SYMMETRIC	alloc.h	34;"	d
+ALGORITHM_LEFT_SYMMETRIC_6	alloc.h	67;"	d
+ALGORITHM_PARITY_0	alloc.h	40;"	d
+ALGORITHM_PARITY_0_6	alloc.h	69;"	d
+ALGORITHM_PARITY_N	alloc.h	41;"	d
+ALGORITHM_PARITY_N_6	alloc.h	70;"	d
+ALGORITHM_RIGHT_ASYMMETRIC	alloc.h	33;"	d
+ALGORITHM_RIGHT_ASYMMETRIC_6	alloc.h	66;"	d
+ALGORITHM_RIGHT_SYMMETRIC	alloc.h	35;"	d
+ALGORITHM_RIGHT_SYMMETRIC_6	alloc.h	68;"	d
+ALGORITHM_ROTATING_N_CONTINUE	alloc.h	57;"	d
+ALGORITHM_ROTATING_N_RESTART	alloc.h	56;"	d
+ALGORITHM_ROTATING_ZERO_RESTART	alloc.h	55;"	d
+ALIGNED_IO_DUMMY	header.h	153;"	d
+ALIGNED_IO_SKIP	header.h	154;"	d
+ALLOC_SIZE	metadata.h	38;"	d
+ASSERT	lru.c	29;"	d	file:
+CACHE_ALLOC	lru.h	91;"	d
+CACHE_CLOSE	lru.h	84;"	d
+CACHE_INSERT	lru.h	90;"	d
+CACHE_MOVEMRU	lru.h	88;"	d
+CACHE_OPEN	lru.h	83;"	d
+CACHE_PRESEARCH	lru.h	85;"	d
+CACHE_PRINT	lru.h	92;"	d
+CACHE_REMOVE	lru.h	89;"	d
+CACHE_REPLACE	lru.h	87;"	d
+CACHE_SEARCH	lru.h	86;"	d
+CHUNK_SZ	target.h	54;"	d
+CHUNK_SZ_SECTOR	target.h	55;"	d
+CRC_SEED	target.h	45;"	d
+CREATE_DAEMON	metadata.c	2542;"	d	file:
+CREATE_DAEMON	target.c	5810;"	d	file:
+DATA_ALLOC_FLEX_HORI	header.h	160;"	d
+DATA_ALLOC_FLEX_VERT	header.h	159;"	d
+DATA_ALLOC_HORI	header.h	158;"	d
+DATA_ALLOC_VERT	header.h	157;"	d
+DEFAULT_ARRIVAL_US	target.h	388;"	d
+DEFAULT_MIGRATE_HIGHWATER	header.h	188;"	d
+DEFAULT_MIGRATE_LOWWATER	header.h	187;"	d
+DEFAULT_U_MAX	header.h	180;"	d
+DM_ALLOC_H	alloc.h	24;"	d
+DM_MSG_PREFIX	target.h	26;"	d
+DM_SRC_DAEMON_H	daemon.h	24;"	d
+DM_SRC_H	target.h	24;"	d
+DM_SRC_HEADER_H	header.h	24;"	d
+DM_SRC_METADATA_H	metadata.h	24;"	d
+ERASURE_CODE_NONE	header.h	144;"	d
+ERASURE_CODE_PARITY	header.h	145;"	d
+ERASURE_CODE_RAID6	header.h	146;"	d
+FLUSH_COARSE	header.h	141;"	d
+FLUSH_FINE	header.h	140;"	d
+FLUSH_NONE	header.h	139;"	d
+GC_WITHOUT_DIRTY_SYNC	header.h	177;"	d
+GC_WITH_DIRTY_SYNC	header.h	178;"	d
+GRBUF	header.h	205;"	d
+GROUP_SZ	target.h	58;"	d
+GROUP_SZ_SECTOR	target.h	59;"	d
+GWBUF	header.h	204;"	d
+HIT_BITMAP_PER_BLOCK	header.h	192;"	d
+HIT_BITMAP_PER_STRIPE	header.h	191;"	d
+HOT_DATA_COPY	daemon.h	27;"	d
+KERNEL_TREE	Makefile	/^KERNEL_TREE := \/lib\/modules\/$(shell uname -r)\/build$/;"	m
+LOCK	target.h	888;"	d
+MAX_ARRIVAL_TIME	target.h	387;"	d
+MAX_BITMAP_TABLE	target.h	685;"	d
+MAX_CACHE_DEVS	header.h	41;"	d
+MAX_MIGRATE_INFLIGHT_NUM	header.h	185;"	d
+MAX_WINDOW_NUM	target.h	640;"	d
+MB_BROKEN	header.h	96;"	d
+MB_DIRTY	header.h	90;"	d
+MB_DUMMY	header.h	93;"	d
+MB_HIT	header.h	99;"	d
+MB_PARITY	header.h	92;"	d
+MB_PARITY_NEED	header.h	97;"	d
+MB_PARITY_WRITTEN	header.h	98;"	d
+MB_SEAL	header.h	89;"	d
+MB_SKIP	header.h	94;"	d
+MB_SUMMARY	header.h	95;"	d
+MB_VALID	header.h	91;"	d
+MIGRATE_HIGHWATER	target.h	75;"	d
+MIGRATE_LOWWATER	target.h	74;"	d
+MIN_FREE	header.h	181;"	d
+MIXED_STRIPING	header.h	164;"	d
+NBUF	header.h	207;"	d
+NO_USE_ERASURE_CODE	target.h	67;"	d
+NR_STRIPE_HASH_LOCKS	raid.h	29;"	d
+NUM_BLOCKS	target.h	50;"	d
+NUM_BLOCKS_PER_SSD	target.h	52;"	d
+NUM_DATA_SSD	target.h	48;"	d
+NUM_DISKS	target.c	4541;"	d	file:
+NUM_ENTRY_PER_PAGE	header.h	246;"	d
+NUM_GC_THREAD	header.h	183;"	d
+NUM_SSD	target.h	47;"	d
+NUM_SUMMARY	header.h	242;"	d
+NUM_SUMMARY	header.h	245;"	d
+NUM_USED_BLOCKS	target.h	51;"	d
+PARITY_ALLOC_FIXED	header.h	149;"	d
+PARITY_ALLOC_ROTAT	header.h	150;"	d
+PWD	Makefile	/^PWD := $(shell pwd)$/;"	m
+RCBUF	header.h	202;"	d
+RCVBUF	header.h	206;"	d
+RECENT_IO	target.h	420;"	d
+RECENT_IO_BITS	target.h	419;"	d
+RECLAIM_DESTAGE	header.h	173;"	d
+RECLAIM_GC	header.h	174;"	d
+RECLAIM_SELECTIVE	header.h	172;"	d
+REQ_CATEGORY_GC	target.h	627;"	d
+REQ_CATEGORY_NORMAL	target.h	626;"	d
+REQ_CATEGORY_NUM	target.h	629;"	d
+REQ_CATEGORY_TOTAL	target.h	628;"	d
+REQ_TYPE_NUM	target.h	634;"	d
+REQ_TYPE_READ	target.h	631;"	d
+REQ_TYPE_TOTAL	target.h	633;"	d
+REQ_TYPE_WRITE	target.h	632;"	d
+RESERVED_LENGTH	header.h	39;"	d
+RESERVED_START	header.h	38;"	d
+RES_ACTIVE	target.h	93;"	d
+RES_BYPASS	target.h	92;"	d
+RES_COUNT	target.h	95;"	d
+RES_DRAM	target.h	94;"	d
+RES_FLUSH	target.h	91;"	d
+RES_MIG	target.h	86;"	d
+RES_NOFREE1	target.h	89;"	d
+RES_NOFREE2	target.h	90;"	d
+RES_PARTIAL	target.h	87;"	d
+RES_SEAL	target.h	88;"	d
+RHBUF	header.h	203;"	d
+SECTORS_PER_PAGE	header.h	219;"	d
+SECTORS_PER_PAGE_SHIFT	header.h	218;"	d
+SECTOR_SHIFT	header.h	216;"	d
+SECTOR_SIZE	header.h	217;"	d
+SEGMENT_GROUP_SIZE	target.h	57;"	d
+SEGMENT_HEADER_SIZE	header.h	134;"	d
+SEG_CLEAN	target.h	99;"	d
+SEG_HIT	target.h	105;"	d
+SEG_LOCK	target.h	106;"	d
+SEG_MIGRATING	target.h	102;"	d
+SEG_PARTIAL	target.h	103;"	d
+SEG_RECOVERY	target.h	104;"	d
+SEG_SEALED	target.h	101;"	d
+SEG_START_IDX	target.h	64;"	d
+SEG_USED	target.h	100;"	d
+SEPAR_STRIPING	header.h	163;"	d
+SEQ_CUTOFF	target.h	78;"	d
+SEQ_CUTOFF_MAX	target.h	80;"	d
+SEQ_CUTOFF_MIN	target.h	79;"	d
+SRC_LEN	target.c	4591;"	d	file:
+SRC_MAGIC	header.h	55;"	d
+SRC_PAGE_SIZE	header.h	227;"	d
+SRC_SECTORS_PER_PAGE	header.h	228;"	d
+SRC_SECTORS_PER_PAGE_SHIFT	header.h	229;"	d
+SRC_SIZE_SHIFT	header.h	222;"	d
+STRIPE_HASH_LOCKS_MASK	raid.h	30;"	d
+STRIPE_SZ	target.h	61;"	d
+STRIPE_SZ_SECTOR	target.h	62;"	d
+STRIPING_POLICY	target.h	72;"	d
+SUMMARY_LOCATION	header.h	239;"	d
+SUMMARY_PER_CHUNK	header.h	195;"	d
+SUMMARY_PER_STRIPE	header.h	196;"	d
+SUMMARY_SCHEME	header.h	197;"	d
+TIMEOUT_US	target.h	83;"	d
+UNLOCK	target.h	889;"	d
+USE_ERASURE_CODE	target.h	68;"	d
+USE_ERASURE_PARITY	target.h	69;"	d
+USE_ERASURE_RAID6	target.h	70;"	d
+USE_FIRST_SUMMARY	header.h	238;"	d
+USE_GHOST_BUFFER	header.h	234;"	d
+USE_LAST_SUMMARY	header.h	237;"	d
+USE_PENDING_WORKER	header.h	235;"	d
+USE_SEG_WRITER	header.h	249;"	d
+VICTIM_CLOCK	header.h	167;"	d
+VICTIM_GREEDY	header.h	169;"	d
+VICTIM_LRU	header.h	168;"	d
+VMALLOC	metadata.h	26;"	d
+WBERR	target.h	1114;"	d
+WBINFO	target.h	1118;"	d
+WBWARN	target.h	1116;"	d
+WCBUF	header.h	200;"	d
+WHBUF	header.h	201;"	d
+_CACHE_H	lru.h	27;"	d
+_RAID_CONF_H	raid.h	25;"	d
+__issue_mig_kcopyd	daemon.c	/^int __issue_mig_kcopyd(struct dmsrc_super *super, struct copy_job_group *cp_job_group, int cache_type, int use_gc, int num_copy_block){$/;"	f
+__packed	target.h	/^} __packed;$/;"	v	typeref:struct:segment_header_device
+__this_module	dm-src.mod.c	/^struct module __this_module$/;"	v	typeref:struct:module
+__used	dm-src.mod.c	/^__used$/;"	v	file:
+__used	dm-src.mod.c	/^__used$/;"	v	typeref:struct:____versions	file:
+_alloc_mb_summary	target.c	/^void _alloc_mb_summary(struct dmsrc_super *super,struct segment_header *seg, int cache_type, u32 mb_idx, int full, int dummy){$/;"	f
+_alloc_new_seg	target.c	/^struct segment_header *_alloc_new_seg(struct dmsrc_super *super, int cache_type){$/;"	f
+_alloc_rambuf_page	metadata.c	/^struct rambuf_page *_alloc_rambuf_page(struct dmsrc_super *super){$/;"	f
+_chunk_io_async	daemon.c	/^void _chunk_io_async(struct dmsrc_super *super, struct segment_header *seg, struct metablock *mb, $/;"	f
+_construct_metadata_in_ram	metadata.c	/^void _construct_metadata_in_ram(struct dmsrc_super *super, u32 seg_id){$/;"	f
+_flush_kcopy_job	daemon.c	/^void _flush_kcopy_job(struct dmsrc_super *super, struct copy_job_group *cp_job_group, struct copy_job *cp_job){$/;"	f
+_free_rambuf_page	metadata.c	/^struct rambuf_page *_free_rambuf_page(struct dmsrc_super *super, struct rambuf_page *page){$/;"	f
+_select_victim_for_gc	daemon.c	/^int _select_victim_for_gc(struct dmsrc_super *super, int num_mig, struct segment_header *seg){$/;"	f
+active_aligned_reads	raid.h	/^	atomic_t		active_aligned_reads;$/;"	m	struct:r5conf
+active_count	target.h	/^	atomic_t active_count;$/;"	m	struct:scan_metadata_manager
+active_count	target.h	/^	atomic_t active_count[NBUF];$/;"	m	struct:segbuf_manager
+active_list	target.h	/^	struct list_head active_list;;$/;"	m	struct:segbuf_manager	typeref:struct:segbuf_manager::list_head
+active_name	raid.h	/^	int			active_name;$/;"	m	struct:r5conf
+active_page_count	target.h	/^	atomic_t active_page_count;$/;"	m	struct:segbuf_manager
+active_page_list	target.h	/^	struct list_head active_page_list;$/;"	m	struct:segbuf_manager	typeref:struct:segbuf_manager::list_head
+active_stripes	raid.h	/^	atomic_t		active_stripes;$/;"	m	struct:r5conf
+active_total_count	target.h	/^	atomic_t active_total_count;$/;"	m	struct:segbuf_manager
+add_sequential	target.c	/^static void add_sequential(struct task_struct *t)$/;"	f	file:
+algorithm	raid.h	/^	int			level, algorithm;$/;"	m	struct:r5conf
+aligned_io_dummy	header.h	/^	__u32 aligned_io_dummy;$/;"	m	struct:superblock_device
+aligned_io_dummy	target.h	/^	u32 aligned_io_dummy;$/;"	m	struct:dmsrc_param
+alloc_copy_job_group	daemon.c	/^void *alloc_copy_job_group(struct dmsrc_super *super, int cache_type){$/;"	f
+alloc_count	target.h	/^	int alloc_count;$/;"	m	struct:rambuffer
+alloc_dummy	target.c	/^u32 alloc_dummy(struct dmsrc_super *super, struct segment_header *seg, $/;"	f
+alloc_list	target.h	/^	struct list_head alloc_list;$/;"	m	struct:group_header	typeref:struct:group_header::list_head
+alloc_list	target.h	/^	struct list_head alloc_list;$/;"	m	struct:segment_header	typeref:struct:segment_header::list_head
+alloc_lock	target.h	/^	spinlock_t alloc_lock;$/;"	m	struct:segment_allocator
+alloc_mb_data	target.c	/^struct metablock *alloc_mb_data(struct dmsrc_super *super, $/;"	f
+alloc_mb_summary	target.c	/^void alloc_mb_summary(struct dmsrc_super *super, struct segment_header *seg,$/;"	f
+alloc_new_segment	target.c	/^u64 alloc_new_segment(struct dmsrc_super *super, int cache_type, bool use_migrate)$/;"	f
+alloc_next_mb	target.c	/^u32 alloc_next_mb(struct dmsrc_super *super, struct segment_header *seg, sector_t key, $/;"	f
+alloc_partial_summary	target.c	/^int alloc_partial_summary(struct dmsrc_super *super, $/;"	f
+alloc_pl	metadata.c	/^static struct page_list *alloc_pl(gfp_t gfp)$/;"	f	file:
+alloc_rambuf_page	metadata.c	/^void alloc_rambuf_page(struct dmsrc_super *super, struct rambuffer *rambuf, int cache_type){$/;"	f
+alloc_rambuffer	metadata.c	/^struct rambuffer *alloc_rambuffer(struct dmsrc_super *super, int cache_type, int stripe_size){$/;"	f
+alloc_read_caching_job	daemon.c	/^inline struct read_caching_job *alloc_read_caching_job(struct dmsrc_super *super){$/;"	f
+alloc_sequence	target.h	/^	atomic64_t alloc_sequence; \/\/ global seq number $/;"	m	struct:cache_stat
+alloc_single_page	metadata.c	/^struct rambuf_page *alloc_single_page(struct dmsrc_super *super){$/;"	f
+alloc_skip	target.c	/^u32 alloc_skip(struct dmsrc_super *super, struct segment_header *seg, $/;"	f
+alloc_summary	target.c	/^void alloc_summary(struct dmsrc_super *super, struct segment_header *seg, $/;"	f
+alloc_summary_rambuf	metadata.c	/^void alloc_summary_rambuf(struct dmsrc_super *super, struct rambuffer *rambuf){$/;"	f
+alloc_wait_queue	target.h	/^	wait_queue_head_t alloc_wait_queue;$/;"	m	struct:segment_allocator
+allow_migrate	target.h	/^	int allow_migrate;$/;"	m	struct:migration_manager
+arrival_count	target.h	/^	atomic_t arrival_count;$/;"	m	struct:pending_manager
+arrival_cur	target.h	/^	atomic_t arrival_cur;$/;"	m	struct:pending_manager
+arrival_start	target.h	/^	atomic_t arrival_start;$/;"	m	struct:pending_manager
+arrival_times	target.h	/^	struct timespec arrival_times[MAX_ARRIVAL_TIME];$/;"	m	struct:pending_manager	typeref:struct:pending_manager::timespec
+assign_new_segment	metadata.c	/^int assign_new_segment(struct dmsrc_super *super){$/;"	f
+atomic_read_mb_dirtiness	target.c	/^u8 atomic_read_mb_dirtiness(struct segment_header *seg, struct metablock *mb)$/;"	f
+atomic_read_mb_validness	target.c	/^u8 atomic_read_mb_validness(struct segment_header *seg, struct metablock *mb)$/;"	f
+average_arrival_count	target.h	/^	atomic64_t average_arrival_count; \/\/ us$/;"	m	struct:super_stat
+average_arrival_time	target.h	/^	atomic64_t average_arrival_time; \/\/ us$/;"	m	struct:super_stat
+background_gc_on	target.h	/^	atomic_t background_gc_on;$/;"	m	struct:migration_manager
+barrier_count	target.h	/^	atomic_t barrier_count;$/;"	m	struct:pending_manager
+barrier_ios	target.h	/^	struct bio_list barrier_ios;$/;"	m	struct:flush_invoke_job	typeref:struct:flush_invoke_job::bio_list
+barrier_ios	target.h	/^	struct bio_list barrier_ios;$/;"	m	struct:pending_manager	typeref:struct:pending_manager::bio_list
+barrier_lock	target.h	/^	spinlock_t barrier_lock;$/;"	m	struct:pending_manager
+bio	target.h	/^	struct bio *bio;$/;"	m	struct:wb_job	typeref:struct:wb_job::bio
+bio_ctx	target.h	/^struct bio_ctx {$/;"	s
+bio_error	target.h	/^	unsigned long bio_error;$/;"	m	struct:scan_metadata_job
+bio_plugging	target.c	/^void bio_plugging(struct dmsrc_super *super, struct segment_header *seg, struct rambuffer *rambuf, $/;"	f
+bio_plugging	target.h	/^	u32 bio_plugging;$/;"	m	struct:dmsrc_param
+bio_remap	target.c	/^inline static void bio_remap(struct bio *bio, struct dm_dev *dev, sector_t sector)$/;"	f	file:
+bios	target.h	/^	struct bio **bios;$/;"	m	struct:rambuffer	typeref:struct:rambuffer::bio
+bios	target.h	/^	struct bio_list bios;$/;"	m	struct:pending_manager	typeref:struct:pending_manager::bio_list
+bios	target.h	/^	void **bios;$/;"	m	struct:segbuf_manager
+bios_count	target.h	/^	atomic_t bios_count;$/;"	m	struct:segment_header
+bios_count	target.h	/^	atomic_t bios_count[MAX_CACHE_DEVS];$/;"	m	struct:flush_invoke_job
+bios_count	target.h	/^	atomic_t bios_count[MAX_CACHE_DEVS];$/;"	m	struct:rambuffer
+bios_start	target.h	/^	atomic_t bios_start[MAX_CACHE_DEVS];$/;"	m	struct:flush_invoke_job
+bios_start	target.h	/^	atomic_t bios_start[MAX_CACHE_DEVS];$/;"	m	struct:rambuffer
+bios_total_count	target.h	/^	atomic_t bios_total_count;$/;"	m	struct:rambuffer
+bios_total_start	target.h	/^	atomic_t bios_total_start;$/;"	m	struct:rambuffer
+bitmap	target.h	/^	unsigned long *bitmap[MAX_BITMAP_TABLE];$/;"	m	struct:hot_data_filter
+bitmap_list	raid.h	/^	struct list_head	bitmap_list; \/* stripes delaying awaiting bitmap update *\/$/;"	m	struct:r5conf	typeref:struct:r5conf::list_head
+bitmap_table_num	target.h	/^	unsigned int bitmap_table_num;$/;"	m	struct:hot_data_filter
+block_size	header.h	/^	__u32 block_size; \/\/ sector unit$/;"	m	struct:superblock_device
+block_size	target.h	/^	u32 block_size; \/\/ sector unit$/;"	m	struct:dmsrc_param
+broken_block_count	target.h	/^	atomic_t broken_block_count;$/;"	m	struct:recovery_manager
+buf	target.h	/^	void *buf;$/;"	m	struct:degraded_job
+buf_pool	target.h	/^	mempool_t *buf_pool; \/* 8 sector buffer pool *\/$/;"	m	struct:degraded_manager
+build_metadata	target.c	/^void build_metadata(struct dmsrc_super *super, $/;"	f
+build_summary	target.h	/^	int build_summary;$/;"	m	struct:flush_invoke_job
+bypass_count	raid.h	/^	int			bypass_count; \/* bypassed prereads *\/$/;"	m	struct:r5conf
+bypass_threshold	raid.h	/^	int			bypass_threshold; \/* preread nice *\/$/;"	m	struct:r5conf
+bypass_write_count	target.h	/^	atomic_t bypass_write_count;;$/;"	m	struct:super_stat
+c_region	daemon.h	/^	struct dm_io_region c_region;$/;"	m	struct:merge_req_t	typeref:struct:merge_req_t::dm_io_region
+cache_alloc	lru.h	/^ void *(*cache_alloc)(struct cache_manager *cache, struct lru_node *node, sector_t blkno);$/;"	m	struct:cache_manager
+cache_close	lru.h	/^ void (*cache_close)(struct cache_manager *cache);$/;"	m	struct:cache_manager
+cache_dec	lru.h	/^ int (*cache_dec)(struct cache_manager *cache, int i);$/;"	m	struct:cache_manager
+cache_dev	target.h	/^	struct dm_dev *cache_dev[MAX_CACHE_DEVS];$/;"	m	struct:device_info	typeref:struct:device_info::dm_dev
+cache_inc	lru.h	/^ int (*cache_inc)(struct cache_manager *cache, int i);$/;"	m	struct:cache_manager
+cache_insert	lru.h	/^ void (*cache_insert)(struct cache_manager *cache, struct lru_node *node);$/;"	m	struct:cache_manager
+cache_manager	lru.h	/^struct cache_manager{$/;"	s
+cache_move_mru	lru.h	/^ void (*cache_move_mru)(struct cache_manager *cache, struct lru_node *ln); $/;"	m	struct:cache_manager
+cache_name	raid.h	/^	char			cache_name[2][32];$/;"	m	struct:r5conf
+cache_name	target.h	/^	char cache_name[MAX_CACHE_DEVS][128];$/;"	m	struct:device_info
+cache_open	lru.h	/^ void (*cache_open)(struct cache_manager *cache,int cache_size);$/;"	m	struct:cache_manager
+cache_presearch	lru.h	/^ struct lru_node *(*cache_presearch)(struct cache_manager *cache, sector_t blkno);$/;"	m	struct:cache_manager	typeref:struct:cache_manager::cache_presearch
+cache_remove	lru.h	/^ void *(*cache_remove)(struct cache_manager *cache, struct lru_node *ln); $/;"	m	struct:cache_manager
+cache_replace	lru.h	/^ void *(*cache_replace)(struct cache_manager *cache, int w); $/;"	m	struct:cache_manager
+cache_search	lru.h	/^ struct lru_node *(*cache_search)(struct cache_manager *cache, sector_t blkno);$/;"	m	struct:cache_manager	typeref:struct:cache_manager::cache_search
+cache_stat	target.h	/^	struct cache_stat cache_stat;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::cache_stat
+cache_stat	target.h	/^struct cache_stat{$/;"	s
+cache_type	target.h	/^	int cache_type;$/;"	m	struct:copy_job_group
+cache_type	target.h	/^	int cache_type;$/;"	m	struct:flush_invoke_job
+calc_cache_alignment	target.c	/^inline sector_t calc_cache_alignment(struct dmsrc_super *super,$/;"	f
+calc_checksum	metadata.c	/^u8 calc_checksum(u8 *ptr, int size){$/;"	f
+calc_mb_start_sector	metadata.c	/^sector_t calc_mb_start_sector(struct dmsrc_super *super,$/;"	f
+calc_meta_count	daemon.c	/^int calc_meta_count(struct dmsrc_super *super, struct segment_header *seg){$/;"	f
+calc_need_num_ssds	target.c	/^int calc_need_num_ssds(struct dmsrc_super *super){$/;"	f
+calc_num_chunks	metadata.c	/^u32 calc_num_chunks(struct dm_dev *dev, struct dmsrc_super *super)$/;"	f
+calc_segment_header_start	metadata.c	/^static sector_t calc_segment_header_start(struct dmsrc_super *super,$/;"	f	file:
+calc_valid_count	daemon.c	/^int calc_valid_count(struct dmsrc_super *super, struct segment_header *seg, int use_gc){$/;"	f
+can_get_free_segment	target.c	/^inline int can_get_free_segment(struct dmsrc_super *super, int cache_type, int gc){$/;"	f
+ceil	target.c	5768;"	d	file:
+change_seg_status	target.c	/^int change_seg_status(struct dmsrc_super *super, struct segment_header *seg, int seg_length, int force_seal){$/;"	f
+check_dirty_count	metadata.c	/^int check_dirty_count(struct dmsrc_super *super, struct segment_header *cur_seg){$/;"	f
+check_rambuf_pool	metadata.c	/^int check_rambuf_pool(struct dmsrc_super *super){$/;"	f
+check_valid_count	metadata.c	/^int check_valid_count(struct dmsrc_super *super, struct segment_header *cur_seg){$/;"	f
+check_validness	daemon.c	/^int check_validness(struct dmsrc_super *super, struct segment_header *seg, struct metablock *victim_mb, int use_gc){$/;"	f
+checker_daemon	target.h	/^	struct task_struct *checker_daemon;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::task_struct
+checker_interval	target.h	/^	u32 checker_interval; \/* param *\/$/;"	m	struct:dmsrc_param
+checker_proc	daemon.c	/^int checker_proc(void *data)$/;"	f
+checksum	header.h	/^	__u16 checksum;$/;"	m	struct:metablock
+checksum	header.h	/^	__u8 checksum;$/;"	m	struct:metablock_device
+chunk_group_size	header.h	/^	__u32 chunk_group_size; \/\/ sector unit$/;"	m	struct:superblock_device
+chunk_group_size	target.h	/^	u32 chunk_group_size; \/\/ sector unit$/;"	m	struct:dmsrc_param
+chunk_io_async	daemon.c	/^void chunk_io_async(struct dmsrc_super *super, struct segment_header *seg, struct recovery_job *context,$/;"	f
+chunk_io_complete	daemon.c	/^static void chunk_io_complete(unsigned long error, void *__context)$/;"	f	file:
+chunk_sectors	raid.h	/^	int			chunk_sectors;$/;"	m	struct:r5conf
+chunk_size	header.h	/^	__u32 chunk_size; \/\/ sector unit$/;"	m	struct:superblock_device
+chunk_size	target.h	/^	u32 chunk_size; \/\/ sector unit$/;"	m	struct:dmsrc_param
+chunk_summary_range	target.c	/^inline bool chunk_summary_range(struct dmsrc_super *super, u32 idx){$/;"	f
+chunks_per_group	header.h	/^	__u32 chunks_per_group;$/;"	m	struct:superblock_device
+clean_dram_cache_manager	target.h	/^	struct cache_manager *clean_dram_cache_manager;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::cache_manager
+clean_seg_write	target.c	/^int clean_seg_write(struct dmsrc_super *super, int need_count, int cache_type){$/;"	f
+cleanup_mb_if_dirty	target.c	/^void cleanup_mb_if_dirty(struct dmsrc_super *super,$/;"	f
+cleanup_segment	daemon.c	/^static void cleanup_segment(struct dmsrc_super *super, struct segment_header *seg)$/;"	f	file:
+cm_cache	lru.h	/^ struct large_array *cm_cache;$/;"	m	struct:cache_manager	typeref:struct:cache_manager::large_array
+cm_count	lru.h	/^ int cm_count;$/;"	m	struct:cache_manager
+cm_free	lru.h	/^ int cm_free;$/;"	m	struct:cache_manager
+cm_free_head	lru.h	/^ struct list_head cm_free_head;$/;"	m	struct:cache_manager	typeref:struct:cache_manager::list_head
+cm_hash	lru.h	/^ struct large_array *cm_hash;$/;"	m	struct:cache_manager	typeref:struct:cache_manager::large_array
+cm_head	lru.h	/^ struct list_head cm_head;$/;"	m	struct:cache_manager	typeref:struct:cache_manager::list_head
+cm_highwater	lru.h	/^ int cm_highwater;$/;"	m	struct:cache_manager
+cm_hit	lru.h	/^ unsigned int cm_hit;$/;"	m	struct:cache_manager
+cm_lowwater	lru.h	/^ int cm_lowwater;$/;"	m	struct:cache_manager
+cm_min	lru.h	/^ int cm_min;$/;"	m	struct:cache_manager
+cm_miss	lru.h	/^ unsigned int cm_miss;$/;"	m	struct:cache_manager
+cm_name	lru.h	/^ char *cm_name;$/;"	m	struct:cache_manager
+cm_read_hit	lru.h	/^ unsigned int cm_read_hit;$/;"	m	struct:cache_manager
+cm_read_ref	lru.h	/^ unsigned int cm_read_ref;$/;"	m	struct:cache_manager
+cm_ref	lru.h	/^ unsigned int cm_ref;$/;"	m	struct:cache_manager
+cm_sealed_count	lru.h	/^atomic_t cm_sealed_count;$/;"	m	struct:cache_manager
+cm_size	lru.h	/^ int cm_size; $/;"	m	struct:cache_manager
+cn_alloc_by_gc	lru.h	/^	int cn_alloc_by_gc;$/;"	m	struct:lru_node
+cn_blkno	lru.h	/^	sector_t cn_blkno;$/;"	m	struct:lru_node
+cn_hash	lru.h	/^	struct hlist_node cn_hash;$/;"	m	struct:lru_node	typeref:struct:lru_node::hlist_node
+cn_list	lru.h	/^	struct list_head cn_list;$/;"	m	struct:lru_node	typeref:struct:lru_node::list_head
+cn_page	lru.h	/^	struct page *cn_page;$/;"	m	struct:lru_node	typeref:struct:lru_node::page
+cn_read_hit	lru.h	/^	int cn_read_hit;$/;"	m	struct:lru_node
+cn_read_ref	lru.h	/^	int cn_read_ref;$/;"	m	struct:lru_node
+cn_write_hit	lru.h	/^	int cn_write_hit;$/;"	m	struct:lru_node
+cn_write_list	lru.h	/^	struct list_head cn_write_list;$/;"	m	struct:lru_node	typeref:struct:lru_node::list_head
+cn_write_ref	lru.h	/^	int cn_write_ref;$/;"	m	struct:lru_node
+cold_bypass_count	target.h	/^	atomic_t cold_bypass_count;$/;"	m	struct:super_stat
+complete_count	target.h	/^	atomic_t complete_count;$/;"	m	struct:scan_metadata_manager
+complete_queue	target.h	/^	struct list_head complete_queue;$/;"	m	struct:scan_metadata_manager	typeref:struct:scan_metadata_manager::list_head
+construct_metadata_in_ram	metadata.c	/^int construct_metadata_in_ram(struct dmsrc_super *super){$/;"	f
+consume_essential_argv	target.c	/^static int consume_essential_argv(struct dmsrc_super *super, unsigned int argc, char **argv)$/;"	f	file:
+consume_kv	target.c	4261;"	d	file:
+consume_kv_str	target.c	4272;"	d	file:
+copy_job	target.h	/^struct copy_job{$/;"	s
+copy_job_count	target.h	/^	atomic_t copy_job_count;$/;"	m	struct:migration_manager
+copy_job_group	target.h	/^struct copy_job_group{$/;"	s
+copy_job_pool	target.h	/^	mempool_t *copy_job_pool;$/;"	m	struct:migration_manager
+copy_queue	target.h	/^	struct list_head copy_queue;$/;"	m	struct:migration_manager	typeref:struct:migration_manager::list_head
+copy_read_caching_data	daemon.c	/^static void copy_read_caching_data(struct dmsrc_super *super){$/;"	f	file:
+copy_summary	metadata.c	/^void copy_summary(struct dmsrc_super *super, void *buf, u32 seg_id, u32 ssd_id){$/;"	f
+count	target.h	/^	atomic_t count;$/;"	m	struct:seg_write_manager
+count	target.h	/^	atomic_t count[MAX_CACHE_DEVS];$/;"	m	struct:multi_allocator
+count	target.h	/^	u32 count;$/;"	m	struct:super_stat
+count	target.h	/^	u32 count;$/;"	m	struct:wb_job
+cp_head	target.h	/^	struct list_head cp_head;$/;"	m	struct:copy_job_group	typeref:struct:copy_job_group::list_head
+cp_job_count	target.h	/^	atomic_t cp_job_count;$/;"	m	struct:copy_job_group
+cp_list	target.h	/^	struct list_head cp_list;$/;"	m	struct:copy_job	typeref:struct:copy_job::list_head
+cpu_notify	raid.h	/^	struct notifier_block	cpu_notify;$/;"	m	struct:r5conf	typeref:struct:r5conf::notifier_block
+crc32	lru.h	/^	u32 crc32;$/;"	m	struct:lru_node
+crc32	target.h	/^	u32 crc32;$/;"	m	struct:bio_ctx
+create_daemon	metadata.c	/^int create_daemon(struct dmsrc_super *super, $/;"	f
+create_time	header.h	/^	__u32 create_time;$/;"	m	struct:superblock_device
+cur_dev	target.h	/^	atomic_t cur_dev;$/;"	m	struct:multi_allocator
+cur_table	target.h	/^	unsigned int cur_table;$/;"	m	struct:hot_data_filter
+cur_window	target.h	/^	atomic_t cur_window;$/;"	m	struct:workload_predictor
+current_group	target.h	/^	struct group_header *current_group;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::group_header
+current_rambuf	target.h	/^	struct rambuffer *current_rambuf[NBUF];$/;"	m	struct:segbuf_manager	typeref:struct:segbuf_manager::rambuffer
+current_seg	target.h	/^	struct segment_header *current_seg[NBUF];$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::segment_header
+current_seg_id	target.h	/^	u32 current_seg_id;$/;"	m	struct:group_header
+cursor	target.h	/^	s32 cursor[MAX_CACHE_DEVS]; $/;"	m	struct:multi_allocator
+cursor_data_start_ssd	target.c	/^inline int cursor_data_start_ssd(struct dmsrc_super *super, u64 seg_id, int cache_type){$/;"	f
+cursor_parity_start	target.c	/^inline int cursor_parity_start(struct dmsrc_super *super, u64 seg_id, int cache_type){$/;"	f
+daemon	target.h	/^	struct task_struct *daemon;$/;"	m	struct:flush_manager	typeref:struct:flush_manager::task_struct
+daemon	target.h	/^	struct task_struct *daemon;$/;"	m	struct:migration_manager	typeref:struct:migration_manager::task_struct
+daemon	target.h	/^	struct task_struct *daemon;$/;"	m	struct:recovery_manager	typeref:struct:recovery_manager::task_struct
+data	target.h	/^	void *data;$/;"	m	struct:scan_metadata_job
+data_allocation	header.h	/^	__u32 data_allocation;$/;"	m	struct:superblock_device
+data_allocation	target.h	/^	u32 data_allocation;$/;"	m	struct:dmsrc_param
+data_to_summary_idx	target.c	/^inline u32 data_to_summary_idx(struct dmsrc_super *super, u32 idx){$/;"	f
+deadline_us	target.h	/^	unsigned long deadline_us; \/* param *\/$/;"	m	struct:plugging_manager
+dec_num_dirty_blocks	target.c	/^inline static void dec_num_dirty_blocks(struct dmsrc_super *super)$/;"	f	file:
+decay_period	target.h	/^	unsigned int decay_period;$/;"	m	struct:hot_data_filter
+degraded_io_complete	target.c	/^static void degraded_io_complete(unsigned long error, void *__context)$/;"	f	file:
+degraded_job	target.h	/^struct degraded_job{$/;"	s
+degraded_list	target.h	/^	struct list_head degraded_list;$/;"	m	struct:degraded_job	typeref:struct:degraded_job::list_head
+degraded_manager	target.h	/^struct degraded_manager{$/;"	s
+degraded_mgr	target.h	/^	struct degraded_manager degraded_mgr;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::degraded_manager
+degraded_mgr_deinit	target.c	/^void degraded_mgr_deinit(struct dmsrc_super *super){$/;"	f
+degraded_mgr_init	target.c	/^int degraded_mgr_init(struct dmsrc_super *super){$/;"	f
+degraded_mode	target.h	/^	atomic_t degraded_mode;$/;"	m	struct:dmsrc_super
+delayed_list	raid.h	/^	struct list_head	delayed_list; \/* stripes that have plugged requests *\/$/;"	m	struct:r5conf	typeref:struct:r5conf::list_head
+destage_count	target.h	/^	atomic_t destage_count;$/;"	m	struct:super_stat
+destage_io_count	target.h	/^	atomic64_t destage_io_count;$/;"	m	struct:super_stat
+detect_sequential_io	target.c	/^bool detect_sequential_io(struct dmsrc_super *super, struct bio *bio){$/;"	f
+dev_info	target.h	/^	struct device_info dev_info;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::device_info
+device_info	target.h	/^struct device_info{$/;"	s
+device_lock	raid.h	/^	spinlock_t		device_lock;$/;"	m	struct:r5conf
+devinfo_init	target.c	/^int devinfo_init(struct dmsrc_super *super, int num_ssd){$/;"	f
+dirty_bits	header.h	/^	__u8 dirty_bits;$/;"	m	struct:metablock_device
+dirty_count	target.h	/^	atomic_t dirty_count;$/;"	m	struct:segment_header
+discard_caches_inseg	metadata.c	/^void discard_caches_inseg(struct dmsrc_super *super, struct segment_header *seg)$/;"	f
+disks	raid.h	/^	struct disk_info	*disks;$/;"	m	struct:r5conf	typeref:struct:r5conf::disk_info
+display_period	target.h	/^	ktime_t display_period;$/;"	m	struct:workload_predictor
+dm-src-objs	Makefile	/^dm-src-objs := \\$/;"	m
+dmsrc_bio_end_flush	daemon.c	/^static void dmsrc_bio_end_flush(struct bio *bio, int err)$/;"	f	file:
+dmsrc_blkdev_issue_flush	daemon.c	/^static struct bio *dmsrc_blkdev_issue_flush(struct block_device *bdev, gfp_t gfp_mask,$/;"	f	file:
+dmsrc_blkdev_wait_flush	daemon.c	/^static int dmsrc_blkdev_wait_flush(struct bio *bio)$/;"	f	file:
+dmsrc_ctr	target.c	/^static int dmsrc_ctr(struct dm_target *ti, unsigned int argc, char **argv)$/;"	f	file:
+dmsrc_devsize_sectors	target.c	/^sector_t dmsrc_devsize_sectors(struct dm_dev *dev)$/;"	f
+dmsrc_dtr	target.c	/^void dmsrc_dtr(struct dm_target *ti)$/;"	f
+dmsrc_end_io	target.c	/^static int dmsrc_end_io(struct dm_target *ti, struct bio *bio, int error)$/;"	f	file:
+dmsrc_io	target.c	/^int dmsrc_io(struct dm_io_request *io_req, unsigned num_regions,$/;"	f
+dmsrc_iterate_devices	target.c	/^static int dmsrc_iterate_devices(struct dm_target *ti,$/;"	f	file:
+dmsrc_map	target.c	/^static int dmsrc_map(struct dm_target *ti, struct bio *bio)$/;"	f	file:
+dmsrc_merge	target.c	/^static int dmsrc_merge(struct dm_target *ti, struct bvec_merge_data *bvm,$/;"	f	file:
+dmsrc_message	target.c	/^static int dmsrc_message(struct dm_target *ti, unsigned argc, char **argv)$/;"	f	file:
+dmsrc_module_exit	target.c	/^module_exit(dmsrc_module_exit);$/;"	v
+dmsrc_module_exit	target.c	/^static void __exit dmsrc_module_exit(void)$/;"	f	file:
+dmsrc_module_init	target.c	/^module_init(dmsrc_module_init);$/;"	v
+dmsrc_module_init	target.c	/^static int __init dmsrc_module_init(void)$/;"	f	file:
+dmsrc_param	target.h	/^struct dmsrc_param{$/;"	s
+dmsrc_resume	target.c	/^static void dmsrc_resume(struct dm_target *ti) {}$/;"	f	file:
+dmsrc_super	target.h	/^struct dmsrc_super {$/;"	s
+dmsrc_target	target.c	/^static struct target_type dmsrc_target = {$/;"	v	typeref:struct:target_type	file:
+do_add_spare	target.c	/^int do_add_spare(struct dmsrc_super *super, struct dm_arg_set *as, unsigned argc){$/;"	f
+do_background_gc	target.c	/^void do_background_gc(struct dmsrc_super *super){$/;"	f
+do_consume_tunable_argv	target.c	/^static int do_consume_tunable_argv(struct dm_target *ti,$/;"	f	file:
+do_degraded_worker	target.c	/^void do_degraded_worker(struct work_struct *work){$/;"	f
+do_grow	target.c	/^void do_grow(struct dmsrc_super *super){$/;"	f
+do_mig_worker	daemon.c	/^void do_mig_worker(struct work_struct *work){$/;"	f
+do_read_caching_worker	daemon.c	/^void do_read_caching_worker(struct work_struct *work){$/;"	f
+do_recovery	target.c	/^void do_recovery(struct dmsrc_super *super){$/;"	f
+do_recovery_worker	daemon.c	/^void do_recovery_worker(struct work_struct *work){$/;"	f
+do_xoring	daemon.c	/^void do_xoring(struct dmsrc_super *super, struct segment_header *seg, $/;"	f
+dst_count	target.h	/^	int dst_count;$/;"	m	struct:copy_job
+dst_mb	target.h	/^	struct metablock *dst_mb;$/;"	m	struct:copy_job	typeref:struct:copy_job::metablock
+dst_rambuf	target.h	/^	struct rambuffer *dst_rambuf;$/;"	m	struct:copy_job_group	typeref:struct:copy_job_group::rambuffer
+dst_region	target.h	/^	struct dm_io_region dst_region[2];$/;"	m	struct:copy_job	typeref:struct:copy_job::dm_io_region
+dst_seg	target.h	/^	struct segment_header *dst_seg;$/;"	m	struct:copy_job_group	typeref:struct:copy_job_group::segment_header
+dummy_count	target.h	/^	atomic_t dummy_count;$/;"	m	struct:segment_header
+elemsize	metadata.h	/^	u32 elemsize;$/;"	m	struct:large_array
+empty_alloc_queue	metadata.c	/^int empty_alloc_queue(struct dmsrc_super *super){$/;"	f
+empty_inactive_list_nr	raid.h	/^	atomic_t		empty_inactive_list_nr;$/;"	m	struct:r5conf
+empty_sealed_queue	metadata.c	/^int empty_sealed_queue(struct dmsrc_super *super){$/;"	f
+enable_read_cache	target.h	/^	u32 enable_read_cache;$/;"	m	struct:dmsrc_param
+end_jiffies	target.h	/^	unsigned long end_jiffies;$/;"	m	struct:recovery_manager
+erasure_code	header.h	/^	__u32 erasure_code;$/;"	m	struct:superblock_device
+erasure_code	target.h	/^	u32 erasure_code;$/;"	m	struct:dmsrc_param
+error	target.h	/^	int error;$/;"	m	struct:copy_job_group
+error	target.h	/^	int error;$/;"	m	struct:degraded_job
+error	target.h	/^	int error;$/;"	m	struct:recovery_job
+error	target.h	/^	int error;$/;"	m	struct:wb_job
+ewma_add	target.c	2760;"	d	file:
+failure_ssd	target.h	/^	int failure_ssd;$/;"	m	struct:recovery_manager
+finalize_clean_seg	daemon.c	/^void finalize_clean_seg(struct dmsrc_super *super, struct segment_header *seg, int cleanup){$/;"	f
+flags	target.h	/^	unsigned long flags;$/;"	m	struct:segment_header
+flush_command	header.h	/^	__u32 flush_command;$/;"	m	struct:superblock_device
+flush_command	target.h	/^	int flush_command;$/;"	m	struct:wb_job
+flush_command	target.h	/^	u32 flush_command;$/;"	m	struct:dmsrc_param
+flush_data	target.h	/^	int flush_data;$/;"	m	struct:flush_invoke_job
+flush_invoke_job	target.h	/^struct flush_invoke_job {$/;"	s
+flush_kcopy_job	daemon.c	/^void flush_kcopy_job(struct dmsrc_super *super, struct copy_job_group *cp_job_group){$/;"	f
+flush_manager	target.h	/^struct flush_manager{$/;"	s
+flush_meta_proc	daemon.c	/^int flush_meta_proc(void *data)$/;"	f
+flush_mgr	target.h	/^	struct flush_manager flush_mgr;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::flush_manager
+flush_mgr_deinit	target.c	/^void flush_mgr_deinit(struct dmsrc_super *super){$/;"	f
+flush_mgr_init	target.c	/^int flush_mgr_init(struct dmsrc_super *super){$/;"	f
+flush_partial_meta	target.c	/^void flush_partial_meta(struct dmsrc_super *super, int cache_type)$/;"	f
+flush_plug_proc	daemon.c	/^int flush_plug_proc(struct dmsrc_super *super, $/;"	f
+force_seal	target.h	/^	int force_seal;$/;"	m	struct:flush_invoke_job
+free_ht	metadata.c	/^void free_ht(struct dmsrc_super *super)$/;"	f
+free_pl	metadata.c	/^static void free_pl(struct page_list *pl)$/;"	f	file:
+free_rambuf_page	metadata.c	/^void free_rambuf_page(struct dmsrc_super *super, struct rambuffer *rambuf){$/;"	f
+free_rambuf_pool	metadata.c	/^void free_rambuf_pool(struct dmsrc_super *super)$/;"	f
+free_seg_count	target.h	/^	atomic_t free_seg_count;$/;"	m	struct:group_header
+free_segment_header_array	metadata.c	/^void free_segment_header_array(struct dmsrc_super *super)$/;"	f
+free_single_page	metadata.c	/^void free_single_page(struct dmsrc_super *super, struct rambuf_page *page){$/;"	f
+fullsync	raid.h	/^	int			fullsync;  \/* set to 1 if a full sync is needed,$/;"	m	struct:r5conf
+gc	target.h	/^	int gc;$/;"	m	struct:copy_job_group
+gc_active_page_count	target.h	/^	atomic_t gc_active_page_count;$/;"	m	struct:segbuf_manager
+gc_alloc_count	target.h	/^	int gc_alloc_count;$/;"	m	struct:migration_manager
+gc_count	target.h	/^	atomic_t gc_count;$/;"	m	struct:super_stat
+gc_cur_offset	target.h	/^	int gc_cur_offset;$/;"	m	struct:migration_manager
+gc_cur_seg	target.h	/^	struct segment_header *gc_cur_seg;$/;"	m	struct:migration_manager	typeref:struct:migration_manager::segment_header
+gc_empty_count	target.h	/^	atomic_t gc_empty_count;$/;"	m	struct:super_stat
+gc_io_count	target.h	/^	atomic64_t gc_io_count;$/;"	m	struct:super_stat
+gc_job_done	daemon.c	/^void gc_job_done(unsigned long error, void *context)$/;"	f
+gc_with_dirtysync	target.h	/^	u32 gc_with_dirtysync;$/;"	m	struct:dmsrc_param
+gen_lock	raid.h	/^	seqcount_t		gen_lock;	\/* lock against generation changes *\/$/;"	m	struct:r5conf
+generate_destage_write	daemon.c	/^void generate_destage_write(struct dmsrc_super *super, struct copy_job_group *cp_job_group){$/;"	f
+generate_gc_write	daemon.c	/^void generate_gc_write(struct dmsrc_super *super, struct copy_job_group *cp_job_group){$/;"	f
+generation	raid.h	/^	short			generation; \/* increments with every reshape *\/$/;"	m	struct:r5conf
+get_alloc_count	metadata.c	/^int get_alloc_count(struct dmsrc_super *super){$/;"	f
+get_avg_arrival_time	target.c	/^unsigned long get_avg_arrival_time(struct dmsrc_super *super){$/;"	f
+get_bdev	target.c	/^inline struct block_device *get_bdev(struct dmsrc_super *super, u32 idx){$/;"	f
+get_curr_util	metadata.c	/^u32 get_curr_util(struct dmsrc_super *super){$/;"	f
+get_data_max_count	daemon.c	/^int get_data_max_count(struct dmsrc_super *super, int seg_type){$/;"	f
+get_data_valid_count	daemon.c	/^int get_data_valid_count(struct dmsrc_super *super, struct segment_header *seg){$/;"	f
+get_desired_size	target.c	/^int get_desired_size(struct dmsrc_super *super, int seg_id){$/;"	f
+get_devices	target.c	/^int get_devices(struct dmsrc_super *super){$/;"	f
+get_devno	target.c	/^inline int get_devno(struct dmsrc_super *super, u32 idx){$/;"	f
+get_dmdev	target.c	/^inline struct dm_dev *get_dmdev(struct dmsrc_super *super, u32 idx){$/;"	f
+get_group_alloc_count	metadata.c	/^int get_group_alloc_count(struct dmsrc_super *super){$/;"	f
+get_mb	metadata.c	/^inline struct metablock *get_mb(struct dmsrc_super *super, u32 seg_id, u32 idx){$/;"	f
+get_metadata_count	daemon.c	/^int get_metadata_count(struct dmsrc_super *super, int seg_type){$/;"	f
+get_next_victim_mb	daemon.c	/^struct metablock *get_next_victim_mb(struct dmsrc_super *super, $/;"	f
+get_next_victim_seg	daemon.c	/^void get_next_victim_seg(struct dmsrc_super *super, struct migration_manager *migrate_mgr){$/;"	f
+get_num_empty_chunks	alloc.c	/^int get_num_empty_chunks(struct dmsrc_super *super, int cache_type){$/;"	f
+get_parity_size	target.c	/^inline int get_parity_size(struct dmsrc_super *super, int cache_type){$/;"	f
+get_parity_ssd	target.c	/^inline int get_parity_ssd(struct dmsrc_super *super, u64 seg_id){$/;"	f
+get_parityq_ssd	target.c	/^inline int get_parityq_ssd(struct dmsrc_super *super, u64 seg_id){$/;"	f
+get_partial_seg_length	target.c	/^int get_partial_seg_length(struct dmsrc_super *super, int cache_type){$/;"	f
+get_sector	target.c	/^inline sector_t get_sector(struct dmsrc_super *super, u32 seg_id, u32 idx){$/;"	f
+get_seg_by_mb	metadata.c	/^struct segment_header *get_seg_by_mb(struct dmsrc_super *super,$/;"	f
+get_segment_header_by_id	metadata.c	/^inline struct segment_header *get_segment_header_by_id(struct dmsrc_super *super,$/;"	f
+get_segment_header_by_mb_idx	metadata.c	/^struct segment_header *get_segment_header_by_mb_idx(struct dmsrc_super *super,$/;"	f
+get_summary_offset	target.c	/^inline u32 get_summary_offset(struct dmsrc_super *super, u32 ssd_id){$/;"	f
+global_seg_sequence	target.h	/^	atomic64_t global_seg_sequence;$/;"	m	struct:flush_manager
+global_seg_sequence	target.h	/^	u64 global_seg_sequence;$/;"	m	struct:flush_invoke_job
+gn_bio	target.h	/^	struct bio *gn_bio;$/;"	m	struct:read_caching_job	typeref:struct:read_caching_job::bio
+gn_bio_error	target.h	/^	unsigned long gn_bio_error;$/;"	m	struct:read_caching_job
+gn_list	target.h	/^	struct list_head gn_list;$/;"	m	struct:read_caching_job	typeref:struct:read_caching_job::list_head
+gn_mb	target.h	/^	struct metablock *gn_mb;$/;"	m	struct:read_caching_job	typeref:struct:read_caching_job::metablock
+gn_rambuf	target.h	/^	struct rambuffer *gn_rambuf;$/;"	m	struct:read_caching_job	typeref:struct:read_caching_job::rambuffer
+gn_sector	target.h	/^	sector_t gn_sector;$/;"	m	struct:read_caching_job
+gn_seg	target.h	/^	struct segment_header *gn_seg;$/;"	m	struct:read_caching_job	typeref:struct:read_caching_job::segment_header
+gn_super	target.h	/^	struct dmsrc_super *gn_super;$/;"	m	struct:read_caching_job	typeref:struct:read_caching_job::dmsrc_super
+group	target.h	/^	struct group_header *group;$/;"	m	struct:segment_header	typeref:struct:segment_header::group_header
+group_alloc_count	target.h	/^	atomic_t group_alloc_count;$/;"	m	struct:segment_allocator
+group_alloc_queue	target.h	/^	struct list_head group_alloc_queue;$/;"	m	struct:segment_allocator	typeref:struct:segment_allocator::list_head
+group_cnt	raid.h	/^	int			group_cnt;$/;"	m	struct:r5conf
+group_empty_chunk_map	target.h	/^	int group_empty_chunk_map[NBUF][MAX_CACHE_DEVS];$/;"	m	struct:multi_allocator
+group_head	target.h	/^	struct list_head group_head;$/;"	m	struct:group_header	typeref:struct:group_header::list_head
+group_header	target.h	/^struct group_header {$/;"	s
+group_header_array	target.h	/^	struct group_header *group_header_array;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::group_header
+group_id	target.h	/^	u32 group_id;$/;"	m	struct:group_header
+group_id	target.h	/^	u64 group_id;$/;"	m	struct:segment_header
+group_job_count	target.h	/^	atomic_t group_job_count;$/;"	m	struct:migration_manager
+group_job_pool	target.h	/^	mempool_t *group_job_pool;$/;"	m	struct:migration_manager
+group_job_seq	target.h	/^	atomic_t group_job_seq;$/;"	m	struct:migration_manager
+group_list	target.h	/^	struct list_head group_list;$/;"	m	struct:copy_job_group	typeref:struct:copy_job_group::list_head
+group_list	target.h	/^	struct list_head group_list;$/;"	m	struct:segment_header	typeref:struct:segment_header::list_head
+group_migrate_count	target.h	/^	atomic_t group_migrate_count;$/;"	m	struct:segment_allocator
+group_migrate_queue	target.h	/^	struct list_head group_migrate_queue;$/;"	m	struct:segment_allocator	typeref:struct:segment_allocator::list_head
+group_queue	target.h	/^	struct list_head group_queue;$/;"	m	struct:migration_manager	typeref:struct:migration_manager::list_head
+group_queue_lock	target.h	/^	spinlock_t group_queue_lock;$/;"	m	struct:migration_manager
+group_reserve_empty_chunk	alloc.c	/^void group_reserve_empty_chunk(struct dmsrc_super *super, u32 group_id, int cache_type){$/;"	f
+group_sealed_count	target.h	/^	u32	group_sealed_count;$/;"	m	struct:segment_allocator
+group_sealed_queue	target.h	/^	struct list_head group_sealed_queue;$/;"	m	struct:segment_allocator	typeref:struct:segment_allocator::list_head
+group_used_count	target.h	/^	u32 group_used_count;$/;"	m	struct:segment_allocator
+group_used_queue	target.h	/^	struct list_head group_used_queue;$/;"	m	struct:segment_allocator	typeref:struct:segment_allocator::list_head
+handle_list	raid.h	/^	struct list_head	handle_list; \/* stripes needing handling *\/$/;"	m	struct:r5conf	typeref:struct:r5conf::list_head
+hash	target.h	/^	struct hlist_node	hash;$/;"	m	struct:io	typeref:struct:io::hlist_node
+hash_locks	raid.h	/^	spinlock_t		hash_locks[NR_STRIPE_HASH_LOCKS];$/;"	m	struct:r5conf
+hash_num	target.h	/^	unsigned int hash_num;$/;"	m	struct:hot_data_filter
+hdd_devsize	header.h	/^	sector_t hdd_devsize; \/\/ sector unit$/;"	m	struct:superblock_device
+head	target.h	/^	struct list_head head;$/;"	m	struct:seg_write_manager	typeref:struct:seg_write_manager::list_head
+hit	target.h	/^	u32 hit;$/;"	m	struct:super_stat
+hit_bitmap_type	target.h	/^	u32 hit_bitmap_type;$/;"	m	struct:dmsrc_param
+hold_list	raid.h	/^	struct list_head	hold_list; \/* preread ready stripes *\/$/;"	m	struct:r5conf	typeref:struct:r5conf::list_head
+hot_clean_count	target.h	/^	atomic_t hot_clean_count;$/;"	m	struct:segment_header
+hot_count	target.h	/^	atomic_t hot_count;$/;"	m	struct:segment_header
+hot_data_filter	target.h	/^struct hot_data_filter{$/;"	s
+hot_filter	target.h	/^	struct hot_data_filter hot_filter;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::hot_data_filter
+hot_filter_check	target.c	/^int hot_filter_check(struct dmsrc_super *super, unsigned int pageno){$/;"	f
+hot_filter_deinit	target.c	/^void hot_filter_deinit(struct dmsrc_super *super){$/;"	f
+hot_filter_init	target.c	/^int hot_filter_init(struct dmsrc_super *super){$/;"	f
+hot_filter_update	target.c	/^void hot_filter_update(struct dmsrc_super *super, unsigned int pageno){$/;"	f
+hot_identification	header.h	/^	__u32 hot_identification;$/;"	m	struct:superblock_device
+hot_identification	target.h	/^	u32 hot_identification;$/;"	m	struct:dmsrc_param
+hot_io	target.h	/^	int hot_io;$/;"	m	struct:bio_ctx
+hot_threshold	target.h	/^	unsigned int hot_threshold;$/;"	m	struct:hot_data_filter
+hr_timer	target.h	/^	struct hrtimer hr_timer;$/;"	m	struct:sync_manager	typeref:struct:sync_manager::hrtimer
+hr_timer_meter	target.h	/^	struct hrtimer hr_timer_meter;$/;"	m	struct:workload_predictor	typeref:struct:workload_predictor::hrtimer
+hr_timer_track	target.h	/^	struct hrtimer hr_timer_track;$/;"	m	struct:workload_predictor	typeref:struct:workload_predictor::hrtimer
+ht_del	metadata.c	/^void ht_del(struct dmsrc_super *super, struct metablock *mb)$/;"	f
+ht_empty_init	metadata.c	/^int __must_check ht_empty_init(struct dmsrc_super *super)$/;"	f
+ht_get_head	metadata.c	/^struct ht_head *ht_get_head(struct dmsrc_super *super, sector_t key)$/;"	f
+ht_head	target.h	/^struct ht_head {$/;"	s
+ht_initialized	target.h	/^	int ht_initialized;$/;"	m	struct:dmsrc_super
+ht_list	header.h	/^	struct hlist_node ht_list;$/;"	m	struct:metablock	typeref:struct:metablock::hlist_node
+ht_list	target.h	/^	struct hlist_head ht_list;$/;"	m	struct:ht_head	typeref:struct:ht_head::hlist_head
+ht_lookup	metadata.c	/^struct metablock *ht_lookup(struct dmsrc_super *super,sector_t key)$/;"	f
+ht_register	metadata.c	/^void ht_register(struct dmsrc_super *super,sector_t key, struct metablock *mb)$/;"	f
+htable	target.h	/^	struct large_array *htable;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::large_array
+htsize	target.h	/^	size_t htsize;$/;"	m	struct:dmsrc_super
+idx	header.h	/^	__u32 idx;$/;"	m	struct:metablock
+inactive_blocked	raid.h	/^	int			inactive_blocked;	\/* release of inactive stripes blocked,$/;"	m	struct:r5conf
+inactive_count	target.h	/^	atomic_t inactive_count;$/;"	m	struct:scan_metadata_manager
+inactive_count	target.h	/^	atomic_t inactive_count;$/;"	m	struct:segbuf_manager
+inactive_list	raid.h	/^	struct list_head	inactive_list[NR_STRIPE_HASH_LOCKS];$/;"	m	struct:r5conf	typeref:struct:r5conf::list_head
+inactive_list	target.h	/^	struct list_head inactive_list;$/;"	m	struct:segbuf_manager	typeref:struct:segbuf_manager::list_head
+inactive_page_count	target.h	/^	atomic_t inactive_page_count;$/;"	m	struct:segbuf_manager
+inactive_page_list	target.h	/^	struct list_head inactive_page_list;$/;"	m	struct:segbuf_manager	typeref:struct:segbuf_manager::list_head
+inactive_queue	target.h	/^	struct list_head inactive_queue;$/;"	m	struct:scan_metadata_manager	typeref:struct:scan_metadata_manager::list_head
+inc_num_dirty_blocks	target.c	/^inline void inc_num_dirty_blocks(struct dmsrc_super *super)$/;"	f
+index	target.h	/^	int index;$/;"	m	struct:scan_metadata_job
+inflight	target.h	/^	int inflight;$/;"	m	struct:bio_ctx
+inflight_bios	target.h	/^	atomic_t inflight_bios;$/;"	m	struct:cache_stat
+inflight_ios	target.h	/^	atomic_t inflight_ios;$/;"	m	struct:cache_stat
+init_each_rambuf_pool	metadata.c	/^static int init_each_rambuf_pool(struct dmsrc_super *super){$/;"	f	file:
+init_new_segment	target.c	/^void init_new_segment(struct dmsrc_super *super, u64 next_id, int cache_type){$/;"	f
+init_rambuf_pool	metadata.c	/^int __must_check init_rambuf_pool(struct dmsrc_super *super)$/;"	f
+init_read_caching_job_list	target.c	/^static void init_read_caching_job_list(struct dmsrc_super *super){$/;"	f	file:
+init_segment_header_array	metadata.c	/^int __must_check init_segment_header_array(struct dmsrc_super *super)$/;"	f
+initialize_mb	target.c	/^void initialize_mb(struct dmsrc_super *super, struct metablock *new_mb, int cache_type, bool clean){$/;"	f
+initialize_mb_summary	target.c	/^void initialize_mb_summary(struct dmsrc_super *super, struct segment_header *seg,$/;"	f
+initialized	target.h	/^	int initialized;$/;"	m	struct:degraded_manager
+initialized	target.h	/^	int initialized;$/;"	m	struct:flush_manager
+initialized	target.h	/^	int initialized;$/;"	m	struct:migration_manager
+initialized	target.h	/^	int initialized;$/;"	m	struct:pending_manager
+initialized	target.h	/^	int initialized;$/;"	m	struct:plugging_manager
+initialized	target.h	/^	int initialized;$/;"	m	struct:read_miss_manager
+initialized	target.h	/^	int initialized;$/;"	m	struct:recovery_manager
+initialized	target.h	/^	int initialized;$/;"	m	struct:seg_write_manager
+initialized	target.h	/^	int initialized;$/;"	m	struct:segbuf_manager
+initialized	target.h	/^	int initialized;$/;"	m	struct:sync_manager
+initialized	target.h	/^	int initialized;$/;"	m	struct:workload_predictor
+insert_group_to_alloc_queue	metadata.c	/^void insert_group_to_alloc_queue(struct dmsrc_super *super, struct group_header *group){$/;"	f
+insert_group_to_used_queue	metadata.c	/^void insert_group_to_used_queue(struct dmsrc_super *super, struct group_header *group){$/;"	f
+insert_seg_to_alloc_queue	metadata.c	/^void insert_seg_to_alloc_queue(struct dmsrc_super *super, struct segment_header *seg){$/;"	f
+insert_seg_to_used_queue	metadata.c	/^void insert_seg_to_used_queue(struct dmsrc_super *super, struct segment_header *seg){$/;"	f
+invalidate_previous_cache	target.c	/^void invalidate_previous_cache(struct dmsrc_super *super,$/;"	f
+invoke_count	target.h	/^	atomic_t invoke_count;$/;"	m	struct:flush_manager
+invoke_pool	target.h	/^	mempool_t *invoke_pool;$/;"	m	struct:flush_manager
+io	target.h	/^	struct io		io[RECENT_IO];$/;"	m	struct:seq_io_detector	typeref:struct:seq_io_detector::io
+io	target.h	/^struct io {$/;"	s
+io_client	target.h	/^	struct dm_io_client *io_client;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::dm_io_client
+io_count	target.h	/^	atomic64_t io_count;$/;"	m	struct:pending_manager
+io_count	target.h	/^	atomic_t io_count;$/;"	m	struct:flush_manager
+io_count	target.h	/^	unsigned int io_count;;$/;"	m	struct:hot_data_filter
+io_hash	target.h	/^	struct hlist_head	io_hash[RECENT_IO + 1];$/;"	m	struct:seq_io_detector	typeref:struct:seq_io_detector::hlist_head
+io_lock	target.h	/^	spinlock_t io_lock;$/;"	m	struct:dmsrc_super
+io_lru	target.h	/^	struct list_head	io_lru;$/;"	m	struct:seq_io_detector	typeref:struct:seq_io_detector::list_head
+io_req	target.h	/^	struct dm_io_request io_req;$/;"	m	struct:copy_job	typeref:struct:copy_job::dm_io_request
+io_stat_t	target.h	/^struct io_stat_t{$/;"	s
+iohash	target.c	/^static struct hlist_head *iohash(struct seq_io_detector *dc, uint64_t k)$/;"	f	file:
+iolock	target.h	886;"	d
+iops	target.h	/^	atomic64_t iops[REQ_CATEGORY_NUM][REQ_TYPE_NUM];$/;"	m	struct:io_stat_t
+iostat	target.h	/^	struct io_stat_t iostat[MAX_WINDOW_NUM];$/;"	m	struct:workload_predictor	typeref:struct:workload_predictor::io_stat_t
+iounlock	target.h	887;"	d
+is_cold_stripe	header.h	213;"	d
+is_empty_seg	daemon.c	/^int is_empty_seg(struct dmsrc_super *super, struct segment_header *seg, int use_gc){$/;"	f
+is_gc_stripe	header.h	212;"	d
+is_normal_stripe	header.h	211;"	d
+is_read	target.h	/^	int is_read;$/;"	m	struct:recovery_job
+is_read_stripe	header.h	210;"	d
+is_write_stripe	header.h	209;"	d
+issue_deferred_bio	daemon.c	/^void issue_deferred_bio(struct dmsrc_super *super, struct bio_list *barrier_ios){$/;"	f
+issue_mig_kcopyd	daemon.c	/^void issue_mig_kcopyd(struct dmsrc_super *super, int use_gc){$/;"	f
+jiffies	target.h	/^	unsigned long		jiffies;$/;"	m	struct:io
+job_pool	target.h	/^	mempool_t *job_pool; \/* 8 sector buffer pool *\/$/;"	m	struct:degraded_manager
+job_pool	target.h	/^	mempool_t *job_pool;$/;"	m	struct:read_miss_manager
+job_pool	target.h	/^	mempool_t *job_pool;$/;"	m	struct:recovery_manager
+lap	target.h	/^	__le32 lap;$/;"	m	struct:segment_header_device
+large_array	metadata.h	/^struct large_array {$/;"	s
+large_array_alloc	metadata.c	/^struct large_array *large_array_alloc(u32 elemsize, u64 num_elems)$/;"	f
+large_array_at	metadata.c	/^void *large_array_at(struct large_array *arr, u32 i)$/;"	f
+large_array_at	metadata.c	/^void *large_array_at(struct large_array *arr, u64 i)$/;"	f
+large_array_free	metadata.c	/^void large_array_free(struct large_array *arr)$/;"	f
+last	target.h	/^	sector_t		last;$/;"	m	struct:io
+last_hold	raid.h	/^	struct list_head	*last_hold; \/* detect hold_list promotions *\/$/;"	m	struct:r5conf	typeref:struct:r5conf::list_head
+last_jiffies	target.h	/^	unsigned long last_jiffies[MAX_CACHE_DEVS];$/;"	m	struct:plugging_manager
+last_table	target.h	/^	unsigned int last_table;$/;"	m	struct:hot_data_filter
+length	target.h	/^	atomic_t length;$/;"	m	struct:segment_header
+level	raid.h	/^	int			level, algorithm;$/;"	m	struct:r5conf
+list	daemon.h	/^	struct list_head list;$/;"	m	struct:merge_req_t	typeref:struct:merge_req_t::list_head
+list	target.h	/^	struct list_head list;$/;"	m	struct:flush_invoke_job	typeref:struct:flush_invoke_job::list_head
+list	target.h	/^	struct list_head list;$/;"	m	struct:rambuf_page	typeref:struct:rambuf_page::list_head
+list	target.h	/^	struct list_head list;$/;"	m	struct:rambuffer	typeref:struct:rambuffer::list_head
+list	target.h	/^	struct list_head list;$/;"	m	struct:scan_metadata_job	typeref:struct:scan_metadata_job::list_head
+list	target.h	/^	struct list_head list;$/;"	m	struct:wb_job	typeref:struct:wb_job::list_head
+load_summary_from_ssd	metadata.c	/^int load_summary_from_ssd(struct dmsrc_super *super){$/;"	f
+lock	lru.h	/^ spinlock_t lock;$/;"	m	struct:cache_manager
+lock	target.h	/^	spinlock_t lock;$/;"	m	struct:degraded_manager
+lock	target.h	/^	spinlock_t lock;$/;"	m	struct:flush_manager
+lock	target.h	/^	spinlock_t lock;$/;"	m	struct:group_header
+lock	target.h	/^	spinlock_t lock;$/;"	m	struct:hot_data_filter
+lock	target.h	/^	spinlock_t lock;$/;"	m	struct:pending_manager
+lock	target.h	/^	spinlock_t lock;$/;"	m	struct:rambuffer
+lock	target.h	/^	spinlock_t lock;$/;"	m	struct:recovery_manager
+lock	target.h	/^	spinlock_t lock;$/;"	m	struct:scan_metadata_manager
+lock	target.h	/^	spinlock_t lock;$/;"	m	struct:segbuf_manager
+lock	target.h	/^	spinlock_t lock;$/;"	m	struct:segment_header
+lock	target.h	/^	spinlock_t lock;$/;"	m	struct:sync_manager
+lock	target.h	/^	spinlock_t lock;$/;"	m	struct:workload_predictor
+lock	target.h	/^	spinlock_t lock[MAX_CACHE_DEVS];$/;"	m	struct:multi_allocator
+lock	target.h	/^	spinlock_t lock[MAX_CACHE_DEVS];$/;"	m	struct:plugging_manager
+locked	lru.h	/^	atomic_t locked;$/;"	m	struct:lru_node
+lockseg	target.h	169;"	d
+lru	target.h	/^	struct list_head	lru;$/;"	m	struct:io	typeref:struct:io::list_head
+lru_alloc	lru.c	/^void *lru_alloc(struct cache_manager *c, struct lru_node *ln, sector_t blkno){$/;"	f
+lru_close	lru.c	/^void lru_close(struct cache_manager *c){$/;"	f
+lru_deinit	lru.c	/^void lru_deinit(struct cache_manager *lru_manager){$/;"	f
+lru_init	lru.c	/^void lru_init(struct cache_manager **c,char *name, int size,int high,int low){$/;"	f
+lru_insert	lru.c	/^void lru_insert(struct cache_manager *c,struct lru_node *ln){$/;"	f
+lru_manager	target.h	/^	struct cache_manager *lru_manager;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::cache_manager
+lru_movemru	lru.c	/^void lru_movemru(struct cache_manager *c, struct lru_node *ln ) {$/;"	f
+lru_node	lru.h	/^struct lru_node{$/;"	s
+lru_open	lru.c	/^void lru_open(struct cache_manager *c,int cache_size){$/;"	f
+lru_presearch	lru.c	/^struct lru_node *lru_presearch(struct cache_manager *c, sector_t blkno){$/;"	f
+lru_remove	lru.c	/^void *lru_remove(struct cache_manager *c, struct lru_node *ln ) {$/;"	f
+lru_replace	lru.c	/^void *lru_replace(struct cache_manager *c, int watermark){	$/;"	f
+lru_search	lru.c	/^struct lru_node *lru_search(struct cache_manager *c, sector_t blkno){$/;"	f
+ma	target.h	/^	struct multi_allocator ma[NBUF];$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::multi_allocator
+ma_alloc	alloc.c	/^u32 ma_alloc(struct dmsrc_super *super, struct segment_header *seg, u64 seg_id, int cache_type, $/;"	f
+ma_get_count	alloc.c	/^inline u32 ma_get_count(struct dmsrc_super *super, int cache_type){$/;"	f
+ma_get_count_per_dev	alloc.c	/^inline u32 ma_get_count_per_dev(struct dmsrc_super *super, int cache_type, int devno){$/;"	f
+ma_get_free	alloc.c	/^inline u32 ma_get_free(struct dmsrc_super *super, int cache_type){$/;"	f
+ma_get_row_count	alloc.c	/^inline u32 ma_get_row_count(struct dmsrc_super *super, int cache_type, int row){$/;"	f
+ma_reset	alloc.c	/^int ma_reset(struct dmsrc_super *super, u64 seg_id, int cache_type){$/;"	f
+ma_select_dev	alloc.c	/^u32 ma_select_dev(struct dmsrc_super *super, sector_t sector, int cache_type){$/;"	f
+ma_set_count	alloc.c	/^inline void ma_set_count(struct dmsrc_super *super, int cache_type, int count){$/;"	f
+magic	header.h	/^	__u32 magic;$/;"	m	struct:superblock_device
+magic	target.h	/^	__le32 magic;$/;"	m	struct:segment_header_device
+make_bios_parity	target.c	/^void make_bios_parity(struct dmsrc_super *super, struct segment_header *seg, struct rambuffer *rambuf, int partial){$/;"	f
+make_bios_vector	target.c	/^void make_bios_vector(struct dmsrc_super *super, struct segment_header *seg, struct rambuffer *rambuf, $/;"	f
+make_degraded_read	target.c	/^void make_degraded_read(struct dmsrc_super *super, struct bio *bio, $/;"	f
+make_flush_invoke_job	target.c	/^void make_flush_invoke_job(struct dmsrc_super *super, struct segment_header *seg, $/;"	f
+map_pending_bio	target.c	/^static int map_pending_bio(struct dmsrc_super *super, struct bio *bio)$/;"	f	file:
+map_region	daemon.c	/^static void map_region(struct dm_io_region *io, struct bio *bio)$/;"	f	file:
+mark_parity_dirty	target.c	/^void mark_parity_dirty(struct dmsrc_super *super, int cache_type, $/;"	f
+mark_recover	daemon.c	/^void mark_recover(struct dmsrc_super *super, struct segment_header *seg)$/;"	f
+max_degraded	raid.h	/^	int			max_degraded;$/;"	m	struct:r5conf
+max_migrate_inflights	target.h	/^	u32 max_migrate_inflights;$/;"	m	struct:dmsrc_param
+max_nr_stripes	raid.h	/^	int			max_nr_stripes;$/;"	m	struct:r5conf
+mb	target.h	/^	struct metablock *mb;$/;"	m	struct:degraded_job	typeref:struct:degraded_job::metablock
+mb	target.h	/^	struct metablock *mb;$/;"	m	struct:recovery_job	typeref:struct:recovery_job::metablock
+mb	target.h	/^	struct metablock *mb;$/;"	m	struct:wb_job	typeref:struct:wb_job::metablock
+mb_array_empty_init	metadata.c	/^static void mb_array_empty_init(struct dmsrc_super *super)$/;"	f	file:
+mb_array_sanity_check	metadata.c	/^static void mb_array_sanity_check(struct dmsrc_super *super)$/;"	f	file:
+mb_at	metadata.c	/^struct metablock *mb_at(struct dmsrc_super *super, u32 idx)$/;"	f
+mb_flags	header.h	/^	unsigned long mb_flags;$/;"	m	struct:metablock
+mb_hit	metadata.c	/^static bool mb_hit(struct metablock *mb, sector_t key)$/;"	f	file:
+mddev	raid.h	/^	struct mddev		*mddev;$/;"	m	struct:r5conf	typeref:struct:r5conf::mddev
+memory	metadata.h	/^	void *memory;$/;"	m	struct:part
+merge_req_t	daemon.h	/^struct merge_req_t{$/;"	s
+meta_initialized	target.h	/^	int meta_initialized;$/;"	m	struct:dmsrc_super
+metablock	header.h	/^struct metablock {$/;"	s
+metablock_array	target.h	/^	struct large_array *metablock_array[MAX_CACHE_DEVS];$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::large_array
+metablock_device	header.h	/^struct metablock_device {$/;"	s
+mig_completes	target.h	/^	atomic_t mig_completes;$/;"	m	struct:migration_manager
+mig_inflights	target.h	/^	atomic_t mig_inflights;$/;"	m	struct:migration_manager
+mig_queue	target.h	/^	struct list_head mig_queue;$/;"	m	struct:migration_manager	typeref:struct:migration_manager::list_head
+mig_queue_lock	target.h	/^	spinlock_t mig_queue_lock;$/;"	m	struct:migration_manager
+mig_work	target.h	/^	struct work_struct mig_work;$/;"	m	struct:migration_manager	typeref:struct:migration_manager::work_struct
+mig_wq	target.h	/^	struct workqueue_struct *mig_wq;$/;"	m	struct:migration_manager	typeref:struct:migration_manager::workqueue_struct
+migrate_highwater	target.h	/^	u32 migrate_highwater;$/;"	m	struct:dmsrc_param
+migrate_list	target.h	/^	struct list_head migrate_list;$/;"	m	struct:segment_header	typeref:struct:segment_header::list_head
+migrate_lowwater	target.h	/^	u32 migrate_lowwater;$/;"	m	struct:dmsrc_param
+migrate_mgr	target.h	/^	struct migration_manager migrate_mgr;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::migration_manager
+migrate_mgr_deinit	target.c	/^void migrate_mgr_deinit(struct dmsrc_super *super){$/;"	f
+migrate_mgr_init	target.c	/^int migrate_mgr_init(struct dmsrc_super *super){$/;"	f
+migrate_proc	daemon.c	/^int migrate_proc(void *data)$/;"	f
+migrate_queue	target.h	/^	struct list_head migrate_queue;$/;"	m	struct:migration_manager	typeref:struct:migration_manager::list_head
+migrate_queue_count	target.h	/^	atomic_t migrate_queue_count;$/;"	m	struct:migration_manager
+migrate_triggered	target.h	/^	atomic_t migrate_triggered;$/;"	m	struct:migration_manager
+migration_manager	target.h	/^struct migration_manager{$/;"	s
+min_offset_diff	raid.h	/^	long long		min_offset_diff; \/* minimum difference between$/;"	m	struct:r5conf
+more_work	daemon.c	/^static int more_work(struct dmsrc_super *super){$/;"	f	file:
+move_group_migrate_to_alloc_queue	metadata.c	/^void move_group_migrate_to_alloc_queue(struct dmsrc_super *super, struct group_header *group){$/;"	f
+move_group_sealed_to_migrate_queue	metadata.c	/^void move_group_sealed_to_migrate_queue(struct dmsrc_super *super, struct group_header *group, int lock){$/;"	f
+move_group_used_to_sealed_queue	metadata.c	/^void move_group_used_to_sealed_queue(struct dmsrc_super *super, struct group_header *group){$/;"	f
+move_seg_migrate_to_alloc_queue	metadata.c	/^void move_seg_migrate_to_alloc_queue(struct dmsrc_super *super, struct segment_header *seg){$/;"	f
+move_seg_migrate_to_sealed_queue	metadata.c	/^void move_seg_migrate_to_sealed_queue(struct dmsrc_super *super, struct segment_header *seg){$/;"	f
+move_seg_mru_sealed	metadata.c	/^void move_seg_mru_sealed(struct dmsrc_super *super, struct segment_header *seg){$/;"	f
+move_seg_sealed_to_migrate_queue	metadata.c	/^void move_seg_sealed_to_migrate_queue(struct dmsrc_super *super, struct segment_header *seg, int lock){$/;"	f
+move_seg_used_to_sealed_queue	metadata.c	/^void move_seg_used_to_sealed_queue(struct dmsrc_super *super, struct segment_header *seg){$/;"	f
+multi_allocator	target.h	/^struct multi_allocator{$/;"	s
+multi_allocator_deinit	alloc.c	/^void multi_allocator_deinit(struct dmsrc_super *super){$/;"	f
+multi_allocator_init	alloc.c	/^int multi_allocator_init(struct dmsrc_super *super){$/;"	f
+need_chunk_summary	target.c	/^inline bool need_chunk_summary(struct dmsrc_super *super, u32 idx){$/;"	f
+need_clean_seg_write	target.c	/^int need_clean_seg_write(struct dmsrc_super *super){$/;"	f
+need_rambuf_size	target.c	/^inline int need_rambuf_size(struct dmsrc_super *super, int cache_type){$/;"	f
+need_refresh_segment	target.c	/^inline bool need_refresh_segment(struct dmsrc_super *super, int cache_type, int count){$/;"	f
+null_head	target.h	/^	struct ht_head *null_head;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::ht_head
+num_bits_per_table	target.h	/^	unsigned int num_bits_per_table;$/;"	m	struct:hot_data_filter
+num_blocks_per_chunk	header.h	/^	__u32 num_blocks_per_chunk;$/;"	m	struct:superblock_device
+num_blocks_per_chunk	target.h	/^	u32 num_blocks_per_chunk; \/* Const *\/ \/\/ 4KB unit $/;"	m	struct:cache_stat
+num_blocks_per_ssd	header.h	/^	__u32 num_blocks_per_ssd;$/;"	m	struct:superblock_device
+num_blocks_per_ssd	target.h	/^	u32 num_blocks_per_ssd;$/;"	m	struct:cache_stat
+num_bufcopy	target.h	/^	atomic_t num_bufcopy;$/;"	m	struct:segment_header
+num_bytes_per_table	target.h	/^	unsigned int num_bytes_per_table;$/;"	m	struct:hot_data_filter
+num_cache_devs	target.h	/^	unsigned int num_cache_devs;$/;"	m	struct:device_info
+num_chunks	header.h	/^	__u32 num_chunks;$/;"	m	struct:superblock_device
+num_chunks_per_group	target.h	/^	u32 num_chunks_per_group; \/* Const *\/$/;"	m	struct:cache_stat
+num_chunks_per_ssd	target.h	/^	u32 num_chunks_per_ssd; \/* Const *\/$/;"	m	struct:cache_stat
+num_data_cache_devs	target.h	/^	unsigned int num_data_cache_devs;$/;"	m	struct:device_info
+num_dirty_blocks	target.h	/^	atomic64_t num_dirty_blocks;$/;"	m	struct:cache_stat
+num_elems	metadata.h	/^	u64 num_elems;$/;"	m	struct:large_array
+num_elems_in_part	metadata.c	/^static u32 num_elems_in_part(struct large_array *arr)$/;"	f	file:
+num_entry_per_page	header.h	/^	__u32 num_entry_per_page;$/;"	m	struct:superblock_device
+num_entry_per_page	target.h	/^	u32 num_entry_per_page;$/;"	m	struct:dmsrc_param
+num_filling	target.h	/^	atomic_t num_filling;$/;"	m	struct:segment_header
+num_free_segments	target.h	/^	atomic_t num_free_segments;$/;"	m	struct:cache_stat
+num_groups	header.h	/^	__u32 num_groups;$/;"	m	struct:superblock_device
+num_groups	target.h	/^	u32 num_groups; \/* Const *\/$/;"	m	struct:cache_stat
+num_migios	target.h	/^	atomic_t num_migios;$/;"	m	struct:segment_header
+num_parts	metadata.c	/^static u64 num_parts(struct large_array *arr)$/;"	f	file:
+num_rambuf_pool	target.h	/^	u32 num_rambuf_pool; $/;"	m	struct:segbuf_manager
+num_read_inflight	target.h	/^	atomic_t num_read_inflight;$/;"	m	struct:segment_header
+num_remaining_ios	target.h	/^	atomic_t num_remaining_ios;$/;"	m	struct:degraded_job
+num_remaining_ios	target.h	/^	atomic_t num_remaining_ios;$/;"	m	struct:recovery_job
+num_segments	target.h	/^	u32 num_segments; \/* Const *\/$/;"	m	struct:cache_stat
+num_spare_cache_devs	target.h	/^	unsigned int num_spare_cache_devs; $/;"	m	struct:device_info
+num_summary_per_chunk	header.h	/^	__u32 num_summary_per_chunk;$/;"	m	struct:superblock_device
+num_summary_per_chunk	target.h	/^	u32 num_summary_per_chunk;$/;"	m	struct:dmsrc_param
+num_used_blocks	target.h	/^	atomic_t num_used_blocks;$/;"	m	struct:cache_stat
+num_used_ssd	target.h	/^	atomic_t num_used_ssd;$/;"	m	struct:group_header
+num_window	target.h	/^	u32 num_window;$/;"	m	struct:workload_predictor
+num_writeback	target.h	/^	atomic_t num_writeback;$/;"	m	struct:segment_header
+o_region	daemon.h	/^	struct dm_io_region o_region;$/;"	m	struct:merge_req_t	typeref:struct:merge_req_t::dm_io_region
+obj-m	Makefile	/^obj-m := dm-src.o$/;"	m
+org_bio	target.h	/^	struct bio *org_bio;$/;"	m	struct:degraded_job	typeref:struct:degraded_job::bio
+origin_dev	target.h	/^	struct dm_dev *origin_dev;$/;"	m	struct:device_info	typeref:struct:device_info::dm_dev
+origin_name	target.h	/^	char origin_name[128];$/;"	m	struct:device_info
+origin_sectors	target.h	/^	sector_t origin_sectors;$/;"	m	struct:device_info
+padding	header.h	/^	__u8 padding[8 - (4 + 1 + 1)]; \/* 16B *\/$/;"	m	struct:metablock_device
+padding	target.h	/^	u8 padding[SEGMENT_HEADER_SIZE - (8 + 8 + 4 + 4 + 4)]; \/* 512B *\/$/;"	m	struct:segment_header_device
+page	target.h	/^	struct rambuf_page *page;$/;"	m	struct:copy_job	typeref:struct:copy_job::rambuf_page
+pages	target.h	/^	struct rambuf_page **pages;$/;"	m	struct:rambuffer	typeref:struct:rambuffer::rambuf_page
+pages	target.h	/^	void **pages;$/;"	m	struct:segbuf_manager
+param	target.h	/^	struct dmsrc_param param;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::dmsrc_param
+parity_allocation	header.h	/^	__u32 parity_allocation;$/;"	m	struct:superblock_device
+parity_allocation	target.h	/^	u32 parity_allocation;$/;"	m	struct:dmsrc_param
+part	metadata.h	/^struct part {$/;"	s
+part_length	target.h	/^	atomic_t part_length;$/;"	m	struct:segment_header
+part_start	target.h	/^	atomic_t part_start;$/;"	m	struct:segment_header
+partial_write_count	target.h	/^	atomic_t partial_write_count;;$/;"	m	struct:super_stat
+parts	metadata.h	/^	struct part *parts;$/;"	m	struct:large_array	typeref:struct:large_array::part
+pending_bio_add	target.c	/^void pending_bio_add(struct dmsrc_super *super, struct bio *bio){$/;"	f
+pending_bio_empty	target.c	/^bool pending_bio_empty(struct dmsrc_super *super){$/;"	f
+pending_full_writes	raid.h	/^	atomic_t		pending_full_writes; \/* full write backlog *\/$/;"	m	struct:r5conf
+pending_manager	target.h	/^struct pending_manager{$/;"	s
+pending_mgr	target.h	/^	struct pending_manager pending_mgr;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::pending_manager
+pending_mgr_exit	target.c	/^static void pending_mgr_exit(struct dmsrc_super *super){$/;"	f	file:
+pending_mgr_init	target.c	/^static int pending_mgr_init(struct dmsrc_super *super){$/;"	f	file:
+pending_worker	target.c	/^void pending_worker(struct work_struct *work){$/;"	f
+pending_worker_schedule	target.c	/^void pending_worker_schedule(struct dmsrc_super *super){$/;"	f
+per_cache_bw	target.h	/^	u32 per_cache_bw; \/\/ per cache (SSD) bandwith (MB)$/;"	m	struct:device_info
+per_ssd_sectors	target.h	/^	sector_t per_ssd_sectors;$/;"	m	struct:device_info
+percpu	raid.h	/^	} __percpu *percpu;$/;"	m	struct:r5conf	typeref:struct:r5conf::raid5_percpu
+period	target.h	/^	ktime_t period;$/;"	m	struct:sync_manager
+pl	target.h	/^	struct page_list *pl;$/;"	m	struct:rambuf_page	typeref:struct:rambuf_page::page_list
+plug_deadline_proc	daemon.c	/^void plug_deadline_proc(unsigned long data)$/;"	f
+plugger	target.h	/^	struct plugging_manager plugger;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::plugging_manager
+plugger_deinit	target.c	/^void plugger_deinit(struct dmsrc_super *super){$/;"	f
+plugger_init	target.c	/^int plugger_init(struct dmsrc_super *super){$/;"	f
+plugging_manager	target.h	/^struct plugging_manager{$/;"	s
+pool_size	raid.h	/^	int			pool_size; \/* number of disks in stripeheads in pool *\/$/;"	m	struct:r5conf
+pq_test	target.c	/^void pq_test(struct dmsrc_super *super){$/;"	f
+prepare_chunk_summary	target.c	/^void prepare_chunk_summary($/;"	f
+preprocess_pending_bio	target.c	/^static int preprocess_pending_bio(struct dmsrc_super *super, $/;"	f	file:
+preread_active_stripes	raid.h	/^	atomic_t		preread_active_stripes; \/* stripes with scheduled io *\/$/;"	m	struct:r5conf
+prev_algo	raid.h	/^	int			prev_algo;$/;"	m	struct:r5conf
+prev_chunk_sectors	raid.h	/^	int			prev_chunk_sectors;$/;"	m	struct:r5conf
+previous_raid_disks	raid.h	/^	int			previous_raid_disks;$/;"	m	struct:r5conf
+print_alloc_queue	metadata.c	/^void print_alloc_queue(struct dmsrc_super *super){$/;"	f
+print_param	target.c	/^void print_param(struct dmsrc_super *super){$/;"	f
+print_valid_count	daemon.c	/^void print_valid_count(struct dmsrc_super *super){$/;"	f
+process_read_hit_request	target.c	/^static int process_read_hit_request(struct dmsrc_super *super, struct bio *bio,$/;"	f	file:
+process_read_miss_request	target.c	/^static int process_read_miss_request(struct dmsrc_super *super, struct bio *bio, unsigned long f){$/;"	f	file:
+process_read_request	target.c	/^static int process_read_request(struct dmsrc_super *super, struct segment_header *seg, $/;"	f	file:
+process_write_request	target.c	/^int process_write_request(struct dmsrc_super *super, $/;"	f
+ptr	target.h	/^	void *ptr;$/;"	m	struct:bio_ctx
+put_devices	target.c	/^void put_devices(struct dmsrc_super *super){$/;"	f
+qdepth	target.h	/^	int qdepth;$/;"	m	struct:scan_metadata_manager
+queue	target.h	/^	struct list_head queue;$/;"	m	struct:degraded_manager	typeref:struct:degraded_manager::list_head
+queue	target.h	/^	struct list_head queue;$/;"	m	struct:flush_manager	typeref:struct:flush_manager::list_head
+queue	target.h	/^	struct list_head queue;$/;"	m	struct:recovery_manager	typeref:struct:recovery_manager::list_head
+queue	target.h	/^	struct list_head queue[MAX_CACHE_DEVS];$/;"	m	struct:plugging_manager	typeref:struct:plugging_manager::list_head
+queue	target.h	/^	struct read_caching_job_list queue;$/;"	m	struct:read_miss_manager	typeref:struct:read_miss_manager::read_caching_job_list
+queue_barrier_io	daemon.c	/^void queue_barrier_io(struct dmsrc_super *super, struct bio *bio)$/;"	f
+queue_length	target.h	/^	atomic_t queue_length[MAX_CACHE_DEVS];$/;"	m	struct:plugging_manager
+quiesce	raid.h	/^	int			quiesce;$/;"	m	struct:r5conf
+r5conf	raid.h	/^struct r5conf {$/;"	s
+raid5_calc_sector	alloc.c	/^sector_t raid5_calc_sector(struct r5conf *conf, sector_t r_sector,$/;"	f
+raid5_percpu	raid.h	/^	struct raid5_percpu {$/;"	s	struct:r5conf
+raid6_dual_recov	target.c	/^void raid6_dual_recov(int disks, size_t bytes, int faila, int failb, void **ptrs)$/;"	f
+raid_conf	target.h	/^	struct r5conf raid_conf;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::r5conf
+raid_conf_init	target.c	/^void raid_conf_init(struct dmsrc_super *super, struct r5conf *conf){$/;"	f
+raid_disks	raid.h	/^	int			raid_disks;$/;"	m	struct:r5conf
+rambuf	target.h	/^	struct rambuffer *rambuf;$/;"	m	struct:flush_invoke_job	typeref:struct:flush_invoke_job::rambuffer
+rambuf	target.h	/^	struct rambuffer *rambuf;$/;"	m	struct:recovery_job	typeref:struct:recovery_job::rambuffer
+rambuf	target.h	/^	struct rambuffer *rambuf;$/;"	m	struct:wb_job	typeref:struct:wb_job::rambuffer
+rambuf_id	target.h	/^	int rambuf_id;$/;"	m	struct:rambuffer
+rambuf_page	target.h	/^struct rambuf_page{$/;"	s
+rambuf_pool	target.h	/^	struct rambuffer *rambuf_pool;$/;"	m	struct:segbuf_manager	typeref:struct:segbuf_manager::rambuffer
+rambuf_pool_amount	header.h	/^	__u32 rambuf_pool_amount; \/\/ page unit (4KB)$/;"	m	struct:superblock_device
+rambuf_pool_amount	target.h	/^	u32 rambuf_pool_amount; \/* 4KB *\/$/;"	m	struct:dmsrc_param
+rambuf_release	target.h	/^	atomic_t rambuf_release;$/;"	m	struct:wb_job
+rambuffer	target.h	/^struct rambuffer {$/;"	s
+read_caching_job	target.h	/^struct read_caching_job{$/;"	s
+read_caching_job_list	target.h	/^struct read_caching_job_list{$/;"	s
+read_caching_make_job	daemon.c	/^void read_caching_make_job(struct dmsrc_super *super, struct segment_header *seg, struct metablock *mb, struct bio *bio, struct rambuffer *rambuf)$/;"	f
+read_callback	daemon.c	/^void read_callback(unsigned long error, void *context)$/;"	f
+read_count	target.h	/^	u32 read_count;$/;"	m	struct:super_stat
+read_hit	target.h	/^	u32 read_hit;$/;"	m	struct:super_stat
+read_miss_manager	target.h	/^struct read_miss_manager{$/;"	s
+read_miss_mgr	target.h	/^	struct read_miss_manager read_miss_mgr;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::read_miss_manager
+read_miss_mgr_deinit	target.c	/^void read_miss_mgr_deinit(struct dmsrc_super *super){$/;"	f
+read_miss_mgr_init	target.c	/^int read_miss_mgr_init(struct dmsrc_super *super){$/;"	f
+read_segment_header_device	metadata.c	/^read_segment_header_device(struct dmsrc_super *super, u32 segment_idx, u32 offset, struct scan_metadata_job *job)$/;"	f	file:
+read_superblock_header	metadata.c	/^static int read_superblock_header(struct superblock_device *sup,$/;"	f	file:
+reclaim_policy	header.h	/^	__u32 reclaim_policy;$/;"	m	struct:superblock_device
+reclaim_policy	target.h	/^	u32 reclaim_policy;$/;"	m	struct:dmsrc_param
+recovery_disabled	raid.h	/^	int			recovery_disabled;$/;"	m	struct:r5conf
+recovery_job	target.h	/^struct recovery_job{$/;"	s
+recovery_list	target.h	/^	struct list_head recovery_list;$/;"	m	struct:recovery_job	typeref:struct:recovery_job::list_head
+recovery_manager	target.h	/^struct recovery_manager{$/;"	s
+recovery_mgr	target.h	/^	struct recovery_manager recovery_mgr;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::recovery_manager
+recovery_mgr_deinit	target.c	/^void recovery_mgr_deinit(struct dmsrc_super *super){$/;"	f
+recovery_mgr_init	target.c	/^int recovery_mgr_init(struct dmsrc_super *super){$/;"	f
+recovery_proc	daemon.c	/^int recovery_proc(void *data)$/;"	f
+recovery_segment	daemon.c	/^void recovery_segment(struct dmsrc_super *super, struct segment_header *seg, $/;"	f
+ref_count	target.h	/^	atomic_t ref_count;$/;"	m	struct:rambuffer
+release_rambuffer	metadata.c	/^void release_rambuffer(struct dmsrc_super *super, struct rambuffer *rambuf, int cache_type){$/;"	f
+release_victim_seg	daemon.c	/^void release_victim_seg(struct dmsrc_super *super, struct migration_manager *migrate_mgr){$/;"	f
+released_stripes	raid.h	/^	struct llist_head	released_stripes;$/;"	m	struct:r5conf	typeref:struct:r5conf::llist_head
+remove_alloc_group_queue	metadata.c	/^struct group_header *remove_alloc_group_queue(struct dmsrc_super *super){$/;"	f
+remove_alloc_queue	metadata.c	/^struct segment_header *remove_alloc_queue(struct dmsrc_super *super, struct segment_header *seg){$/;"	f
+reserve_empty_chunk	alloc.c	/^void reserve_empty_chunk(struct dmsrc_super *super, u64 seg_id, int cache_type){$/;"	f
+reset_arrival_time	target.c	/^void reset_arrival_time(struct dmsrc_super *super){$/;"	f
+reset_parity	target.c	/^void reset_parity(struct dmsrc_super *super, struct segment_header *seg, int cache_type, int clear_written){$/;"	f
+reshape_checkpoint	raid.h	/^	unsigned long		reshape_checkpoint; \/* Time we last updated$/;"	m	struct:r5conf
+reshape_progress	raid.h	/^	sector_t		reshape_progress;$/;"	m	struct:r5conf
+reshape_safe	raid.h	/^	sector_t		reshape_safe;$/;"	m	struct:r5conf
+reshape_stripes	raid.h	/^	atomic_t		reshape_stripes; \/* stripes with pending writes for reshape *\/$/;"	m	struct:r5conf
+resize_mode	target.h	/^	atomic_t resize_mode;$/;"	m	struct:dmsrc_super
+resume_managers	target.c	/^int __must_check resume_managers(struct dmsrc_super *super)$/;"	f
+retry_read_aligned	raid.h	/^	struct bio		*retry_read_aligned; \/* currently retrying aligned bios   *\/$/;"	m	struct:r5conf	typeref:struct:r5conf::bio
+retry_read_aligned_list	raid.h	/^	struct bio		*retry_read_aligned_list; \/* aligned bios retry list  *\/$/;"	m	struct:r5conf	typeref:struct:r5conf::bio
+rm_copy_count	target.h	/^	atomic_t rm_copy_count;$/;"	m	struct:read_caching_job_list
+rm_copy_head	target.h	/^	struct list_head rm_copy_head;$/;"	m	struct:read_caching_job_list	typeref:struct:read_caching_job_list::list_head
+rm_spinlock	target.h	/^	spinlock_t rm_spinlock;$/;"	m	struct:read_caching_job_list
+row_count	target.h	/^	atomic_t *row_count;$/;"	m	struct:multi_allocator
+row_is_broken	daemon.c	/^int row_is_broken(struct dmsrc_super *super, struct segment_header *seg, int failure_ssd, int row){$/;"	f
+run_xor	target.c	/^void run_xor(void **pages, void *dest, int src_cnt, ssize_t len)$/;"	f
+rw	target.h	/^	int rw;$/;"	m	struct:copy_job_group
+sb_device	target.h	/^	struct superblock_device sb_device[MAX_CACHE_DEVS];$/;"	m	struct:device_info	typeref:struct:device_info::superblock_device
+scan_manager	target.h	/^	struct scan_metadata_manager *scan_manager;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::scan_metadata_manager
+scan_manager_alloc	metadata.c	/^struct scan_metadata_job *scan_manager_alloc(struct dmsrc_super *super){$/;"	f
+scan_manager_deinit	metadata.c	/^void scan_manager_deinit(struct dmsrc_super *super){$/;"	f
+scan_manager_init	metadata.c	/^int scan_manager_init(struct dmsrc_super *super){$/;"	f
+scan_metadata	metadata.c	/^int __must_check scan_metadata(struct dmsrc_super *super)$/;"	f
+scan_metadata_complete_to_inactive	metadata.c	/^void scan_metadata_complete_to_inactive(struct dmsrc_super *super,struct scan_metadata_manager *scan_manager){$/;"	f
+scan_metadata_endio	metadata.c	/^static void scan_metadata_endio(unsigned long error, void *context)$/;"	f	file:
+scan_metadata_job	target.h	/^struct scan_metadata_job{$/;"	s
+scan_metadata_manager	target.h	/^struct scan_metadata_manager{$/;"	s
+scan_superblock	metadata.c	/^int __must_check scan_superblock(struct dmsrc_super *super)$/;"	f
+scribble	raid.h	/^		void		*scribble;   \/* space for constructing buffer$/;"	m	struct:r5conf::raid5_percpu
+scribble_len	raid.h	/^	size_t			scribble_len; \/* size of scribble region must be$/;"	m	struct:r5conf
+sealed	lru.h	/^	atomic_t sealed;$/;"	m	struct:lru_node
+sealed_seg_count	target.h	/^	atomic_t sealed_seg_count;$/;"	m	struct:group_header
+sector	header.h	/^	__u32 sector;$/;"	m	struct:metablock_device
+sector	header.h	/^	sector_t sector; \/* key *\/$/;"	m	struct:metablock
+sector_t	header.h	/^typedef u_int64_t sector_t;$/;"	t
+seg	target.h	/^	struct segment_header *seg;$/;"	m	struct:degraded_job	typeref:struct:degraded_job::segment_header
+seg	target.h	/^	struct segment_header *seg;$/;"	m	struct:flush_invoke_job	typeref:struct:flush_invoke_job::segment_header
+seg	target.h	/^	struct segment_header *seg;$/;"	m	struct:recovery_job	typeref:struct:recovery_job::segment_header
+seg	target.h	/^	struct segment_header *seg;$/;"	m	struct:wb_job	typeref:struct:wb_job::segment_header
+seg_alloc_count	target.h	/^	atomic_t seg_alloc_count;$/;"	m	struct:segment_allocator
+seg_alloc_queue	target.h	/^	struct list_head seg_alloc_queue;$/;"	m	struct:segment_allocator	typeref:struct:segment_allocator::list_head
+seg_allocator	target.h	/^	struct segment_allocator seg_allocator;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::segment_allocator
+seg_allocator_init	target.c	/^void seg_allocator_init(struct dmsrc_super *super){$/;"	f
+seg_buf	target.h	/^	void *seg_buf[MAX_CACHE_DEVS];$/;"	m	struct:rambuffer
+seg_clear_hit_bits	daemon.c	/^void seg_clear_hit_bits(struct dmsrc_super *super, struct segment_header *seg){$/;"	f
+seg_count	target.h	/^	atomic_t seg_count[NBUF];$/;"	m	struct:super_stat
+seg_empty_chunk_map	target.h	/^	int seg_empty_chunk_map[NBUF][MAX_CACHE_DEVS];$/;"	m	struct:multi_allocator
+seg_id	target.h	/^	u32 seg_id;$/;"	m	struct:scan_metadata_job
+seg_id	target.h	/^	u64 seg_id;$/;"	m	struct:segment_header
+seg_length	target.h	/^	int seg_length;$/;"	m	struct:flush_invoke_job
+seg_length_inc	target.c	/^void seg_length_inc(struct dmsrc_super *super, struct segment_header *seg, struct metablock *mb, bool inflight){$/;"	f
+seg_load	target.h	/^	u32 seg_load;$/;"	m	struct:segment_header
+seg_migrate_count	target.h	/^	atomic_t seg_migrate_count;$/;"	m	struct:segment_allocator
+seg_migrate_queue	target.h	/^	struct list_head seg_migrate_queue;$/;"	m	struct:segment_allocator	typeref:struct:segment_allocator::list_head
+seg_sealed_count	target.h	/^	u32	seg_sealed_count;$/;"	m	struct:segment_allocator
+seg_sealed_queue	target.h	/^	struct list_head seg_sealed_queue;$/;"	m	struct:segment_allocator	typeref:struct:segment_allocator::list_head
+seg_stat	metadata.c	/^int seg_stat(struct segment_header *seg){$/;"	f
+seg_type	target.h	/^	u32 seg_type;$/;"	m	struct:segment_header
+seg_used_count	target.h	/^	u32 seg_used_count;$/;"	m	struct:segment_allocator
+seg_used_queue	target.h	/^	struct list_head seg_used_queue;$/;"	m	struct:segment_allocator	typeref:struct:segment_allocator::list_head
+seg_write_manager	target.h	/^struct seg_write_manager{$/;"	s
+seg_write_mgr	target.h	/^	struct seg_write_manager seg_write_mgr[MAX_CACHE_DEVS];$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::seg_write_manager
+seg_write_mgr_deinit	target.c	/^void seg_write_mgr_deinit(struct dmsrc_super *super){$/;"	f
+seg_write_mgr_init	target.c	/^int seg_write_mgr_init(struct dmsrc_super *super){$/;"	f
+seg_write_worker	daemon.c	/^void seg_write_worker(struct work_struct *work){$/;"	f
+segbuf_manager	target.h	/^struct segbuf_manager{$/;"	s
+segbuf_mgr	target.h	/^	struct segbuf_manager segbuf_mgr;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::segbuf_manager
+segment_allocator	target.h	/^struct segment_allocator{$/;"	s
+segment_group_dec_free_segs	metadata.c	/^void segment_group_dec_free_segs(struct dmsrc_super *super, struct segment_header *seg){$/;"	f
+segment_group_inc_free_segs	metadata.c	/^u32 segment_group_inc_free_segs(struct dmsrc_super *super, struct segment_header *seg){$/;"	f
+segment_group_print_stat	metadata.c	/^void segment_group_print_stat(struct dmsrc_super *super){$/;"	f
+segment_header	target.h	/^struct segment_header {$/;"	s
+segment_header_array	target.h	/^	struct large_array *segment_header_array;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::large_array
+segment_header_device	target.h	/^struct segment_header_device {$/;"	s
+select_victim_fifo	daemon.c	/^struct group_header *select_victim_fifo(struct dmsrc_super *super, int use_gc){$/;"	f
+select_victim_for_gc	daemon.c	/^int select_victim_for_gc(struct dmsrc_super *super, int num_mig){$/;"	f
+select_victim_for_gc	daemon.c	/^int select_victim_for_gc(struct dmsrc_super *super, int num_mig, int *use_gc){$/;"	f
+select_victim_greedy	daemon.c	/^struct group_header *select_victim_greedy(struct dmsrc_super *super, int use_gc){$/;"	f
+select_victim_segs	daemon.c	/^int select_victim_segs(struct dmsrc_super *super, int num_mig, int *use_gc){$/;"	f
+seq	target.h	/^	int seq;$/;"	m	struct:copy_job_group
+seq_bypass_count	target.h	/^	atomic_t seq_bypass_count;$/;"	m	struct:super_stat
+seq_detector	target.h	/^	struct seq_io_detector seq_detector;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::seq_io_detector
+seq_detector_init	target.c	/^static void seq_detector_init(struct dmsrc_super *super){$/;"	f	file:
+seq_flush	raid.h	/^	int			seq_flush, seq_write;$/;"	m	struct:r5conf
+seq_io	target.h	/^	int seq_io;$/;"	m	struct:bio_ctx
+seq_io_detector	target.h	/^struct seq_io_detector{$/;"	s
+seq_lock	target.h	/^	spinlock_t seq_lock;$/;"	m	struct:seq_io_detector
+seq_write	raid.h	/^	int			seq_flush, seq_write;$/;"	m	struct:r5conf
+sequence	target.h	/^	__le64 sequence;$/;"	m	struct:segment_header_device
+sequence	target.h	/^	u64 sequence; \/\/ sequence number $/;"	m	struct:segment_header
+sequential	target.h	/^	unsigned		sequential;$/;"	m	struct:io
+sequential_cutoff	target.h	/^	unsigned		sequential_cutoff;$/;"	m	struct:dmsrc_param
+sequential_enable	target.h	/^	unsigned 		sequential_enable;$/;"	m	struct:dmsrc_param
+set_default_param	target.c	/^static void set_default_param(struct dmsrc_super *super, struct dmsrc_param *param){$/;"	f	file:
+should_bypass_bio	target.c	/^int should_bypass_bio(struct dmsrc_super *super, $/;"	f
+should_need_refresh_seg	target.c	/^inline bool should_need_refresh_seg(struct dmsrc_super *super, int cache_type){$/;"	f
+skewed_segment	target.h	/^	atomic_t skewed_segment;$/;"	m	struct:group_header
+slab_cache	raid.h	/^	struct kmem_cache		*slab_cache; \/* for allocating stripes *\/$/;"	m	struct:r5conf	typeref:struct:r5conf::kmem_cache
+spare_cache_dev	target.h	/^	struct dm_dev *spare_cache_dev[MAX_CACHE_DEVS];$/;"	m	struct:device_info	typeref:struct:device_info::dm_dev
+spare_name	target.h	/^	char spare_name[MAX_CACHE_DEVS][128];$/;"	m	struct:device_info
+spare_page	raid.h	/^		struct page	*spare_page; \/* Used when checking P\/Q in raid6 *\/$/;"	m	struct:r5conf::raid5_percpu	typeref:struct:r5conf::raid5_percpu::page
+spinlock	target.h	/^	spinlock_t spinlock;$/;"	m	struct:seg_write_manager
+src_mb	target.h	/^	struct metablock *src_mb;$/;"	m	struct:copy_job	typeref:struct:copy_job::metablock
+src_region	target.h	/^	struct dm_io_region src_region;$/;"	m	struct:copy_job	typeref:struct:copy_job::dm_io_region
+ssd_devsize	header.h	/^	sector_t ssd_devsize; \/\/ sector unit$/;"	m	struct:superblock_device
+ssd_id	target.h	/^	u32 ssd_id;$/;"	m	struct:scan_metadata_job
+ssd_read_hit_count	target.h	/^	atomic64_t ssd_read_hit_count;$/;"	m	struct:super_stat
+ssd_read_miss_count	target.h	/^	atomic64_t ssd_read_miss_count;$/;"	m	struct:super_stat
+ssd_write_hit_count	target.h	/^	atomic64_t ssd_write_hit_count;$/;"	m	struct:super_stat
+ssd_write_miss_count	target.h	/^	atomic64_t ssd_write_miss_count;$/;"	m	struct:super_stat
+start_idx	target.h	/^	u32 start_idx;$/;"	m	struct:wb_job
+start_jiffies	target.h	/^	unsigned long start_jiffies;$/;"	m	struct:recovery_manager
+start_window	target.h	/^	atomic_t start_window;$/;"	m	struct:workload_predictor
+stat_init	target.c	/^static void stat_init(struct dmsrc_super *super){$/;"	f	file:
+stop_managers	target.c	/^void stop_managers(struct dmsrc_super *super){$/;"	f
+stripe_hashtbl	raid.h	/^	struct hlist_head	*stripe_hashtbl;$/;"	m	struct:r5conf	typeref:struct:r5conf::hlist_head
+striping_policy	header.h	/^	__u32 striping_policy;$/;"	m	struct:superblock_device
+striping_policy	target.h	/^	u32 striping_policy;$/;"	m	struct:dmsrc_param
+summary_start	target.h	/^	atomic_t summary_start[MAX_CACHE_DEVS];$/;"	m	struct:segment_header
+super	target.h	/^	struct dmsrc_super *super;$/;"	m	struct:copy_job_group	typeref:struct:copy_job_group::dmsrc_super
+super	target.h	/^	struct dmsrc_super *super;$/;"	m	struct:degraded_job	typeref:struct:degraded_job::dmsrc_super
+super	target.h	/^	struct dmsrc_super *super;$/;"	m	struct:degraded_manager	typeref:struct:degraded_manager::dmsrc_super
+super	target.h	/^	struct dmsrc_super *super;$/;"	m	struct:migration_manager	typeref:struct:migration_manager::dmsrc_super
+super	target.h	/^	struct dmsrc_super *super;$/;"	m	struct:pending_manager	typeref:struct:pending_manager::dmsrc_super
+super	target.h	/^	struct dmsrc_super *super;$/;"	m	struct:plugging_manager	typeref:struct:plugging_manager::dmsrc_super
+super	target.h	/^	struct dmsrc_super *super;$/;"	m	struct:read_miss_manager	typeref:struct:read_miss_manager::dmsrc_super
+super	target.h	/^	struct dmsrc_super *super;$/;"	m	struct:recovery_job	typeref:struct:recovery_job::dmsrc_super
+super	target.h	/^	struct dmsrc_super *super;$/;"	m	struct:recovery_manager	typeref:struct:recovery_manager::dmsrc_super
+super	target.h	/^	struct dmsrc_super *super;$/;"	m	struct:scan_metadata_job	typeref:struct:scan_metadata_job::dmsrc_super
+super	target.h	/^	struct dmsrc_super *super;$/;"	m	struct:seg_write_manager	typeref:struct:seg_write_manager::dmsrc_super
+super	target.h	/^	struct dmsrc_super *super;$/;"	m	struct:sync_manager	typeref:struct:sync_manager::dmsrc_super
+super	target.h	/^	struct dmsrc_super *super;$/;"	m	struct:wb_job	typeref:struct:wb_job::dmsrc_super
+super	target.h	/^	struct dmsrc_super *super;$/;"	m	struct:workload_predictor	typeref:struct:workload_predictor::dmsrc_super
+super_stat	target.h	/^struct super_stat{$/;"	s
+superblock_device	header.h	/^struct superblock_device {$/;"	s
+sync_interval	target.h	/^	u32 sync_interval; \/* us *\/ \/* param *\/$/;"	m	struct:dmsrc_param
+sync_manager	target.h	/^struct sync_manager{$/;"	s
+sync_mgr	target.h	/^	struct sync_manager sync_mgr;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::sync_manager
+sync_mgr_deinit	target.c	/^void sync_mgr_deinit(struct dmsrc_super *super){$/;"	f
+sync_mgr_init	target.c	/^int sync_mgr_init(struct dmsrc_super *super){$/;"	f
+sync_proc	daemon.c	/^void sync_proc(struct work_struct *work)$/;"	f
+sync_timer_callback	target.c	/^enum hrtimer_restart sync_timer_callback( struct hrtimer *timer )$/;"	f
+target_jiffies	target.h	/^	unsigned long target_jiffies;$/;"	m	struct:sync_manager
+temp_inactive_list	raid.h	/^	struct list_head	temp_inactive_list[NR_STRIPE_HASH_LOCKS];$/;"	m	struct:r5conf	typeref:struct:r5conf::list_head
+thread	raid.h	/^	struct md_thread	*thread;$/;"	m	struct:r5conf	typeref:struct:r5conf::md_thread
+ti	target.h	/^	struct dm_target *ti;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::dm_target
+timer	target.h	/^	struct timer_list timer;$/;"	m	struct:plugging_manager	typeref:struct:plugging_manager::timer_list
+total_bios	target.h	/^	atomic_t total_bios;$/;"	m	struct:cache_stat
+total_bios2	target.h	/^	atomic_t total_bios2;$/;"	m	struct:cache_stat
+total_count	target.h	/^	atomic_t total_count; $/;"	m	struct:multi_allocator
+total_ios	target.h	/^	atomic_t total_ios;$/;"	m	struct:cache_stat
+total_length	target.h	/^	atomic_t total_length;$/;"	m	struct:plugging_manager
+total_migration	target.h	/^	atomic_t total_migration;$/;"	m	struct:super_stat
+total_page_count	target.h	/^	atomic_t total_page_count;$/;"	m	struct:segbuf_manager
+track_period	target.h	/^	ktime_t track_period;$/;"	m	struct:workload_predictor
+try_clean_seg_write	target.c	/^int try_clean_seg_write(struct dmsrc_super *super){$/;"	f
+try_wait_free_seg	target.c	/^int try_wait_free_seg(struct dmsrc_super *super, int cache_type){$/;"	f
+type	target.h	/^	__le32 type;$/;"	m	struct:segment_header_device
+u_max	target.h	/^	u32 u_max;$/;"	m	struct:dmsrc_param
+unlockseg	target.h	170;"	d
+update_data_in_mb	target.c	/^void update_data_in_mb(struct dmsrc_super *super,$/;"	f
+update_plug_deadline	daemon.c	/^void update_plug_deadline(struct dmsrc_super *super)$/;"	f
+update_stat	target.c	/^void update_stat(struct dmsrc_super *super, struct metablock *mb, int is_write){$/;"	f
+update_sync_deadline	target.c	/^void update_sync_deadline(struct dmsrc_super *super)$/;"	f
+uuid	header.h	/^	__u32 uuid;$/;"	m	struct:superblock_device
+uuid	target.h	/^	__le64 uuid;$/;"	m	struct:segment_header_device
+uuid	target.h	/^	u64	uuid;$/;"	m	struct:cache_stat
+valid_clean_count	target.h	/^	atomic_t valid_clean_count;$/;"	m	struct:segment_header
+valid_count	target.h	/^	atomic_t valid_count;$/;"	m	struct:group_header
+valid_count	target.h	/^	atomic_t valid_count;$/;"	m	struct:segment_header
+valid_dirty_count	target.h	/^	atomic_t valid_dirty_count;$/;"	m	struct:segment_header
+victim_count	target.h	/^	atomic64_t victim_count;$/;"	m	struct:super_stat
+victim_policy	header.h	/^	__u32 victim_policy;$/;"	m	struct:superblock_device
+victim_policy	target.h	/^	u32 victim_policy;$/;"	m	struct:dmsrc_param
+victim_util	target.h	/^	atomic64_t victim_util;$/;"	m	struct:super_stat
+wait_bufcopy_ios	daemon.c	/^void wait_bufcopy_ios(struct segment_header *seg){$/;"	f
+wait_filling_ios	daemon.c	/^void wait_filling_ios(struct dmsrc_super *super, struct segment_header *seg){$/;"	f
+wait_for_overlap	raid.h	/^	wait_queue_head_t	wait_for_overlap;$/;"	m	struct:r5conf
+wait_for_stripe	raid.h	/^	wait_queue_head_t	wait_for_stripe;$/;"	m	struct:r5conf
+wait_queue	target.h	/^	wait_queue_head_t wait_queue;$/;"	m	struct:segbuf_manager
+wait_rambuf_event	target.c	/^void wait_rambuf_event(struct dmsrc_super *super, int cache_type){$/;"	f
+wake_read_caching_worker	target.c	/^inline void wake_read_caching_worker(struct dmsrc_super *super){$/;"	f
+wb_job	target.h	/^struct wb_job{$/;"	s
+wb_job_pool	target.h	/^	mempool_t *wb_job_pool;$/;"	m	struct:pending_manager
+wbdebug	target.h	1111;"	d
+window_per_sec	target.h	/^	u32 window_per_sec;$/;"	m	struct:workload_predictor
+work	target.h	/^	struct work_struct work;$/;"	m	struct:degraded_manager	typeref:struct:degraded_manager::work_struct
+work	target.h	/^	struct work_struct work;$/;"	m	struct:pending_manager	typeref:struct:pending_manager::work_struct
+work	target.h	/^	struct work_struct work;$/;"	m	struct:read_miss_manager	typeref:struct:read_miss_manager::work_struct
+work	target.h	/^	struct work_struct work;$/;"	m	struct:recovery_manager	typeref:struct:recovery_manager::work_struct
+work	target.h	/^	struct work_struct work;$/;"	m	struct:seg_write_manager	typeref:struct:seg_write_manager::work_struct
+work	target.h	/^	struct work_struct work;$/;"	m	struct:sync_manager	typeref:struct:sync_manager::work_struct
+worker_cnt_per_group	raid.h	/^	int			worker_cnt_per_group;$/;"	m	struct:r5conf
+worker_groups	raid.h	/^	struct r5worker_group	*worker_groups;$/;"	m	struct:r5conf	typeref:struct:r5conf::r5worker_group
+workload_predictor	target.h	/^struct workload_predictor{$/;"	s
+wp	target.h	/^	struct workload_predictor wp;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::workload_predictor
+wp_callback	target.c	/^enum hrtimer_restart wp_callback( struct hrtimer *timer )$/;"	f
+wp_cleanup	target.c	/^void wp_cleanup(struct dmsrc_super *super)$/;"	f
+wp_display	target.c	/^enum hrtimer_restart wp_display( struct hrtimer *timer )$/;"	f
+wp_get_iops	target.c	/^u32 wp_get_iops(struct dmsrc_super *super, u32 *bw_mb, int category, int type){$/;"	f
+wp_init	target.c	/^int wp_init(struct dmsrc_super *super)$/;"	f
+wp_print_iops	target.c	/^void wp_print_iops(struct dmsrc_super *super){$/;"	f
+wp_update	target.c	/^void wp_update(struct dmsrc_super *super, int is_write, int category){$/;"	f
+wq	target.h	/^	struct workqueue_struct *wq;$/;"	m	struct:degraded_manager	typeref:struct:degraded_manager::workqueue_struct
+wq	target.h	/^	struct workqueue_struct *wq;$/;"	m	struct:pending_manager	typeref:struct:pending_manager::workqueue_struct
+wq	target.h	/^	struct workqueue_struct *wq;$/;"	m	struct:read_miss_manager	typeref:struct:read_miss_manager::workqueue_struct
+wq	target.h	/^	struct workqueue_struct *wq;$/;"	m	struct:recovery_manager	typeref:struct:recovery_manager::workqueue_struct
+wq	target.h	/^	struct workqueue_struct *wq;$/;"	m	struct:seg_write_manager	typeref:struct:seg_write_manager::workqueue_struct
+write_count	target.h	/^	u32 write_count;$/;"	m	struct:super_stat
+write_hit	target.h	/^	u32 write_hit;$/;"	m	struct:super_stat
+writeback_endio_extent	target.c	/^static void writeback_endio_extent(unsigned long error, void *context)$/;"	f	file:
+writeback_issue_job_extent	target.c	/^void writeback_issue_job_extent(struct dmsrc_super *super, struct wb_job *job, int flush_command)$/;"	f
+writeback_make_job_extent	target.c	/^struct wb_job *writeback_make_job_extent(struct dmsrc_super *super, $/;"	f
+wstat	target.h	/^	struct super_stat wstat;$/;"	m	struct:dmsrc_super	typeref:struct:dmsrc_super::super_stat
+xor_8regs_4_2	target.c	/^xor_8regs_4_2(unsigned long bytes, unsigned long *p1, unsigned long *p2,$/;"	f	file:
+xor_blocks2	target.c	/^xor_blocks2(unsigned int src_count, unsigned int bytes, void *dest, void **srcs)$/;"	f
+xor_test	target.c	/^void xor_test(struct dmsrc_super *super){$/;"	f
