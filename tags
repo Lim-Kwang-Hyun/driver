@@ -37,7 +37,7 @@ CHUNK_SZ	target.h	54;"	d
 CHUNK_SZ_SECTOR	target.h	55;"	d
 CRC_SEED	target.h	45;"	d
 CREATE_DAEMON	metadata.c	2375;"	d	file:
-CREATE_DAEMON	target.c	3935;"	d	file:
+CREATE_DAEMON	target.c	3825;"	d	file:
 DATA_ALLOC_FLEX_HORI	header.h	160;"	d
 DATA_ALLOC_FLEX_VERT	header.h	159;"	d
 DATA_ALLOC_HORI	header.h	158;"	d
@@ -95,7 +95,7 @@ NR_STRIPE_HASH_LOCKS	raid.h	29;"	d
 NUM_BLOCKS	target.h	50;"	d
 NUM_BLOCKS_PER_SSD	target.h	52;"	d
 NUM_DATA_SSD	target.h	48;"	d
-NUM_DISKS	target.c	3232;"	d	file:
+NUM_DISKS	target.c	3121;"	d	file:
 NUM_ENTRY_PER_PAGE	header.h	246;"	d
 NUM_GC_THREAD	header.h	183;"	d
 NUM_SSD	target.h	47;"	d
@@ -152,7 +152,7 @@ SEPAR_STRIPING	header.h	163;"	d
 SEQ_CUTOFF	target.h	78;"	d
 SEQ_CUTOFF_MAX	target.h	80;"	d
 SEQ_CUTOFF_MIN	target.h	79;"	d
-SRC_LEN	target.c	3282;"	d	file:
+SRC_LEN	target.c	3171;"	d	file:
 SRC_MAGIC	header.h	55;"	d
 SRC_PAGE_SIZE	header.h	227;"	d
 SRC_SECTORS_PER_PAGE	header.h	228;"	d
@@ -356,8 +356,8 @@ complete_count	target.h	/^	atomic_t complete_count;$/;"	m	struct:scan_metadata_m
 complete_queue	target.h	/^	struct list_head complete_queue;$/;"	m	struct:scan_metadata_manager	typeref:struct:scan_metadata_manager::list_head
 construct_metadata_in_ram	metadata.c	/^int construct_metadata_in_ram(struct dmsrc_super *super){$/;"	f
 consume_essential_argv	target.c	/^static int consume_essential_argv(struct dmsrc_super *super, unsigned int argc, char **argv)$/;"	f	file:
-consume_kv	target.c	3027;"	d	file:
-consume_kv_str	target.c	3038;"	d	file:
+consume_kv	target.c	2916;"	d	file:
+consume_kv_str	target.c	2927;"	d	file:
 copy_job	target.h	/^struct copy_job{$/;"	s
 copy_job_count	target.h	/^	atomic_t copy_job_count;$/;"	m	struct:migration_manager
 copy_job_group	target.h	/^struct copy_job_group{$/;"	s

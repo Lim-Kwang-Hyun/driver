@@ -662,12 +662,9 @@ void make_bios_parity(struct dmsrc_super *super, struct segment_header *seg, str
 	struct metablock *parity_mb;
 	struct metablock *dummy_mb;
 	unsigned long flags;
-	//int parity_ssd = get_parity_ssd(super, seg->seg_id);
 
 	if(!(is_write_stripe(seg->seg_type) && USE_ERASURE_CODE(&super->param)))
 		return;
-
-//	printk(" make bios parity .. \n");
 
 	for(chunk_offset = 0;chunk_offset < CHUNK_SZ;chunk_offset++){
 		u32 parity_idx = cursor_parity_start(super, seg->seg_id, seg->seg_type) + chunk_offset;
@@ -999,14 +996,6 @@ void mark_parity_dirty(struct dmsrc_super *super, int cache_type,
 	set_bit(MB_PARITY_NEED, &mb->mb_flags);
 	clear_bit(MB_VALID, &mb->mb_flags);
 	clear_bit(MB_DIRTY, &mb->mb_flags);
-
-	//if(super->param->erasure_code==ERASURE_CODE_RAID6){
-	if(USE_ERASURE_RAID6(&super->param)){
-		parity_idx += CHUNK_SZ;
-		parity_idx %= STRIPE_SZ;
-		mb = get_mb(super, seg->seg_id, parity_idx);
-		set_bit(MB_PARITY_NEED, &mb->mb_flags);
-	}
 }
 
 void reset_parity(struct dmsrc_super *super, struct segment_header *seg, int cache_type, int clear_written){
@@ -1526,47 +1515,6 @@ void _alloc_mb_summary(struct dmsrc_super *super,struct segment_header *seg, int
 	BUG_ON(atomic_read(&seg->length) > STRIPE_SZ);
 }
 
-#if 0 
-void _alloc_mb_summary(struct dmsrc_super *super, int cache_type, u32 idx){
-	struct segment_header *seg;
-	struct metablock *new_mb;
-	u32 update_mb_idx;
-	u32 tmp32;
-
-	seg = super->current_seg[cache_type];
-
-	atomic_inc(&super->count[cache_type]);
-
-	update_mb_idx = SEG_START_IDX(seg) + super->cursor[cache_type];
-	update_mb_idx = idx;
-
-	div_u64_rem(update_mb_idx, NR_CACHES_INSEG, &tmp32);
-	new_mb = get_mb(super, seg->seg_id, tmp32);
-
-	if(test_bit(MB_VALID, &new_mb->mb_flags))
-		printk(" block is already allocated as a data block .. type = %d\n", seg->seg_type);
-
-
-	atomic_inc(&super->nr_used_caches);
-
-	clear_bit(MB_SEAL, &new_mb->mb_flags);
-	clear_bit(MB_DIRTY, &new_mb->mb_flags);
-	clear_bit(MB_VALID, &new_mb->mb_flags);
-	set_bit(MB_SUMMARY, &new_mb->mb_flags);
-
-	atomic_inc(&seg->valid_count);
-	atomic_inc(&seg->length);
-	atomic_inc(&seg->part_length);
-
-	mark_parity_dirty(super, cache_type, seg, tmp32);
-
-	//printk(" write chunk summary %d, %d %d\n", (int)tmp32, (int)atomic_read(&super->count[cache_type]),
-	//		(int)atomic_read(&seg->length));
-
-	BUG_ON(atomic_read(&seg->length) > NR_CACHES_INSEG);
-
-}
-#endif 
 
 void initialize_mb_summary(struct dmsrc_super *super, struct segment_header *seg,
 		int cache_type, u32 idx, int full)
@@ -1578,7 +1526,6 @@ void initialize_mb_summary(struct dmsrc_super *super, struct segment_header *seg
 	}
 }
 
-#if 1 
 void alloc_mb_summary(struct dmsrc_super *super, struct segment_header *seg,
 		int cache_type, u32 idx, u32 *total_count ){
 	int i;
@@ -1587,62 +1534,7 @@ void alloc_mb_summary(struct dmsrc_super *super, struct segment_header *seg,
 		ma_alloc(super, seg, seg->seg_id, cache_type, (idx+i)/CHUNK_SZ, total_count);
 	}
 }
-#else
-
-void alloc_mb_summary(struct dmsrc_super *super, struct segment_header *seg,
-		int cache_type, u32 idx, u32 *total_count )
-{
-	int i;
-
-	if(super->param->data_allocation==DATA_ALLOC_VERT){
-		for(i = 0;i < NR_SUMMARY;i++){
-			u32 alloc_idx = sa_alloc(super, seg, seg->seg_id, cache_type, total_count);
-			BUG_ON(idx+i!=alloc_idx%STRIPE_SZ);
-		}
-	}else if(super->param->data_allocation==DATA_ALLOC_HORI){
-		for(i = 0;i < NR_SUMMARY;i++){
-#if 0 
-			u32 alloc_idx = sa_alloc(super, seg, seg->seg_id, cache_type, total_count);
-#else
-			//u32 alloc_idx = idx + i;
-			atomic_inc(&super->sa[cache_type].count);
-			if(total_count)
-				*total_count = atomic_read(&super->sa[cache_type].count);
-#endif 
-			//printk(" alloc summary = %d, count = %d \n", (int)alloc_idx%STRIPE_SZ, (int)*total_count);
-			//BUG_ON(idx+i!=alloc_idx%STRIPE_SZ);
-		}
-	}else{ // Multi Allocator
-		for(i = 0;i < NR_SUMMARY;i++){
-			//u32 alloc_idx = ma_alloc(super, seg->seg_id, cache_type, (idx+1)/CHUNK_SZ);
-			ma_alloc(super, seg, seg->seg_id, cache_type, (idx+i)/CHUNK_SZ, total_count);
-			//BUG_ON(idx+i!=alloc_idx%STRIPE_SZ);
-		}
-	}
-}
-#endif 
-
-#if 0
-void alloc_mb_summary(struct dmsrc_super *super, struct segment_header *seg,
-		int cache_type, u32 idx )
-{
-	int i;
-
-	if(super->param->data_allocation==DATA_ALLOC_VERT){
-		for(i = 0;i < NR_SUMMARY;i++){
-			cursor_inc(super, seg->seg_id, cache_type);
-			_alloc_mb_summary(super, cache_type, idx+i);
-		}
-	}else{
-		for(i = 0;i < NR_SUMMARY;i++){
-	//		printk(" alloc summary seg id %d idx = %d count = %d \n", (int)seg->seg_id,
-	//				(int)idx+i, (int)atomic_read(&super->count[cache_type]));
-			_alloc_mb_summary(super, cache_type, idx+i);
-		}
-	}
-}
-#endif 
-
+ 
 void seg_length_inc(struct dmsrc_super *super, struct segment_header *seg, struct metablock *mb, bool inflight){
 
 	atomic_inc(&seg->valid_count);
@@ -1676,7 +1568,7 @@ void initialize_mb(struct dmsrc_super *super, struct metablock *new_mb, int cach
 	clear_bit(MB_SKIP, &new_mb->mb_flags);
 	clear_bit(MB_DUMMY, &new_mb->mb_flags);
 
-	if(is_read_stripe(cache_type)){
+	if(is_read_stripe(cache_type)){ 
 		clear_bit(MB_DIRTY, &new_mb->mb_flags);
 	}else{
 		set_bit(MB_DIRTY, &new_mb->mb_flags);
@@ -1714,7 +1606,7 @@ struct metablock *alloc_mb_data(struct dmsrc_super *super,
 
 	atomic_inc(&super->cache_stat.num_used_blocks);
 
-	if(is_normal_stripe(cache_type)){
+	if(is_normal_stripe(cache_type)){ /*- -*/
 		ht_register(super, key, new_mb);
 	}
 
@@ -1744,17 +1636,11 @@ void update_data_in_mb(struct dmsrc_super *super,
 
 	if(rambuf && data && is_write_stripe(cache_type) &&
 		USE_ERASURE_CODE(&super->param)){
-#if 0
-		if(rambuf->pages[tmp32]){
-			BUG_ON(!rambuf->pages[tmp32]);
-			memcpy(rambuf->pages[tmp32]->data, data, SRC_PAGE_SIZE);
-		}
-#else
+
 		void *ptr;
 		ptr = page_address(rambuf->pages[tmp32]->pl->page);
 		memcpy(ptr, data, SRC_PAGE_SIZE);
 		//kunmap_atomic(ptr);
-#endif 
 	}
 
 #ifdef USE_CHECKSUM
@@ -2031,20 +1917,13 @@ int process_write_request(struct dmsrc_super *super,
 	u32 seg_length;
 	atomic_t bios_start[MAX_CACHE_DEVS];
 	atomic_t bios_count[MAX_CACHE_DEVS];
-	u32 partial_test = 0;
 	u64 global_seg_sequence;
 
 	new_mb = alloc_mb_data(super, key, cache_type, !is_dirty, &total_count);
-	if(test_bit(MB_DIRTY, &new_mb->mb_flags)!=is_dirty){
-		printk(" invalid dirty flag = %d %d total_count = %d \n", test_bit(MB_DIRTY, &new_mb->mb_flags), is_dirty, total_count);
-		printk(" cache type = %d \n", cache_type);
-	}
-
 	mb_idx = new_mb->idx;
 	seg = super->current_seg[cache_type];
 	rambuf = super->segbuf_mgr.current_rambuf[cache_type];
 
-#if SUMMARY_LOCATION == USE_LAST_SUMMARY 
 	if(need_chunk_summary(super, mb_idx+NUM_SUMMARY)){
 		u32 summary_idx = data_to_summary_idx(super, mb_idx);
 		alloc_mb_summary(super, seg, cache_type, summary_idx, &total_count);
@@ -2052,34 +1931,19 @@ int process_write_request(struct dmsrc_super *super,
 		need_summary = true;
 		//printk(" Need summary in process_write_request ... \n");
 	}
-#endif
 
-	if(super->param.bio_plugging){
-		bio_plugging(super, seg, rambuf, bio, mb_idx);
-#if SUMMARY_LOCATION == USE_LAST_SUMMARY 
-		if(need_summary){
-			int j;
-			for(j = 0;j < NUM_SUMMARY;j++)
-				bio_plugging(super, seg, rambuf, NULL, mb_idx + 1 + j);
-		}
-#endif
+	bio_plugging(super, seg, rambuf, bio, mb_idx);
+	if(need_summary){
+		int j;
+		for(j = 0;j < NUM_SUMMARY;j++)
+			bio_plugging(super, seg, rambuf, NULL, mb_idx + 1 + j);
 	}
 
-	//if(total_count == STRIPE_SZ/2){
-	//	partial_test = 1;
-	//}
-
-	if(partial_test || need_refresh_segment(super, cache_type, total_count)){
-		if(!partial_test)
-			super->segbuf_mgr.current_rambuf[cache_type] = NULL;
+	if(need_refresh_segment(super, cache_type, total_count)){
+		super->segbuf_mgr.current_rambuf[cache_type] = NULL;
 
 		need_refresh = true;
 		global_seg_sequence = atomic64_inc_return(&super->flush_mgr.global_seg_sequence);
-
-		if(partial_test){
-			//printk(" Partial write seg = %d, count = %d \n", (int)seg->seg_id, total_count);
-			alloc_partial_summary(super, seg, rambuf, cache_type);
-		}
 
 		make_bios_parity(super, seg, rambuf, 0);
 		make_bios_vector(super, seg, rambuf, bios_start, bios_count);
@@ -2112,28 +1976,14 @@ int process_write_request(struct dmsrc_super *super,
 		BUG_ON(test_bit(SEG_SEALED, &seg->flags));
 	}
 
-	if(super->param.bio_plugging){
-		atomic_dec(&seg->num_filling);
-		if(bio)
-			atomic_inc(&super->cache_stat.inflight_bios);
-		atomic_inc(&super->cache_stat.total_bios);
+	atomic_dec(&seg->num_filling);
+	if(bio)
+		atomic_inc(&super->cache_stat.inflight_bios);
+	atomic_inc(&super->cache_stat.total_bios);
 
-		if(need_refresh && !test_bit(SEG_SEALED, &seg->flags)){
-			//if(partial_test)
-			//	printk(" Flush partial seg write \n");
-			make_flush_invoke_job(super, seg, rambuf, seg_length, bios_start, bios_count,
-					cache_type, 0, 0, 1, global_seg_sequence);
-		}
-	}else{
-		//struct wb_job *job;
-		//atomic_dec(&seg->num_filling);
-		//job = writeback_make_job(super, seg, mb_idx, bio, rambuf, 1);
-		//writeback_issue_job(super, job);
-		//if(need_summary){
-		//	generate_full_summary(super, seg, rambuf, get_devno(super, mb_idx), 1);
-		//}
-		printk(" no queue not supported ... \n");
-		BUG_ON(1);
+	if(need_refresh && !test_bit(SEG_SEALED, &seg->flags)){
+		make_flush_invoke_job(super, seg, rambuf, seg_length, bios_start, bios_count,
+				cache_type, 0, 0, 1, global_seg_sequence);
 	}
 
 	return DM_MAPIO_SUBMITTED;
@@ -2292,11 +2142,7 @@ static int map_pending_bio(struct dmsrc_super *super, struct bio *bio)
 	struct segment_header *seg = NULL;
 	struct metablock *mb = NULL;
 	struct bio_ctx *map_context = NULL;
-	/*
-	struct cache_manager *clean_cache = super->clean_dram_cache_manager;
-	struct lru_node *ln = NULL;
-	unsigned long lru_flags; 
-	*/
+	
 	sector_t key;
 	int res = 0;
 	int is_write;
@@ -2343,7 +2189,6 @@ static int map_pending_bio(struct dmsrc_super *super, struct bio *bio)
 	// write cache 
 
 	if (mb) { // found in the cache 
-		BUG_ON(seg->seg_type==GRBUF&&!test_bit(MB_SEAL, &mb->mb_flags));
 		invalidate_previous_cache(super, seg, mb);
 	}
 
@@ -2666,11 +2511,6 @@ void pending_worker(struct work_struct *work){
 	//clean_write_count += try_clean_seg_write(super);
 
 	if(local_count){
-		//debug 
-		//for(i=0;i<RES_COUNT;i++){
-		//	if(retry_reasons[i])
-		//		printk(" pending i/o reason  = %d %d \n", i, retry_reasons[i]);
-		//}
 		spin_lock_irqsave(&pending_mgr->lock, f);
 		bio_list_merge(&pending_mgr->bios, &local_list);
 		for(i=0;i<local_count;i++){
@@ -2707,13 +2547,10 @@ static int dmsrc_map(struct dm_target *ti, struct bio *bio)
 	map_context = dm_per_bio_data(bio, ti->per_bio_data_size);
 	map_context->ptr = NULL;
 	map_context->inflight = 0;
+	map_context->seq_io = false;
+	map_context->hot_io = 0;
 
 	if (bio->bi_rw & REQ_DISCARD) {
-		/*-
-		struct dm_dev *origin_dev = super->dev_info.origin_dev; 
-		bio_remap(bio, origin_dev, bio->bi_sector);
-		printk(" WARN: discard command ... \n");
-		-*/
 		bio_endio(bio, 0);
 		return DM_MAPIO_SUBMITTED;
 	}
@@ -2733,7 +2570,6 @@ static int dmsrc_map(struct dm_target *ti, struct bio *bio)
 	if(!bio_fullsize)
 		printk(" bio count = %d sectors \n", (int)bio_count);
 
-	map_context->seq_io = false;
 
 	if(bio_data_dir(bio)){
 		void *ptr = kmap_atomic(bio_page(bio));
@@ -2741,7 +2577,6 @@ static int dmsrc_map(struct dm_target *ti, struct bio *bio)
 		kunmap_atomic(ptr);
 	}
 
-	map_context->hot_io = 0;
 
 
 	if(!bio_data_dir(bio)){
