@@ -1955,140 +1955,6 @@ void writeback_issue_job_extent(struct dmsrc_super *super, struct wb_job *job, i
 	dmsrc_io(&io_req, 1, &io, NULL);
 }
 
-#if 0 
-struct wb_job *writeback_make_job(struct dmsrc_super *super, 
-		struct segment_header *seg, 
-		u32 idx, 
-		struct bio *bio, 
-		struct rambuffer *rambuf, 
-		int rambuf_release)
-{
-	struct wb_job *job;
-	u32 rambuf_idx = idx % STRIPE_SZ;
-
-	job = mempool_alloc(super->pending_mgr.wb_job_pool, GFP_NOIO);
-	if(!job){
-		printk(" mempool error \n");
-		BUG_ON(1);
-	}
-
-	job->super = super;
-	job->seg = seg;
-	job->mb = get_mb(super, seg->seg_id, rambuf_idx);
-	job->bio = bio;
-	job->rambuf = rambuf;
-	atomic_set(&job->rambuf_release, rambuf_release);
-
-	return job;
-}
-
-void writeback_issue_job(struct dmsrc_super *super, struct wb_job *job)
-{
-	u32 idx = job->mb->idx;
-	u32 rambuf_idx = job->mb->idx % STRIPE_SZ;
-	struct dm_io_region io;
-	struct dm_io_request io_req;
-	struct bio *bio = job->bio;
-	struct rambuffer *rambuf = job->rambuf;
-	struct segment_header *seg = job->seg;
-
-#if 0
-	if(job->bio){ // incoming write
-		io_req.mem.type = DM_IO_BVEC;
-		io_req.mem.ptr.bvec = bio->bi_io_vec + bio->bi_idx;
-	}else{ // parity, summary, gc data, read data
-		io_req.mem.type = DM_IO_KMEM;
-		if(rambuf->pages[rambuf_idx]==NULL){
-			printk(" invalid rambuf idx %d \n", rambuf_idx);
-			BUG_ON(1);
-		}
-		io_req.mem.ptr.addr = rambuf->pages[rambuf_idx]->data;
-	}
-#else
-	io_req.mem.type = DM_IO_KMEM;
-	if(rambuf->pages[rambuf_idx]==NULL){
-		printk(" invalid rambuf idx %d \n", rambuf_idx);
-		BUG_ON(1);
-	}
-	io_req.mem.ptr.addr = rambuf->pages[rambuf_idx]->data;
-#endif
-	
-	io_req.bi_rw = WRITE;
-	//WRITE_SYNC
-	io_req.notify.fn = writeback_endio;
-	io_req.notify.context = job;
-	io_req.client = super->io_client;
-
-	io.bdev = get_bdev(super, idx);
-	io.sector = get_sector(super, seg->seg_id, idx);
-	if(bio)
-		io.count = bio_sectors(bio);
-	else
-		io.count = SRC_SECTORS_PER_PAGE;
-
-	dmsrc_io(&io_req, 1, &io, NULL);
-}
-
-#endif 
-
-#if 0
-void write_async_bio(struct dmsrc_super *super, 
-		struct segment_header *seg, 
-		u32 idx, 
-		struct bio *bio, 
-		struct rambuffer *rambuf, 
-		int rambuf_release)
-{
-	u32 rambuf_idx = idx % STRIPE_SZ;
-	struct dm_io_region io;
-	struct dm_io_request io_req;
-	struct wb_job *job;
-
-	job = mempool_alloc(super->pending_mgr.wb_job_pool, GFP_NOIO);
-	if(!job){
-		printk(" mempool error \n");
-		BUG_ON(1);
-	}
-
-	job->super = super;
-	job->seg = seg;
-	job->mb = get_mb(super, seg->seg_id, rambuf_idx);
-
-	if(bio){ // incoming write
-		job->bio = bio;
-		job->rambuf = rambuf;
-		atomic_set(&job->rambuf_release, rambuf_release);
-		io_req.mem.type = DM_IO_BVEC;
-		io_req.mem.ptr.bvec = bio->bi_io_vec + bio->bi_idx;
-	}else{ // parity, summary, gc data, read data
-		job->bio = NULL;
-		job->rambuf = rambuf;
-		atomic_set(&job->rambuf_release, rambuf_release);
-
-		io_req.mem.type = DM_IO_KMEM;
-
-		if(rambuf->pages[rambuf_idx]==NULL){
-			printk(" invalid rambuf idx %d \n", rambuf_idx);
-			BUG_ON(1);
-		}
-		io_req.mem.ptr.addr = rambuf->pages[rambuf_idx]->data;
-	}
-	
-	io_req.bi_rw = WRITE;
-	io_req.notify.fn = writeback_endio;
-	io_req.notify.context = job;
-	io_req.client = super->io_client;
-
-	io.bdev = get_bdev(super, idx);
-	io.sector = get_sector(super, seg->seg_id, idx);
-	if(bio)
-		io.count = bio_sectors(bio);
-	else
-		io.count = SRC_SECTORS_PER_PAGE;
-
-	dmsrc_io(&io_req, 1, &io, NULL);
-}
-#endif
 
 void make_flush_invoke_job(struct dmsrc_super *super, struct segment_header *seg, 
 		struct rambuffer *rambuf, int seg_length, 
@@ -2368,93 +2234,6 @@ static int process_read_hit_request(struct dmsrc_super *super, struct bio *bio,
 	return DM_MAPIO_SUBMITTED;
 }
 
-
-#if defined(CONFIG_BCACHE) || defined(CONFIG_BCACHE_MODULE)
-#define ewma_add(ewma, val, weight, factor)				\
-({									\
-	(ewma) *= (weight) - 1;						\
-	(ewma) += (val) << factor;					\
-	(ewma) /= (weight);						\
-	(ewma) >> factor;						\
-})
-
-
-static struct hlist_head *iohash(struct seq_io_detector *dc, uint64_t k)
-{
-	return &dc->io_hash[hash_64(k, RECENT_IO_BITS)];
-}
-
-static void add_sequential(struct task_struct *t)
-{
-	ewma_add(t->sequential_io_avg,
-		 t->sequential_io, 8, 0);
-
-	t->sequential_io = 0;
-}
-
-/*
-This code is based on bcache (drivers/md/bcache/request.c) 
- */
-
-bool detect_sequential_io(struct dmsrc_super *super, struct bio *bio){
-	struct io *i;
-	unsigned sectors;
-	int use_merge = 1;
-#if defined(CONFIG_BCACHE) || defined(CONFIG_BCACHE_MODULE)
-	unsigned long flags;
-#endif 
-	struct seq_io_detector *seq_detector = &super->seq_detector;
-	bool r = false;
-
-	if(!super->param.sequential_enable){
-		return false;
-	}
-	if (bio->bi_rw & REQ_DISCARD) {
-		return false;
-	}
-
-	spin_lock_irqsave(&seq_detector->seq_lock, flags);
-	if (use_merge) {
-
-		hlist_for_each_entry(i, iohash(seq_detector, bio->bi_sector), hash)
-			if (i->last == bio->bi_sector &&
-			    time_before(jiffies, i->jiffies))
-				goto found;
-
-		i = list_first_entry(&seq_detector->io_lru, struct io, lru);
-
-		add_sequential(current);
-		i->sequential = 0;
-found:
-		if (i->sequential + bio->bi_size > i->sequential)
-			i->sequential	+= bio->bi_size;
-
-		i->last			 = bio_end_sector(bio);
-		i->jiffies		 = jiffies + msecs_to_jiffies(5000);
-		current->sequential_io	 = i->sequential;
-
-		hlist_del(&i->hash);
-		hlist_add_head(&i->hash, iohash(seq_detector, i->last));
-		list_move_tail(&i->lru, &seq_detector->io_lru);
-
-	} else {
-		current->sequential_io = bio->bi_size;
-		add_sequential(current);
-	}
-	spin_unlock_irqrestore(&seq_detector->seq_lock, flags);
-
-	sectors = max(current->sequential_io,
-		      current->sequential_io_avg) >> 9;
-
-	if (super->param.sequential_cutoff &&
-	    sectors >= super->param.sequential_cutoff >> 9) {
-		r = true;
-	}
-
-
-	return r;
-}
-#endif 
 
 inline bool should_need_refresh_seg(struct dmsrc_super *super, int cache_type){
 	bool need_refresh = false;
@@ -3298,19 +3077,9 @@ static int dmsrc_map(struct dm_target *ti, struct bio *bio)
 		printk(" bio count = %d sectors \n", (int)bio_count);
 
 	map_context->seq_io = false;
-#if defined(CONFIG_BCACHE) || defined(CONFIG_BCACHE_MODULE)
-	map_context->seq_io = detect_sequential_io(super, bio);
-#endif 
 
 
-	if((super->param.data_allocation==DATA_ALLOC_FLEX_VERT || 
-		 super->param.data_allocation==DATA_ALLOC_FLEX_HORI)){
-		if(bio_data_dir(bio)){
-			//if(calc_need_num_ssds(super)<=1){
-			//	map_context->seq_io = 1;
-			//}
-		}
-	}
+
 
 	if(map_context->seq_io){
 		atomic_inc(&super->wstat.bypass_write_count);
@@ -3985,7 +3754,7 @@ static void set_default_param(struct dmsrc_super *super, struct dmsrc_param *par
 	param->hit_bitmap_type = HIT_BITMAP_PER_STRIPE;
 
 	param->gc_with_dirtysync = GC_WITHOUT_DIRTY_SYNC;
-	param->sequential_enable = 1;
+	param->sequential_enable = 0;
 	param->u_max = DEFAULT_U_MAX;
 	//param->chunk_size_order = 5;
 	param->chunk_size = 2048;
@@ -4091,18 +3860,6 @@ static void pending_mgr_exit(struct dmsrc_super *super){
 	mempool_destroy(super->pending_mgr.wb_job_pool);
 }
 
-static void seq_detector_init(struct dmsrc_super *super){
-	struct seq_io_detector *seq_detector = &super->seq_detector;
-	struct io *io;
-
-	INIT_LIST_HEAD(&seq_detector->io_lru);
-
-	spin_lock_init(&seq_detector->seq_lock);
-	for (io = seq_detector->io; io < seq_detector->io + RECENT_IO; io++) {
-		list_add(&io->lru, &seq_detector->io_lru);
-		hlist_add_head(&io->hash, seq_detector->io_hash + RECENT_IO);
-	}
-}
 
 static void stat_init(struct dmsrc_super *super){
 	super->wstat.count=0;
@@ -4699,7 +4456,6 @@ int __must_check resume_managers(struct dmsrc_super *super)
 
 
 	seg_allocator_init(super);
-	seq_detector_init(super); //-
 	r = multi_allocator_init(super);
 
 	return r;
