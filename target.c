@@ -2709,10 +2709,13 @@ static int dmsrc_map(struct dm_target *ti, struct bio *bio)
 	map_context->inflight = 0;
 
 	if (bio->bi_rw & REQ_DISCARD) {
-		struct dm_dev *origin_dev = super->dev_info.origin_dev; /*- -*/
+		/*-
+		struct dm_dev *origin_dev = super->dev_info.origin_dev; 
 		bio_remap(bio, origin_dev, bio->bi_sector);
 		printk(" WARN: discard command ... \n");
-		return DM_MAPIO_REMAPPED;
+		-*/
+		bio_endio(bio, 0);
+		return DM_MAPIO_SUBMITTED;
 	}
 
 	/* It doesn't support REQ_FLUSH */
@@ -3721,6 +3724,7 @@ void read_miss_mgr_deinit(struct dmsrc_super *super){
 
 	mempool_destroy(read_miss_mgr->job_pool);
 }
+
 
 enum hrtimer_restart sync_timer_callback( struct hrtimer *timer )
 {
