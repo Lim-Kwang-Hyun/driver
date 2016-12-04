@@ -2139,19 +2139,6 @@ int process_write_request(struct dmsrc_super *super,
 	return DM_MAPIO_SUBMITTED;
 }
 
-/*-
-static int process_read_miss_request(struct dmsrc_super *super, struct bio *bio, unsigned long f){
-	struct dm_dev *origin_dev = super->dev_info.origin_dev;
-
-	UNLOCK(super, f);
-
-	bio_remap(bio, origin_dev, bio->bi_sector);
-	read_caching_make_job(super, NULL, NULL, bio, NULL);
-
-	return DM_MAPIO_SUBMITTED;
-
-}
--*/
 
 static int process_read_hit_request(struct dmsrc_super *super, struct bio *bio,
 		struct segment_header *seg,
@@ -2246,88 +2233,6 @@ int try_wait_free_seg(struct dmsrc_super *super, int cache_type){
 	return 0;
 }
 
-/*-
-int should_bypass_bio(struct dmsrc_super *super, 
-		struct segment_header *seg, 
-		struct metablock *mb, 
-		struct bio *bio,
-		int is_write){
-
-	struct bio_ctx *map_context =
-		dm_per_bio_data(bio, super->ti->per_bio_data_size);
-	bool can_bypass = false;
-	bool seq_io;
-	bool cold_io = false;
-
-	if(is_write){
-		if(!map_context->hot_io && get_curr_util(super) > super->param.u_max){
-			cold_io = true;
-		}
-	}else{
-		if(!map_context->hot_io && get_curr_util(super) > super->param.u_max){
-			cold_io = true;
-		}
-	}
-
-	seq_io = (bool)map_context->seq_io;
-	if(seq_io || cold_io){
-		bool remapped = false;
-
-		if(!mb){
-			remapped = true;
-		}else{
-			if(is_write){ // write 
-				BUG_ON( !test_bit(MB_SEAL, &mb->mb_flags) && is_gc_stripe(seg->seg_type));
-				invalidate_previous_cache(super, seg, mb);
-				remapped = true;
-			}
-		}
-
-		if(remapped){
-			if(cold_io)
-				atomic_inc(&super->wstat.cold_bypass_count);
-			else if(seq_io)
-				atomic_inc(&super->wstat.seq_bypass_count);
-
-			can_bypass = true;
-			goto do_bypass;
-		}
-	} 
-
-	if(atomic_read(&super->resize_mode)){
-		if(!mb){
-			can_bypass = true;
-		}else{
-			printk(" data is found\n");
-			BUG_ON(1);
-		}
-	}
-
-	if(atomic_read(&super->degraded_mode)){
-		if(!mb){
-			can_bypass = true;
-		}else{
-			if(is_write){ // write case 
-				invalidate_previous_cache(super, seg, mb);
-				can_bypass = true;
-			}else{ // read case 
-				if(test_bit(MB_BROKEN, &mb->mb_flags)){
-					printk(" need reconstruct read \n");
-				}
-			}
-		}
-	}
-
-do_bypass:
-
-	if(can_bypass){
-		return 1;
-	}
-
-	return 0;
-}
--*/
-
 
 void update_stat(struct dmsrc_super *super, struct metablock *mb, int is_write){
 	super->wstat.count++;
@@ -2367,13 +2272,6 @@ static int preprocess_pending_bio(struct dmsrc_super *super,
 		}
 
 	}
-	/*-
-	if(unlikely(should_bypass_bio(super, seg, mb, bio, is_write) && 
-		!(bio->bi_rw & REQ_DISCARD))){
-		res = RES_BYPASS;
-		goto bypass_process;
-	}
-	-*/
 
 	if(is_write){
 		if(try_wait_free_seg(super, WCBUF)){
@@ -2386,88 +2284,7 @@ static int preprocess_pending_bio(struct dmsrc_super *super,
 
 pending_process:
 	return res;
-/*-
-bypass_process:
-	return res;
--*/
-
 }
-
-/*-
-static int process_read_request(struct dmsrc_super *super, struct segment_header *seg, 
-		struct metablock *mb, struct bio *bio, sector_t key, unsigned long f){
-	struct cache_manager *clean_cache = super->clean_dram_cache_manager;
-	struct lru_node *ln = NULL;
-	unsigned long lru_flags; 
-	int dram_hit = 0;
-	int sealed = 0;
-	int res;
-
-	if(!mb && super->param.enable_read_cache){ // not in SSDs 
-		spin_lock_irqsave(&clean_cache->lock, lru_flags);
-		ln = CACHE_SEARCH(clean_cache, key);
-		if(!ln){
-			dram_hit = 0;
-
-			if(clean_cache->cm_free){
-				ln = CACHE_ALLOC(clean_cache, ln, key);
-				CACHE_INSERT(clean_cache, ln);
-				atomic_set(&ln->sealed, 0);
-				atomic_set(&ln->locked, 0);
-			}
-			
-		}else{
-			printk(" hit in dram ... \n");
-			dram_hit = 1;
-			ln = CACHE_REMOVE(clean_cache, ln);
-			CACHE_INSERT(clean_cache, ln);
-			ln->cn_read_hit++;
-		}
-
-		if(ln){
-			if(atomic_read(&ln->sealed))
-				sealed = 1;
-			else
-				sealed = 0;
-		}
-		spin_unlock_irqrestore(&clean_cache->lock, lru_flags);
-
-		if(!ln){
-			UNLOCK(super, f);
-			//printk(" no lru buffers in dram \n");
-			bio_remap(bio, super->dev_info.origin_dev, bio->bi_sector);
-			generic_make_request(bio);
-			return DM_MAPIO_SUBMITTED;
-		}
-	}
-
-	if(dram_hit){
-		BUG_ON(mb);
-		if(sealed){
-			UNLOCK(super, f);
-			BUG_ON(1);
-			printk(" dram hit sealed %d .. \n", (int)key);
-			bio_endio(bio, 0);
-			return DM_MAPIO_SUBMITTED;
-		}else{
-			UNLOCK(super, f);
-			printk(" dram hit but not sealed..pending queue = %d \n", (int)key);
-			BUG_ON(1);
-			res = RES_DRAM;
-			//goto pending_process;
-		}
-	}else{
-		if (!mb) { // not found
-			//printk(" read miss in ssd cache .. %d \n", (int)key);
-			return process_read_miss_request(super, bio, f);
-		}else{
-			//printk(" read hit in ssd cache .. \n");
-			return process_read_hit_request(super, bio, seg, mb, f);
-		}
-	}
-
-}
--*/
 
 static int map_pending_bio(struct dmsrc_super *super, struct bio *bio)
 {
@@ -2511,64 +2328,12 @@ static int map_pending_bio(struct dmsrc_super *super, struct bio *bio)
 	}
 
 	update_stat(super, mb, is_write);
-///		if(!is_write && !super->param.enable_read_cache)
-//			admit = 0;
 
 	res = preprocess_pending_bio(super, seg, bio, mb, is_write);
 	if(res == RES_MIG || res == RES_SEAL || res == RES_NOFREE1) 
 		goto pending_process;
-	/*-
-	else if(res == RES_BYPASS)
-		goto bypass_process;
-	-*/
 
-	/*-
-
-	if(super->param.enable_read_cache){
-		spin_lock_irqsave(&clean_cache->lock, lru_flags);
-		ln = CACHE_SEARCH(clean_cache, key);
-		if(ln){
-			if(mb)
-				printk(" WARN: hit in both SSD and DRAM \n");
-			
-			if(is_write){
-				if(atomic_read(&ln->locked)){
-				//if(!atomic_read(&ln->sealed)||atomic_read(&ln->locked)){
-					res = RES_DRAM;
-					//printk(" Write hit in DRAM ... \n");
-					spin_unlock_irqrestore(&clean_cache->lock, lru_flags);
-					goto pending_process;
-				}
-				// write hit in DRAM
-				//BUG_ON(!atomic_read(&ln->sealed));
-				ln = CACHE_REMOVE(clean_cache, ln);
-				if(atomic_read(&ln->sealed)){
-					atomic_dec(&clean_cache->cm_sealed_count);
-				}
-				list_add(&ln->cn_list, &clean_cache->cm_free_head);
-			}else{
-				if(!atomic_read(&ln->sealed)||atomic_read(&ln->locked)){
-					res = RES_DRAM;
-					spin_unlock_irqrestore(&clean_cache->lock, lru_flags);
-					goto pending_process;
-				}else{
-					// clean hit in DRAM
-					ln = CACHE_REMOVE(clean_cache, ln);
-					CACHE_INSERT(clean_cache, ln);
-					spin_unlock_irqrestore(&clean_cache->lock, lru_flags);
-					UNLOCK(super, f);
-				//	printk(" clean hit in dram ...key = %d \n", (int)key);
-					bio_endio(bio, 0);
-					return DM_MAPIO_SUBMITTED;
-				}
-			}
-		}
-		spin_unlock_irqrestore(&clean_cache->lock, lru_flags);
-	}
-	-*/
-
-	if (unlikely(!is_write)) { // read cache 
-		/*-return process_read_request(super, seg, mb, bio, key, f);-*/
+	if (unlikely(!is_write)) {  
 		return process_read_hit_request(super, bio, seg, mb, f);
 	}
 
@@ -2588,13 +2353,6 @@ static int map_pending_bio(struct dmsrc_super *super, struct bio *bio)
 pending_process:
 	UNLOCK(super, f);
 	return -res;
-/*-
-bypass_process:
-	UNLOCK(super, f);
-	bio_remap(bio, super->dev_info.origin_dev, bio->bi_sector);
-	generic_make_request(bio);
-	return DM_MAPIO_SUBMITTED;
--*/
 }
 
 void pending_bio_add(struct dmsrc_super *super, struct bio *bio){
@@ -2998,33 +2756,6 @@ static int dmsrc_map(struct dm_target *ti, struct bio *bio)
 			bio_remap(bio, super->dev_info.origin_dev, bio->bi_sector);
 			generic_make_request(bio);
 			return DM_MAPIO_SUBMITTED;
-			/*-
-			if(super->param.enable_read_cache){
-				struct cache_manager *clean_cache = super->clean_dram_cache_manager;
-				unsigned long lru_flags; 
-				struct lru_node *ln = NULL;
-
-				spin_lock_irqsave(&clean_cache->lock, lru_flags);
-				ln = CACHE_SEARCH(clean_cache, key);
-				if(ln && atomic_read(&ln->sealed) && !atomic_read(&ln->locked)){
-					spin_unlock_irqrestore(&clean_cache->lock, lru_flags);
-					UNLOCK(super, f);
-					bio_endio(bio, 0);
-					return DM_MAPIO_SUBMITTED;
-				}else if(!ln){
-					if(clean_cache->cm_free){
-						ln = CACHE_ALLOC(clean_cache, ln, key);
-						CACHE_INSERT(clean_cache, ln);
-						atomic_set(&ln->sealed, 0);
-						atomic_set(&ln->locked, 0);
-						spin_unlock_irqrestore(&clean_cache->lock, lru_flags);
-						return process_read_miss_request(super, bio, f);
-					}
-				}
-				spin_unlock_irqrestore(&clean_cache->lock, lru_flags);
-			}
-			-*/
-			// goto pending manager 
 		}else{
 			seg = get_segment_header_by_mb_idx(super, mb->idx);
 			ret = preprocess_pending_bio(super, seg, bio, mb, 0);
