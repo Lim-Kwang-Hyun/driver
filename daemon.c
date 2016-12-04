@@ -76,29 +76,11 @@ int flush_plug_proc(struct dmsrc_super *super,
 	count = atomic_read(&bios_count[devno]) - atomic_read(&bios_start[devno]);
 
 
-#if (USE_SEG_WRITER == 0)
 	if(count){
 		job = writeback_make_job_extent(super, seg, rambuf, start_idx, count);
 		job->flush_command = flush_command;
 		writeback_issue_job_extent(super, job, flush_command);
 	}
-#else
-	if(count){
-		struct seg_write_manager *seg_write_mgr = &super->seg_write_mgr[devno];
-		unsigned long flags;
-
-		job = writeback_make_job_extent(super, seg, rambuf, start_idx, count);
-		job->flush_command = flush_command;
-
-		spin_lock_irqsave(&seg_write_mgr->spinlock, flags);
-		list_add_tail(&job->list, &seg_write_mgr->head);
-		atomic_inc(&seg_write_mgr->count);
-		spin_unlock_irqrestore(&seg_write_mgr->spinlock, flags);
-
-		queue_work(seg_write_mgr->wq, &seg_write_mgr->work);
-
-	}
-#endif 
 
 	return count;
 }
@@ -256,25 +238,6 @@ static void copy_read_caching_data(struct dmsrc_super *super){
 	}
 }
 
-
-void seg_write_worker(struct work_struct *work){
-	struct seg_write_manager *seg_write_mgr = 
-						container_of(work, struct seg_write_manager,
-					    work); 
-	struct dmsrc_super *super = seg_write_mgr->super;
-	unsigned long flags;
-	struct wb_job *job;
-
-	 while (atomic_read(&seg_write_mgr->count)){
-		 spin_lock_irqsave(&seg_write_mgr->spinlock, flags);
-		 job	 = (struct wb_job *)
-			 list_entry(seg_write_mgr->head.next, struct wb_job, list);
-		 list_del(&job->list);
-		 atomic_dec(&seg_write_mgr->count);
-		 spin_unlock_irqrestore(&seg_write_mgr->spinlock, flags);
-		 writeback_issue_job_extent(super, job, job->flush_command);
-	 }
-}
 
 void do_read_caching_worker(struct work_struct *work){
 	struct read_miss_manager *read_miss_mgr = 

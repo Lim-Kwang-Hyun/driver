@@ -4394,52 +4394,6 @@ void migrate_mgr_deinit(struct dmsrc_super *super){
 }
 
 
-#if (USE_SEG_WRITER == 1)
-int seg_write_mgr_init(struct dmsrc_super *super){
-	struct seg_write_manager *seg_write_mgr; // = &super->seg_write_mgr;
-	int r = 0;
-	int i = 0;
-
-	for(i = 0;i < MAX_CACHE_DEVS;i++){
-		seg_write_mgr = &super->seg_write_mgr[i];
-		seg_write_mgr->super = super;
-
-		atomic_set(&seg_write_mgr->count, 0);
-		spin_lock_init(&seg_write_mgr->spinlock);
-		INIT_LIST_HEAD(&seg_write_mgr->head);
-
-		seg_write_mgr->wq= alloc_workqueue("reacaching_wq",
-						 WQ_NON_REENTRANT | WQ_MEM_RECLAIM, 1);
-		if (!seg_write_mgr->wq) {
-			WBERR("failed to alloc read caching wq");
-			r = -1;
-			goto bad_init;
-		}
-		INIT_WORK(&seg_write_mgr->work, seg_write_worker);
-
-		seg_write_mgr->initialized = 1;
-
-	}
-	return r;
-	
-bad_init:
-	return r;
-}
-
-void seg_write_mgr_deinit(struct dmsrc_super *super){
-	struct seg_write_manager *seg_write_mgr;// = &super->seg_write_mgr;
-	int i;
-
-	for(i = 0;i < MAX_CACHE_DEVS;i++){
-		seg_write_mgr = &super->seg_write_mgr[i];
-		if(!seg_write_mgr->initialized)
-			return;
-
-		destroy_workqueue(seg_write_mgr->wq);
-	}
-}
-#endif 
-
 int read_miss_mgr_init(struct dmsrc_super *super){
 	struct read_miss_manager *read_miss_mgr = &super->read_miss_mgr;
 	int r = 0;
@@ -5106,19 +5060,15 @@ int __must_check resume_managers(struct dmsrc_super *super)
 	if(r)
 		return r;
 
+	
 	r = read_miss_mgr_init(super); //-
 	if(r)
 		return r;
+	
 
 	r = pending_mgr_init(super);
 	if(r)
 		return r;
-
-#if (USE_SEG_WRITER == 1)
-	r = seg_write_mgr_init(super); //-
-	if(r)
-		return r;
-#endif 
 
 	r = create_daemon(super, &super->checker_daemon, checker_proc, "checker_daemon");
 	if(r)
@@ -5170,9 +5120,7 @@ void stop_managers(struct dmsrc_super *super){
 
 	printk(" Stopping read miss damone \n");
 	read_miss_mgr_deinit(super);
-#if (USE_SEG_WRITER == 1)
-	seg_write_mgr_deinit(super);
-#endif 
+
 	printk(" Stopping pending damone \n");
 	pending_mgr_exit(super);
 
