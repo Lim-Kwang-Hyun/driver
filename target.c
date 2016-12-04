@@ -225,134 +225,6 @@ int change_seg_status(struct dmsrc_super *super, struct segment_header *seg, int
 
 }
 
-#if 0
-void build_summary_job(struct dmsrc_super *super, 
-		struct segment_header *seg, 
-		struct rambuffer *rambuf, 
-		int force_seal){
-	int i;
-
-	if(atomic_read(&seg->part_length) || 
-		(force_seal && atomic_read(&seg->length)))
-	{
-		int full = 0;
-
-		if(force_seal || need_refresh_segment(super, seg->seg_type, atomic_read(&seg->length)))
-			full = 1;
-		else
-			full = 0;
-
-		for(i = 0;i < NUM_SSD;i++){
-			if(USE_ERASURE_PARITY(&super->param) && is_write_stripe(seg->seg_type)){
-				if(i==get_parity_ssd(super, seg->seg_id))
-					continue;
-			}
-
-			generate_full_summary(super, seg, rambuf, i, full);	
-		}
-		BUG_ON(atomic_read(&seg->length)>STRIPE_SZ);
-	}
-}
-#endif 
-
-
-
-#if 0
-void generate_parity_io(struct dmsrc_super *super, struct segment_header *seg, 
-		struct rambuffer  *rambuf,
-		int full){
-
-	struct dm_io_request io_req;
-	struct dm_io_region region;
-	u32 mem_offset = 0;
-	u32 tmp32;
-	int parity_size = CHUNK_SZ;
-	int parity_start;
-	int i;
-
-	if(NO_USE_ERASURE_CODE(&super->param))
-		return;
-
-	parity_start = cursor_parity_start(super, seg->seg_id, seg->seg_type);
-	for(i = 0;i <parity_size;i++){
-		u32 offset = parity_start + i;
-		struct metablock *mb = get_mb(super, seg->seg_id, offset); 
-		struct wb_job *job;
-
-		if(!test_bit(MB_PARITY_NEED, &mb->mb_flags)){
-			if(i < 5)
-			printk(" partial parity (unsupported) data seg = %d, idx = %d, refcount = %d, %d\n", 
-				(int)seg->seg_id, (int)mb->idx%STRIPE_SZ, (int)atomic_read(&rambuf->ref_count), full);
-		//	continue;
-		}
-
-		//printk(" parity data seg = %d, idx = %d, refcount = %d, %d\n", 
-		//		(int)seg->seg_id, (int)mb->idx%STRIPE_SZ, (int)atomic_read(&rambuf->ref_count), full);
-
-		job = writeback_make_job(super, seg, mb->idx, NULL, rambuf, full);
-		writeback_issue_job(super, job);
-	}
-
-	if(USE_ERASURE_PARITY(&super->param))
-		return;
-
-	for(i = 0;i <parity_size;i++){
-		u32 offset = (parity_start + CHUNK_SZ + i) % STRIPE_SZ;
-		struct metablock *mb = get_mb(super, seg->seg_id, offset); 
-
-		printk(" RAID6 is not supported. \n");
-		BUG_ON(1);
-		if(!test_bit(MB_PARITY_NEED, &mb->mb_flags))
-			continue;
-
-		//atomic_inc(&(job->count));
-
-		div_u64_rem(mb->idx, STRIPE_SZ, &tmp32);
-		mem_offset = tmp32;
-
-		region.bdev = get_bdev(super, offset);
-		region.sector = get_sector(super, seg->seg_id, offset);
-		region.count = SRC_SECTORS_PER_PAGE; 
-
-		io_req.client = super->io_client;
-		io_req.bi_rw = WRITE;
-		io_req.notify.fn = flush_segmd_endio;
-		///io_req.notify.context = job;
-		io_req.mem.type = DM_IO_KMEM;
-		io_req.mem.ptr.addr = rambuf->pages[mem_offset]->data;
-
-		dmsrc_io(&io_req, 1, &region, NULL);
-	}
-}
-#endif 
-
-#if 0
-void build_parity_job(struct dmsrc_super *super, 
-		struct segment_header *seg, 
-		struct rambuffer *rambuf, 
-		u32 seg_length,
-		int cache_type,
-		int force_seal)
-{
-	int full_seg = 0;
-
-	if(is_read_stripe(seg->seg_type))
-		return;
-
-	if(force_seal || need_refresh_segment(super, cache_type, seg_length))
-		full_seg = 1;
-
-	generate_parity_data(super, seg, rambuf->pages, full_seg, cache_type);
-	generate_parity_io(super, seg, rambuf, full_seg);
-
-	if(force_seal || seg_length==STRIPE_SZ){
-		reset_parity(super, seg, seg->seg_type, 1); // full stripe 
-	}else{
-		reset_parity(super, seg, seg->seg_type, 0); // partial stripe 
-	}
-}
-#endif 
-
 void alloc_summary(struct dmsrc_super *super, struct segment_header *seg, 
 		struct rambuffer *rambuf, u32 summary_idx, int cache_type, int full){
 	u32 j;
@@ -367,11 +239,6 @@ u32 alloc_skip(struct dmsrc_super *super, struct segment_header *seg,
 		struct rambuffer *rambuf, int cache_type){
 	u32 dummy_idx;
 
-//	tmp_idx = ma_alloc(super, seg, seg->seg_id, cache_type, (dummy_idx/CHUNK_SZ)%NUM_SSD, NULL);
-//	if(tmp_idx!=dummy_idx){
-//		printk(" tmp_idx %d, dummy_idx = %d \n", tmp_idx, dummy_idx);
-//		BUG_ON(1);
-//	}
 	dummy_idx = alloc_next_mb(super, seg, 0, cache_type, NULL);
 	_alloc_mb_summary(super, seg, cache_type, dummy_idx, 0, 1);
 	bio_plugging(super, seg, rambuf, NULL, dummy_idx);
@@ -474,13 +341,7 @@ int alloc_partial_summary(struct dmsrc_super *super,
 		struct metablock *mb;
 		u32 dummy_idx;
 
-#if 0
-		dummy_idx = alloc_next_mb(super, seg, 0, seg->seg_type, NULL);
-		_alloc_mb_summary(super, seg, cache_type, dummy_idx, 0, 1);
-		bio_plugging(super, seg, rambuf, NULL, dummy_idx);
-#else
 		dummy_idx = alloc_dummy(super, seg, rambuf, seg->seg_type);
-#endif 
 		mb = get_mb(super, seg->seg_id, dummy_idx%STRIPE_SZ);
 		set_bit(MB_DUMMY, &mb->mb_flags);
 
@@ -2318,17 +2179,9 @@ void bio_plugging(struct dmsrc_super *super, struct segment_header *seg, struct 
 	BUG_ON(atomic_inc_return(&rambuf->bios_count[devno])>CHUNK_SZ);
 	BUG_ON(atomic_inc_return(&rambuf->bios_total_count)>STRIPE_SZ);
 
-//	if(bio){
-//		_free_rambuf_page(super, rambuf->pages[update_mb_idx%STRIPE_SZ]); 
-//		rambuf->pages[update_mb_idx%STRIPE_SZ] = NULL;
-//		rambuf->alloc_count--;
-//		atomic_dec(&rambuf->ref_count);
-//	}
-
 	spin_unlock_irqrestore(&rambuf->lock, f);
 	spin_unlock_irqrestore(&super->segbuf_mgr.lock, flags);
 
-	update_plug_deadline(super);
 }
 
 int get_desired_size(struct dmsrc_super *super, int seg_id){
@@ -4540,37 +4393,6 @@ void migrate_mgr_deinit(struct dmsrc_super *super){
 	migrate_mgr->initialized = 0;
 }
 
-int plugger_init(struct dmsrc_super *super){
-	struct plugging_manager *plugger = &super->plugger;
-	int i;
-	int r = 0;
-
-	plugger->super = super;
-	plugger->deadline_us = 1000000;
-
-	setup_timer(&plugger->timer,
-		    plug_deadline_proc, (unsigned long) super);
-
-	for(i = 0;i < MAX_CACHE_DEVS;i++){
-		INIT_LIST_HEAD(&plugger->queue[i]);
-		atomic_set(&plugger->queue_length[i], 0);
-		spin_lock_init(&plugger->lock[i]);
-	}
-	atomic_set(&plugger->total_length, 0);
-
-	plugger->initialized = 1;
-
-	return r;
-}
-
-void plugger_deinit(struct dmsrc_super *super){
-	struct plugging_manager *plugger = &super->plugger;
-
-	if(!plugger->initialized)
-		return;
-
-	del_timer(&plugger->timer);
-}
 
 #if (USE_SEG_WRITER == 1)
 int seg_write_mgr_init(struct dmsrc_super *super){
@@ -5280,10 +5102,6 @@ int __must_check resume_managers(struct dmsrc_super *super)
 	if(r)
 		return r;
 
-	r = plugger_init(super); //-
-	if(r)
-		return r;
-
 	r = sync_mgr_init(super);
 	if(r)
 		return r;
@@ -5350,7 +5168,6 @@ void stop_managers(struct dmsrc_super *super){
 	printk(" Stopping flush mgr \n");
 	flush_mgr_deinit(super);
 
-	plugger_deinit(super);
 	printk(" Stopping read miss damone \n");
 	read_miss_mgr_deinit(super);
 #if (USE_SEG_WRITER == 1)

@@ -29,7 +29,6 @@ __attribute__((section("__versions"))) = {
 	{ 0x4c4fef19, __VMLINUX_SYMBOL_STR(kernel_stack) },
 	{ 0xf4f1923c, __VMLINUX_SYMBOL_STR(bio_alloc_bioset) },
 	{ 0xd6ee688f, __VMLINUX_SYMBOL_STR(vmalloc) },
-	{ 0xc996d097, __VMLINUX_SYMBOL_STR(del_timer) },
 	{ 0xa21de278, __VMLINUX_SYMBOL_STR(dm_get_device) },
 	{ 0x5769fbcc, __VMLINUX_SYMBOL_STR(dm_io) },
 	{ 0x43a53735, __VMLINUX_SYMBOL_STR(__alloc_workqueue_key) },
@@ -42,7 +41,6 @@ __attribute__((section("__versions"))) = {
 	{ 0xb54533f7, __VMLINUX_SYMBOL_STR(usecs_to_jiffies) },
 	{ 0x88bfa7e, __VMLINUX_SYMBOL_STR(cancel_work_sync) },
 	{ 0xefba93e1, __VMLINUX_SYMBOL_STR(mempool_destroy) },
-	{ 0x593a99b, __VMLINUX_SYMBOL_STR(init_timer_key) },
 	{ 0x999e8297, __VMLINUX_SYMBOL_STR(vfree) },
 	{ 0xe979bb8c, __VMLINUX_SYMBOL_STR(dm_register_target) },
 	{ 0x236437f6, __VMLINUX_SYMBOL_STR(kthread_create_on_node) },
@@ -68,7 +66,6 @@ __attribute__((section("__versions"))) = {
 	{ 0x8c03d20c, __VMLINUX_SYMBOL_STR(destroy_workqueue) },
 	{ 0x521445b, __VMLINUX_SYMBOL_STR(list_del) },
 	{ 0x46feb099, __VMLINUX_SYMBOL_STR(dm_read_arg) },
-	{ 0x8834396c, __VMLINUX_SYMBOL_STR(mod_timer) },
 	{ 0xd0c50de0, __VMLINUX_SYMBOL_STR(generic_make_request) },
 	{ 0x4faee48d, __VMLINUX_SYMBOL_STR(bio_endio) },
 	{ 0x68e5292c, __VMLINUX_SYMBOL_STR(bio_put) },
@@ -113,4 +110,4 @@ __attribute__((section(".modinfo"))) =
 "depends=dm-mod,raid6_pq,xor";
 
 
-MODULE_INFO(srcversion, "F3E966CA99DB1B3C4818219");
+MODULE_INFO(srcversion, "DC624E3ABFC0CBE6BB64C5C");

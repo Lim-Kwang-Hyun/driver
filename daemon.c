@@ -30,12 +30,6 @@
 #include "alloc.h"
 #include "lru.h"
 
-void update_plug_deadline(struct dmsrc_super *super)
-{
-	mod_timer(&super->plugger.timer,
-	  jiffies + usecs_to_jiffies(ACCESS_ONCE(super->plugger.deadline_us)));
-}
-
 
 int flush_plug_proc(struct dmsrc_super *super, 
 		struct segment_header *seg, 
@@ -107,13 +101,6 @@ int flush_plug_proc(struct dmsrc_super *super,
 #endif 
 
 	return count;
-}
-
-
-void plug_deadline_proc(unsigned long data)
-{
-	//struct dmsrc_super *super = (struct dmsrc_super *) data;
-	//schedule_work(&super->plugger.work);
 }
 
 void queue_barrier_io(struct dmsrc_super *super, struct bio *bio)
@@ -2824,7 +2811,6 @@ int checker_proc(void *data)
 				(int)atomic_read(&super->segbuf_mgr.active_page_count)/256);
 		printk(" rambuf page Inactive count = %d (%d MB) \n", (int)atomic_read(&super->segbuf_mgr.inactive_page_count), 
 				(int)atomic_read(&super->segbuf_mgr.inactive_page_count)/256);
-		printk(" plug queue = %d \n", (int)atomic_read(&super->plugger.total_length));
 
 		for(j = 0;j < NBUF;j++){
 			printk(" [%d]%d ", j, atomic_read(&super->segbuf_mgr.active_count[j]));
